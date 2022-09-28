@@ -8,7 +8,7 @@ def hello_world():  # put application's code here
     return "<h1>Hello world! 11</h1>", 200
 
 
-# @app.route('/second')
+# @app.route('/second'
 # def hello_world2():  # put application's code here
 #     return "<h1>0 You are now in another page</h1>", 500
 
