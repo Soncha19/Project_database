@@ -1,10 +1,12 @@
 import React from 'react';
 import teamsData from "./dataForTesting/dataTeams";
 import {Card, Grid, Paper} from "@mui/material";
+import Header from "./components/Header";
 
 export const Team = () => {
     return (
-
+<>
+        <Header/>
       <Grid  container spacing={0}>
 
         {teamsData.map((data, key) => {
@@ -38,8 +40,9 @@ export const Team = () => {
 
     </Card>
       </Grid>
-
+</>
     );
+
 };
 const Teamsd = ({ name, tag }) => {
   // if (!company) return <div />;
@@ -65,5 +68,6 @@ const Teamsd = ({ name, tag }) => {
 
     </Card>
   );
+
 };
 export default Team;

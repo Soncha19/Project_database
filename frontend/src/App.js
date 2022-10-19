@@ -3,16 +3,21 @@ import Header from "./components/Header";
 import Team from "./Team";
 import Profile from "./Profile";
 import Start from "./Start";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import Employee from "./Employee";
 
 
 function App() {
 
     return (
-        <div className="App">
-            <Header/>
-            {/*<Team/>*/}
-            <Start/>
-        </div>
+        <>
+            <Routes>
+                <Route path="/teams" element={<Team/>}/>
+                <Route path="/employees" element={<Employee/>}/>
+                <Route path="/profile" element={<Profile/>}/>
+                <Route path="/sign" element={<Start/>}/>
+            </Routes>
+        </>
     );
 }
 
