@@ -1,7 +1,9 @@
 import React from 'react';
 import teamsData from "./dataForTesting/dataTeams";
-import {Card, Grid, Paper} from "@mui/material";
+import { Card, Grid, } from "@mui/material";
 import Header from "./components/Header";
+import {Link} from "react-router-dom";
+import AddNewTeam from "./components/AddNewTeam";
 
 export const Team = () => {
     return (
@@ -39,14 +41,17 @@ export const Team = () => {
 
 
     </Card>
+          <AddNewTeam/>
       </Grid>
+
 </>
     );
 
 };
 const Teamsd = ({ name, tag }) => {
-  // if (!company) return <div />;
+
   return (
+<Link to="/employees" style={{textDecoration: 'none'}}>
     <Card sx={{
 
         p: 20,
@@ -55,6 +60,7 @@ const Teamsd = ({ name, tag }) => {
         flexGrow: 2,
         elevation: 2,
       }} >
+
 
         <Grid >
           <Grid item xs={0}>
@@ -67,6 +73,7 @@ const Teamsd = ({ name, tag }) => {
 
 
     </Card>
+    </Link>
   );
 
 };

@@ -38,13 +38,6 @@ const SignIn = () => {
             <h1>Sign in</h1>
             <TextField onChange={e => email.onChange(e)} onBlur={e => email.onBlur(e)} autoFocus margin="dense" id="email" label="Email" type="email" fullWidth variant="filled" />
             <TextField onChange={e => password.onChange(e)} onBlur={e => password.onBlur(e)} autoFocus margin="dense" id="password" label="Password" type="password" fullWidth variant="filled" />
-
-            {/*<h1>{email.value}</h1>*/}
-        {/*<DialogActions>*/}
-        {/*    <Button onClick={handleClose} variant="contained" color="primary">Cancel</Button>*/}
-        {/*    <Button onClick={handleClose} variant="contained" color="success">Sign in</Button>*/}
-
-        {/*</DialogActions>*/}
         </DialogContent>
 
 
