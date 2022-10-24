@@ -28,8 +28,6 @@ const AddNewTeam = () => {
         margin: 2,
 
       }} >
-
-
         <Grid   container direction="column" justifyContent="center" alignItems="center" spacing={2}>
           <Grid item xs={0}>
              <TextField onChange={e => teamName.onChange(e)} onBlur={e => teamName.onBlur(e)} autoFocus margin="dense" id="teamName" label="New team name" type="teamName" fullWidth variant="filled" />

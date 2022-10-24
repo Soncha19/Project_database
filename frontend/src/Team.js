@@ -1,17 +1,15 @@
 import React from 'react';
-import teamsData from "./dataForTesting/dataTeams";
 import { Card, Grid, } from "@mui/material";
 import Header from "./components/Header";
 import {Link} from "react-router-dom";
 import AddNewTeam from "./components/AddNewTeam";
 
-export const Team = () => {
+const Team = (props) => {
     return (
 <>
         <Header/>
       <Grid  container spacing={0}>
-
-        {teamsData.map((data, key) => {
+        {props.teams.map((data, key) => {
           return (
             <div key={key}>
               <Teamsd
