@@ -1,0 +1,23 @@
+from models import *
+
+session = Session()
+
+# user1 = User(first_name='Olena',is_admin=True,email='kas',user_name='ssss')
+# user2 = User(first_name='Sofiya',is_admin=True,email='tillj',user_name='sof')
+# session.add(user1)
+# session.add(user2)
+# session.commit()
+# song1 = Song(name='lala',album='ksljal',genre='pop',artist='Ric',creation_date='2020-01=01')
+# song2 = Song(name='tratata',album='skdfl',genre='rock',artist='Liam',creation_date='2021-01=01')
+# session.add(song1)
+# session.add(song2)
+# session.commit()
+# playlist1=Playlist(name='ska',genre='pop',access_status='have access',user=user1)
+# session.add(playlist1)
+# session.commit()
+# playlist_has_song1=playlist_has_song(playlistid=playlist1,songid=song1)
+# playlist_has_song2=playlist_has_song(playlistid=playlist1,songid=song2)
+# session.add(playlist_has_song1)
+# session.add(playlist_has_song2)
+# session.commit()
+# session.close()
