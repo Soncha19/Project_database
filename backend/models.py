@@ -35,6 +35,9 @@ class Employee(Base):
     company_id = Column('company_id', Integer, ForeignKey(Company.id))
     company = relationship(Company, backref='employee', lazy='joined')
 
+    team_id = Column(Integer, ForeignKey(Team.id))
+    team = relationship(Team, backref='employee', lazy='joined')
+
     is_owner = Column('is_owner', Boolean, nullable=False)
     password = Column('password', String(20), nullable=False)
     user_name = Column('user_name', String(45), nullable=False)
