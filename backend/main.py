@@ -1,13 +1,28 @@
 from flask import Flask
+from flask import request
 from waitress import serve
-
+import json
 
 app = Flask(__name__)
 
 
-@app.route('/api/v1/hello-world-11')
+class User:
+    def __init__(self, name, id):
+        self.name = name
+        self.id = id
+
+
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__,
+                          sort_keys=True, indent=2)
+
+
+@app.route('/propertySet', methods=['POST', 'GET'])
 def hello_world():
-    return "<h1>Hello world! 11</h1>", 200
+    request_data = request.get_json()
+    user = User(name=request_data['name'], id=1)
+    users = [user, user, user]
+    return user.toJSON()
 
 
 @app.route('/api/v1/show')
