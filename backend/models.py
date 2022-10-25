@@ -1,9 +1,8 @@
 from sqlalchemy import *
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship, declarative_base, scoped_session
 
 
-engine = create_engine('mysql+pymysql://root:2004@localhost:3306/procadi')
+engine = create_engine('mysql+pymysql://sql11528854:7VQd9mL1Nl@sql11.freemysqlhosting.net:3306/sql11528854')
 SessionFactory = sessionmaker(bind=engine)
 Session = scoped_session(SessionFactory)
 Base = declarative_base()
