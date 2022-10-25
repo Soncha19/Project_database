@@ -77,7 +77,7 @@ class Feedback(Base):
     id = Column('id', Integer, primary_key=True, autoincrement=True)
     date_of_creation = Column('date_of_creation', DATE, nullable=False)
     note = Column('note', String(45), nullable=False)
-    feedback_history_id = Column('feedback_history', Integer, ForeignKey(FeedbackHistory.id))
+    feedback_history_id = Column('feedback_history_id', Integer, ForeignKey(FeedbackHistory.id))
     feedback_history = relationship(FeedbackHistory, backref='feedback', lazy='joined')
 
 
