@@ -11,9 +11,9 @@ const Team = (props) => {
       <Grid  container spacing={0}>
         {props.teams.map((data, key) => {
           return (
-            <div key={key}>
+            <div key={data.id}>
               <Teamsd
-                key={key}
+                key={data.id}
                 name={data.name}
                 tag={data.tag}
               />
@@ -46,10 +46,10 @@ const Team = (props) => {
     );
 
 };
-const Teamsd = ({ name, tag }) => {
+const Teamsd = ({ name, tag, key }) => {
 
   return (
-<Link to="/employees" style={{textDecoration: 'none'}}>
+<Link to="/employees" state={{id:{key}}} style={{textDecoration: 'none'}}>
     <Card sx={{
 
         p: 20,
