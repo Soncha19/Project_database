@@ -35,7 +35,7 @@ class Employee(Base):
     company_id = Column('company_id', Integer, ForeignKey(Company.id))
     company = relationship(Company, backref='employee', lazy='joined')
 
-    team_id = Column(Integer, ForeignKey(Team.id))
+    team_id = Column('team_id', Integer, ForeignKey(Team.id))
     team = relationship(Team, backref='employee', lazy='joined')
 
     is_owner = Column('is_owner', Boolean, nullable=False)
@@ -47,7 +47,7 @@ class Employee(Base):
 
 
 class PropertySet(Base):
-    __tablename__ = 'propertySet'
+    __tablename__ = 'property_set'
 
     id = Column('id', Integer, primary_key=True, autoincrement=True)
     name = Column('name', String(45))
@@ -63,22 +63,22 @@ class Question(Base):
 
 
 class FeedbackHistory(Base):
-    __tablename__ = 'feedbackHistory'
+    __tablename__ = 'feedback_history'
     id = Column('id', Integer, primary_key=True, autoincrement=True)
-    employee_id = Column('playlist_id', Integer, ForeignKey(Employee.id))
-    propertySet_id = Column('song_id', Integer, ForeignKey(PropertySet.id))
-    employeeid = relationship(Employee, backref='feedbackHistory', lazy='joined')
-    propertySetid = relationship(PropertySet, backref='feedbackHistory', lazy='joined')
+    employee_id = Column('employee_id', Integer, ForeignKey(Employee.id))
+    employee = relationship(Employee, backref='feedback_history', lazy='joined')
+    property_set_id = Column('property_set_id', Integer, ForeignKey(PropertySet.id))
+    property_set = relationship(PropertySet, backref='feedback_history', lazy='joined')
 
 
 class Feedback(Base):
     __tablename__ = 'feedback'
 
     id = Column('id', Integer, primary_key=True, autoincrement=True)
-    dateOfCreation = Column('dateOfCreation', DATE)
-    note = Column('note', String(45))
-    feedbackHistory = Column(Integer, ForeignKey(FeedbackHistory.id))
-    feedbackHistoryId = relationship(FeedbackHistory, backref='feedback', lazy='joined')
+    date_of_creation = Column('date_of_creation', DATE, nullable=False)
+    note = Column('note', String(45), nullable=False)
+    feedback_history_id = Column('feedback_history', Integer, ForeignKey(FeedbackHistory.id))
+    feedback_history = relationship(FeedbackHistory, backref='feedback', lazy='joined')
 
 
 class Answer(Base):
