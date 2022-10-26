@@ -1,0 +1,1150 @@
+openapi: 3.0.3
+info:
+  title: Procadi
+  version: 1.0.0
+tags:
+  - name: property set
+  - name: feedback
+servers:
+  - url: http://localhost:8080
+paths:
+  /propertySet:
+     post:
+      tags:
+        - property set
+      summary: Add property set
+      operationId: addPropertySet
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewPropertySet'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/NewPropertySet'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NewPropertySet'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PropertySet'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/PropertySet'
+  /propertySet/{id}:
+    get:
+      tags:
+        - property set
+      summary: Get property set by id
+      operationId: getPropertySetById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PropertySet'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/PropertySet'
+    delete:
+      tags:
+        - property set
+      summary: Delete property set by id
+      operationId: вудуеуPropertySetById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PropertySet'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/PropertySet'
+  /propertySet/all:
+    get:
+      tags:
+        - property set
+      summary: Get all propery sets
+      operationId: getAllPropertySets
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PropertySet'          
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PropertySet'
+  /feedback:
+    post:
+      tags:
+        - feedback
+      summary: Add feedback
+      operationId: addFeedback
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewFeedback'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/NewFeedback'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NewFeedback'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Feedback'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Feedback'
+  /feedback/{id}:
+    get:
+      tags:
+        - feedback
+      summary: Get feedback by id
+      operationId: getFeedbackById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Feedback'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Feedback'
+    delete:
+      tags:
+        - feedback
+      summary: Delete feedback by id
+      operationId: DeletePropertySetById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PropertySet'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/PropertySet'
+  /feedbacks/{employee_id}:
+    get:
+      tags:
+        - feedback
+      summary: Get feedback by employee_id
+      operationId: getFeedbackByEmployee_id
+      parameters:
+        - name: employee_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Feedback'      
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Feedback'            
+  /employee:
+    post:
+      tags:
+        - employee
+      operationId: createEmployee
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Employee'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Employee'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Employee'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeNoPassword'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/EmployeeNoPassword'
+  /employee/login:
+    get:
+      tags:
+        - employee
+      summary: Logs employee into the system
+      operationId: loginEmployee
+      parameters:
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          headers:
+            X-Rate-Limit:
+              description: calls per hour allowed by the user
+              schema:
+                type: integer
+                format: int32
+            X-Expires-After:
+              description: date in UTC when token expires
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/xml:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+  /employee/findByName:
+    get:
+      tags:
+        - employee
+      operationId: findEnployeeByName
+      parameters:
+      - name: EmployeeName
+        in: query
+        required: true
+        schema:
+          type: string  
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EmployeeNoPassword'          
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EmployeeNoPassword'
+  /employee/findByCompany:
+    get:
+      tags:
+        - employee
+      operationId: findEnployeeByCompanyId
+      parameters:
+      - name: companyId
+        in: query
+        required: true
+        schema:
+          type: integer    
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EmployeeNoPassword'          
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EmployeeNoPassword'                
+  /employee/{id}:
+    put:
+      tags:
+        - employee
+      operationId: updateEmployee
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Employee'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Employee'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Employee'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeNoPassword'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/EmployeeNoPassword'
+    delete:
+      tags:
+        - employee
+      operationId: deleteEmployee
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation 
+  /company:
+    post:
+      tags:
+        - company
+      operationId: createCompany
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewCompany'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/NewCompany'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NewCompany'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Company'
+  /company/findById:
+    get:
+      tags: 
+        - company
+      operationId: findCompanyById
+      parameters:
+      - name: companyId
+        in: query
+        required: true
+        explode: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Company'
+  /updateCompany/{id}:
+    put:
+      tags:
+        - company
+      operationId: updateCompanyData
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Company'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Company'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Company'
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Invalid username supplied
+        '403':
+          description: Access denied
+        '405':
+          description: Invalid input
+  /deleteCompany/{id}:
+    delete:
+      tags:
+        - company
+      operationId: deleteCompany
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Invalid username supplied
+        '403':
+          description: Access denied 
+          
+  /feedbackHistory/{employee_Id}:
+    put:
+      tags:
+        - feedbackHistory
+      summary: Update an existing feedbackHistory
+      operationId: updateFeedbackHistory
+      parameters:
+        - name: employee_Id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Update an existent feedbackHistory 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FeedbackHistory'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/FeedbackHistory'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/FeedbackHistory'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeedbackHistory'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/FeedbackHistory'
+      security:
+        - api_key: []
+    
+    get:
+      tags:
+        - feedbackHistory
+      summary: Find FeedbackHistory by ID
+      description: Returns a single FeedbackHistory
+      operationId: getFeedbackHistoryById
+      parameters:
+        - name: employee_Id
+          in: path
+          description: ID of FeedbackHistory to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeedbackHistory'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/FeedbackHistory'
+    delete:
+      tags:
+        - feedbackHistory
+      summary: Deletes a FeedbackHistory
+      description: delete a FeedbackHistory
+      operationId: deleteFeedbackHistory
+      parameters:
+       
+        - name: employee_Id
+          in: path
+          description: FeedbackHistory id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '400':
+          description: Invalid FeedbackHistory value
+  /feedbackHistory: 
+     post:
+      tags:
+        - feedbackHistory
+      summary: Add new feedbackHistory
+      operationId: addFeedbackHistory
+      requestBody:
+        description: Create a new tour in the agency
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FeedbackHistory'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/FeedbackHistory'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/FeedbackHistory'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeedbackHistory'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/FeedbackHistory'
+      security:
+        - api_key: []
+  /team:
+    post:
+      tags:
+        - team
+      summary: Create team
+      description: This can only be done by the logged in user.
+      operationId: createteam
+      requestBody:
+        description: Created team object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewTeam'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/NewTeam'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NewTeam'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Team'
+        '400':
+          description: Empty fields
+        '401':
+          description: Username or email already taken 
+  /team/findByCompany:
+    get:
+      tags:
+        - team
+      summary: Returns teams by company
+      operationId: findTeamsByCompany
+      parameters:
+        - name: company_id
+          in: query
+          description: The user name for login
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Team'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Team'
+  /team/{teamId}:
+    get:
+      tags:
+        - team
+      summary: Find team by ID
+      description: Returns a single team
+      operationId: getTeamById
+      parameters:
+        - name: teamId
+          in: path
+          description: ID of team to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Team'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Team not found
+        '403':
+          description: access denied
+    delete:
+      tags:
+        - team
+      summary: Deletes a Team
+      description: delete a Team
+      operationId: deleteTeam
+      parameters:
+       
+        - name: teamId
+          in: path
+          description: Team id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '400':
+          description: Invalid Team value
+      security:
+        - api_key: []     
+  /team/{team_Id}:
+     put:
+      tags:
+        - team
+      summary: Update an existing team
+      description: Update an existing team by Id
+      operationId: updateteam
+      parameters:
+       
+        - name: team_Id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Update an existent team 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewTeam'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/NewTeam'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NewTeam'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Team'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: ID not found
+        '405':
+          description: Validation exception
+      security:
+        - api_key: []    
+        
+        
+  /question:
+    post:
+      tags:
+        - question
+      summary: Create question
+      operationId: createquestion
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewQuestion'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/NewQuestion'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NewQuestion'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Question'
+        '400':
+          description: Empty fields
+        '401':
+          description: Username or email already taken 
+  /question/{property_set_id}:
+    get:
+      tags:
+        - question
+      summary: Get question
+      operationId: getQuestionByProperty_set_id
+      parameters:
+        - name: property_set_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Question'          
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Question'
+        '400':
+          description: Empty fields
+        '401':
+          description: Username or email already taken   
+    delete:
+      tags:
+        - question
+      summary: Delete question
+      operationId: deleteQuestionByProperty_set_id
+      parameters:
+        - name: property_set_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Question'
+        '400':
+          description: Empty fields
+        '401':
+          description: Username or email already taken  
+          
+  /answer:
+    post:
+      tags:
+        - answer
+      summary: Create answer
+      operationId: createanswer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewAnswer'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/NewAnswer'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Answer'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Answer'
+        '400':
+          description: Empty fields
+        '401':
+          description: Username or email already taken 
+  /answer/{feedback_id}:
+    get:
+      tags:
+        - answer
+      summary: Get answers
+      operationId: getQuestionByFeedback_id
+      parameters:
+        - name: feedback_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NewAnswer'          
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NewAnswer'
+        '400':
+          description: Empty fields
+        '401':
+          description: Username or email already taken   
+    delete:
+      tags:
+        - answer
+      summary: Delete answer
+      operationId: deleteQuestionByFeedback_id
+      parameters:
+        - name: feedback_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Answer'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Answer'
+        '400':
+          description: Empty fields
+        '401':
+          description: Username or email already taken      
+        
+components:
+  schemas:
+    Company:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: The Boring Team 
+      xml:
+        name: company
+    NewCompany:
+      type: object
+      properties:
+        name:
+          type: string
+          example: The Boring Team
+      xml:
+        name: company
+    PropertySet:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: standart
+      xml:
+        name: propertySet
+    NewPropertySet:
+      type: object
+      properties:
+        name:
+          type: string
+          example: standart
+      xml:
+        name: propertySet
+    Feedback:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        dateOfCreation:
+          type: string
+          format: date
+          example: '2017-07-21'
+        employee_id:
+            $ref: '#/components/schemas/FeedbackHistory'  
+        note:
+          type: string
+      xml:
+        name: feedback
+    NewFeedback:
+      type: object
+      properties:
+        dateOfCreation:
+          type: string
+          format: date
+          example: '2017-07-21'
+        note:
+          type: string
+        employee_id:
+            $ref: '#/components/schemas/FeedbackHistory' 
+      xml:
+        name: feedback
+    Team:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        tag:
+          type: string
+          example: Web
+        name:
+          type: string
+          example: The Boring Team
+        company_id:
+            $ref: '#/components/schemas/Company'  
+      xml:
+        name: team
+    NewTeam:
+      type: object
+      properties:
+        
+        tag:
+          type: string
+          example: Web
+        name:
+          type: string
+          example: The Boring Team
+        company_id:
+            $ref: '#/components/schemas/Company'  
+      xml:
+        name: newteam  
+    FeedbackHistory:
+      type: object
+      properties:
+        employee_id:
+            $ref: '#/components/schemas/Employee'  
+        propertySet_id:
+            $ref: '#/components/schemas/PropertySet'  
+      xml:
+        name: feedbackHistory
+    Employee:
+      type: object
+      properties:
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: James
+        email:
+          type: string
+          example: john@email.com
+        company_id:
+          $ref:  '#/components/schemas/Company'
+        team_id:
+          $ref: '#/components/schemas/Team'
+        password:
+          type: string
+          example: '12345'
+        is_owner:
+          type: boolean
+        phone:
+          type: string
+          example: '12345'
+        dateOfBirth:
+          type: string
+          format: date
+          example: '2017-07-21'
+        role:
+          type: string
+          enum:
+            - user
+            - manager
+      xml:
+        name: employee
+    EmployeeNoPassword:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 5
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: James
+        email:
+          type: string
+          example: john@email.com
+        company_id:
+          $ref:  '#/components/schemas/Company'
+        team_id:
+          $ref: '#/components/schemas/Team'
+        is_owner:
+          type: boolean
+        phone:
+          type: string
+          example: '12345'
+        dateOfBirth:
+          type: string
+          format: date
+          example: '2017-07-21'
+        role:
+          type: string
+          enum:
+            - user
+            - manager
+      xml:
+        name: employeeNoPassword
+    NewQuestion:
+      type: object
+      properties:
+        number:
+          type: integer
+          format: int64
+          example: 1
+        text:
+          type: string
+          example: John
+        property_set_id:
+            $ref: '#/components/schemas/PropertySet' 
+      xml:
+        name: newQuestion
+    Question:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        number:
+          type: integer
+          format: int64
+          example: 1
+        text:
+          type: string
+          example: John
+        property_set_id:
+            $ref: '#/components/schemas/PropertySet'
+      xml:
+        name: question
+    NewAnswer:
+      type: object
+      properties:
+        number:
+          type: integer
+          format: int64
+          example: 1
+        text:
+          type: string
+          example: John
+        feedback_id:
+            $ref: '#/components/schemas/Feedback'
+      xml:
+        name: newQuestion
+    Answer:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        number:
+          type: integer
+          format: int64
+          example: 1
+        text:
+          type: string
+          example: John
+        feedback_id:
+            $ref: '#/components/schemas/Feedback'
+      xml:
+        name: question
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
