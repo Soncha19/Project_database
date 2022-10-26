@@ -127,7 +127,7 @@ paths:
             application/xml:
               schema:
                 $ref: '#/components/schemas/Feedback'
-  /feedback/{id}:
+  /feedback/:
     get:
       tags:
         - feedback
@@ -135,7 +135,7 @@ paths:
       operationId: getFeedbackById
       parameters:
         - name: id
-          in: path
+          in: query
           required: true
           schema:
             type: string
@@ -156,7 +156,7 @@ paths:
       operationId: DeletePropertySetById
       parameters:
         - name: id
-          in: path
+          in: query
           required: true
           schema:
             type: string
@@ -285,13 +285,13 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/EmployeeNoPassword'
-  /employee/findByCompany:
+  /employee/findByTeam:
     get:
       tags:
         - employee
-      operationId: findEnployeeByCompanyId
+      operationId: findEnployeeByTeamId
       parameters:
-      - name: companyId
+      - name: teamId
         in: query
         required: true
         schema:
@@ -309,7 +309,33 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/EmployeeNoPassword'                
+                  $ref: '#/components/schemas/EmployeeNoPassword'
+  /employee/findByCompany:
+    get:
+      tags:
+        - employee
+      operationId: findEnployeeByCompanyId
+      parameters:
+        - name: companyId
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EmployeeNoPassword'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EmployeeNoPassword'
+
   /employee/{id}:
     put:
       tags:
@@ -840,7 +866,7 @@ paths:
           description: Empty fields
         '401':
           description: Username or email already taken 
-  /answer/{feedback_id}:
+  /answer/:
     get:
       tags:
         - answer
@@ -848,7 +874,7 @@ paths:
       operationId: getQuestionByFeedback_id
       parameters:
         - name: feedback_id
-          in: path
+          in: query
           required: true
           schema:
             type: integer
@@ -877,7 +903,7 @@ paths:
       operationId: deleteQuestionByFeedback_id
       parameters:
         - name: feedback_id
-          in: path
+          in: query
           required: true
           schema:
             type: integer
