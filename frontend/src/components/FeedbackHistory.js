@@ -1,20 +1,34 @@
 import React, {useState, useEffect} from 'react';
 import {Stack} from "@mui/material";
-import {EmployeeNoPassword} from "../Classes/EmployeeNoPassword";
 import "../CSSFiles/FeedbackHistoryStyles.css";
-
-let employee = new EmployeeNoPassword(0, "Fred", "Fredrenko", "@gmail.com", 0,
-    0, 0, "666", "2000-02-20", 0);
+import {useLocation} from "react-router-dom";
 
 export const FeedbackHistory = (props) =>
 {
+
+    const [idOfEmployee, setIdEmployee] = useState(1);
+    const [employee, setEmployee] = useState();
     const [feedbackHistory, setFeedbackHistory] = useState();
-    const [propertySets, setPropertySets] = useState(new Object());
+    const [propertySets, setPropertySets] = useState();
     const [question, setQuestion] = useState([]);
     const [feedback, setFeedback] = useState([]);
     const [marks, setMarks] = useState([]);
     const [answer, setAnswer] = useState([]);
 
+    function GetEmployee()
+    {
+        useEffect(() => {
+            fetch('http://localhost:8080/employee/?employee_id=1', {
+                'methods': 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(response => setEmployee(response))
+                .catch(error => console.log(error))
+        }, [])
+    }
     function GetFeedbackHistory() {
         useEffect(() => {
             fetch('http://localhost:8080/property_set/?property_set_id=1', {
@@ -101,11 +115,13 @@ export const FeedbackHistory = (props) =>
         return table;
     }
 
+    GetEmployee();
     GetFeedbackHistory();
     GetPropertySets();
     GetQuestion();
     GetFeedbacks();
     GetAnswers();
+
     useEffect(() => {
         setMarks(GetTable());
     },[question, feedback, answer]);
@@ -114,12 +130,12 @@ export const FeedbackHistory = (props) =>
 
         <>
             <h1 id="PageName">Feedback history</h1>
-            <p id="EmployeeInfo">{propertySets[0]?.name}: {employee.firstName} {employee.lastName}</p>
+            <p id="EmployeeInfo"></p>
             <Stack direction="column" justifyContent="center" alignItems="center" spacing={3}>
                 <Stack direction="row" justifyContent="center" alignItems="center" spacing={3}>
                     <div className="Date">Date</div>
-                    {question.map((item, index) =>
-                        <div className="feedback">{item.number}</div>
+                    {question?.map((item, index) =>
+                        <div className="feedback">{item?.number}</div>
                     )
                     }
                 </Stack>

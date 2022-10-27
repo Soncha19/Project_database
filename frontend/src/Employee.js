@@ -27,6 +27,7 @@ const Employee = () => {
     }
 
     GetTeammates();
+
  return (
 <>
         <Header/>
@@ -77,7 +78,7 @@ const Employee = () => {
 const Emp = ({ first_name, last_name, key, id }) => {
 
   return (
-<Link to="/teams" state={{id:{id}}} style={{textDecoration: 'none'}}>
+<Link to="/feedbackhistory" state={{id:{id}}} style={{textDecoration: 'none'}}>
     <Card sx={{
 
         p: 20,
