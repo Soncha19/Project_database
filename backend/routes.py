@@ -59,3 +59,11 @@ def find_property_set():
 	property_set_id = args.get('property_set_id')
 	property_sets = Session.query(PropertySet).filter(PropertySet.id == property_set_id)
 	return json.dumps([i.to_dict() for i in property_sets])
+
+
+@app.route('/employee/', methods=['GET'])
+def find_employee():
+	args = request.args
+	employee_id = args.get('employee_id')
+	employee = Session.query(Employee).filter(Employee.id == employee_id)
+	return json.dumps([i.to_dict() for i in employee])
