@@ -1,26 +1,50 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { Card, Grid, } from "@mui/material";
 import Header from "./components/Header";
 import {Link} from "react-router-dom";
 import AddNewTeam from "./components/AddNewTeam";
 
 const Team = (props) => {
+    const [team, setTeam] = useState();
+
+    function GetTeams() {
+        useEffect(() => {
+            fetch('http://localhost:8080/team/findByCompany?company_id=1', {
+                'methods': 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(response => setTeam(response))
+                .catch(error => console.log(error))
+        }, [])
+    }
+
+    GetTeams();
+
     return (
 <>
         <Header/>
       <Grid  container spacing={0}>
-        {props.teams.map((data, key) => {
-          return (
-            <div key={data.id}>
-              <Teamsd
-                key={data.id}
-                name={data.name}
-                tag={data.tag}
-              />
-            </div>
-          );
-        })}
+          {props.teams.map((data, key) => {
+              return (
+                  <div key={data.id}>
+                      <Teamsd
+                          key={data.id}
+                          name={data.name}
+                          tag={data.tag}
+                      />
+                  </div>
+              );
+          })}
 
+          {
+              team?.map((item, index) =>
+
+              <Teamsd id={item?.id} key={item?.id} name={item?.name} tag={item?.tag} />
+          )
+          }
           <Card variant="outlined" sx={{
 
         p: 20,
@@ -46,10 +70,9 @@ const Team = (props) => {
     );
 
 };
-const Teamsd = ({ name, tag, key }) => {
-
+const Teamsd = ({ name, tag, key, id }) => {
   return (
-<Link to="/employees" state={{id:{key}}} style={{textDecoration: 'none'}}>
+<Link to="/employees" state={{id: {id} }} style={{textDecoration: 'none'}}>
     <Card sx={{
 
         p: 20,
@@ -61,6 +84,7 @@ const Teamsd = ({ name, tag, key }) => {
 
 
         <Grid >
+
           <Grid item xs={0}>
             <h5>{name}</h5>
           </Grid>

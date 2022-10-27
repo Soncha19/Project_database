@@ -1,9 +1,10 @@
 from flask import request, Flask
 from models import *
+from flask_cors import CORS
 import json
 
 app = Flask(__name__)
-
+CORS(app)
 
 @app.route('/team/findByCompany', methods=['GET'])
 def find_team_by_company():
