@@ -115,6 +115,17 @@ class FeedbackHistory(Base):
 	property_set = relationship(PropertySet, backref='feedback_history', lazy='joined')
 
 
+class FeedbackHistorySchema(SQLAlchemyAutoSchema):
+	class Meta:
+		model = FeedbackHistory
+		include_relationships = False
+		load_instance = True
+		include_fk = True
+
+	employee_id = fields.Integer()
+	property_set_id = fields.Integer()
+
+
 class Feedback(Base):
 	__tablename__ = 'feedback'
 
