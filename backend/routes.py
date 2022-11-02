@@ -1,9 +1,10 @@
 from flask import request, Flask
 from models import *
+from flask_cors import CORS
 import json
 
 app = Flask(__name__)
-
+CORS(app)
 
 @app.route('/propertySet', methods=['POST'])
 def new_property_set():
@@ -276,3 +277,4 @@ def find_question_by_property_set_id():
 	questions = session.query(Question).filter(Question.property_set_id == property_set_id)
 	question_schema = AnswerSchema()
 	return json.dumps([question_schema.dump(i) for i in questions])
+
