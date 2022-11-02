@@ -2,12 +2,15 @@ from uuid import UUID
 from sqlalchemy import *
 from sqlalchemy.orm import sessionmaker, relationship, declarative_base, scoped_session
 from sqlalchemy_serializer import SerializerMixin
+from marshmallow import Schema, fields, validates, ValidationError
+from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
 engine = create_engine('mysql+pymysql://sql11529451:gBwQQdWTri@sql11.freemysqlhosting.net:3306/sql11529451')
 SessionFactory = sessionmaker(bind=engine)
 Session = scoped_session(SessionFactory)
 Base = declarative_base()
 Base.metadata.create_all(bind=engine)
+session = Session()
 
 
 class CustomSerializerMixin(SerializerMixin):
@@ -25,10 +28,8 @@ class Company(Base, CustomSerializerMixin):
 	name = Column('name', String(45))
 
 
-class Team(Base, CustomSerializerMixin):
+class Team(Base):
 	__tablename__ = 'team'
-
-	serialize_only = ('id', 'tag', 'name', 'company_id')
 
 	id = Column('id', Integer, primary_key=True, autoincrement=True)
 	tag = Column('tag', String(45))
@@ -37,10 +38,19 @@ class Team(Base, CustomSerializerMixin):
 	company = relationship(Company, backref='team', lazy='joined')
 
 
+class TeamSchema(SQLAlchemyAutoSchema):
+	class Meta:
+		model = Team
+		# include_relationships = True
+		load_instance = True
+		include_fk = True
+
+
 class Employee(Base, CustomSerializerMixin):
 	__tablename__ = 'employee'
 
-	serialize_only = {'id', 'first_name', 'last_name', 'email', 'company_id', 'team_id', 'is_owner', 'password', 'phone', 'date_of_birth', 'role'}
+	serialize_only = {'id', 'first_name', 'last_name', 'email', 'company_id', 'team_id', 'is_owner', 'password',
+					  'phone', 'date_of_birth', 'role'}
 
 	id = Column('id', Integer, primary_key=True, autoincrement=True)
 	first_name = Column('first_name', String(15), nullable=False)
@@ -90,6 +100,17 @@ class FeedbackHistory(Base, CustomSerializerMixin):
 	employee = relationship(Employee, backref='feedback_history', lazy='joined')
 	property_set_id = Column('property_set_id', Integer, ForeignKey(PropertySet.id))
 	property_set = relationship(PropertySet, backref='feedback_history', lazy='joined')
+
+
+class FeedbackHistorySchema(SQLAlchemyAutoSchema):
+	class Meta:
+		model = FeedbackHistory
+		include_relationships = False
+		load_instance = True
+		include_fk = True
+
+	employee_id = fields.Integer()
+	property_set_id = fields.Integer()
 
 
 class Feedback(Base, CustomSerializerMixin):
