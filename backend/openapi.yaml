@@ -36,7 +36,7 @@ paths:
             application/xml:
               schema:
                 $ref: '#/components/schemas/PropertySet'
-  /propertySet/{id}:
+  /propertySet/:
     get:
       tags:
         - property set
@@ -44,7 +44,7 @@ paths:
       operationId: getPropertySetById
       parameters:
         - name: id
-          in: path
+          in: query
           required: true
           schema:
             type: string
@@ -62,10 +62,10 @@ paths:
       tags:
         - property set
       summary: Delete property set by id
-      operationId: вудуеуPropertySetById
+      operationId: deletePropertySetById
       parameters:
         - name: id
-          in: path
+          in: query
           required: true
           schema:
             type: string
@@ -79,7 +79,7 @@ paths:
             application/xml:
               schema:
                 $ref: '#/components/schemas/PropertySet'
-  /propertySet/all:
+  /propertySets/:
     get:
       tags:
         - property set
@@ -170,7 +170,7 @@ paths:
             application/xml:
               schema:
                 $ref: '#/components/schemas/PropertySet'
-  /feedbacks/{employee_id}:
+  /feedbacks/:
     get:
       tags:
         - feedback
@@ -178,7 +178,7 @@ paths:
       operationId: getFeedbackByEmployee_id
       parameters:
         - name: employee_id
-          in: path
+          in: query
           required: true
           schema:
             type: string
@@ -895,33 +895,7 @@ paths:
         '400':
           description: Empty fields
         '401':
-          description: Username or email already taken   
-    delete:
-      tags:
-        - answer
-      summary: Delete answer
-      operationId: deleteQuestionByFeedback_id
-      parameters:
-        - name: feedback_id
-          in: query
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Answer'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/Answer'
-        '400':
-          description: Empty fields
-        '401':
-          description: Username or email already taken      
-        
+          description: Username or email already taken
 components:
   schemas:
     Company:
