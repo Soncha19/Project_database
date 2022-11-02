@@ -1,33 +1,25 @@
-import Team from "./Team";
-import Profile from "./Profile";
-import Start from "./Start";
+import Team from "./components/Team";
+import Profile from "./components/Profile";
+import Start from "./components/Start";
 import { Route, Routes} from "react-router-dom";
-import Employee from "./Employee";
+import Employee from "./components/Employee";
 import {useEffect, useState} from "react";
 import {FeedbackHistory} from "./components/FeedbackHistory";
 import {FeedbackView} from "./components/FeedbackView";
 import {NewFeedBack} from "./components/NewFeedBack";
+import AddPropertySetToEmployee from "./components/AddPropertySetToEmployee";
+import EmployeesOfTheCompany from "./components/EmployeesOfTheCompany";
 
 function App() {
-    const [teams, setTeams] = useState([]);
-    useEffect(()=>{
-    fetch('/teams',{
-      'methods':'GET',
-      headers : {
-        'Content-Type':'application/json'
-      }
-    })
-    .then(response => response.json())
-    .then(response => setTeams(response))
-    .catch(error => console.log(error))
-  },[])
     return (
         <>
             <Routes>
-                <Route path="/teams" element={<Team teams={teams}/>}/>
+                <Route path="/teams" element={<Team/>}/>
                 <Route path="/employees" element={<Employee/>}/>
                 <Route path="/profile" element={<Profile/>}/>
                 <Route path="/sign" element={<Start/>}/>
+                <Route path="/addpropertysettoemployee" element={<AddPropertySetToEmployee/>}/>
+                <Route path="/employeesofthecompany" element={<EmployeesOfTheCompany/>}/>
                 <Route path="/feedbackhistory" element={<FeedbackHistory/>}/>
                 <Route path="/feedbackview" element={<FeedbackView/>}/>
                 <Route path="/newfeedback" element={<NewFeedBack/>}/>
