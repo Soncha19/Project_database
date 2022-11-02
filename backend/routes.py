@@ -26,8 +26,9 @@ def find_property_set():
 	property_set_schema = PropertySetSchema()
 	return property_set_schema.dump(property_set)
 
+
 # Needed delete feedback_history... redirect
-#@app.route('/propertySet/', methods=['DELETE'])
+# @app.route('/propertySet/', methods=['DELETE'])
 def delete_property_set():
 	args = request.args
 	property_set_id = args.get('property_set_id')
@@ -59,12 +60,12 @@ def new_feedback():
 
 
 @app.route('/feedback/', methods=['GET'])
-def find_feedback_by_employee_id():
+def find_feedback():
 	args = request.args
-	employee_id = args.get('employee_id')
-	feedbacks = session.query(Feedback).filter(Feedback.employee_id == employee_id)
+	feedback_id = args.get('feedback_id')
+	feedbacks = session.query(Feedback).filter(Feedback.id == feedback_id).first()
 	feedback_schema = FeedbackSchema()
-	return json.dumps([feedback_schema.dump(i) for i in feedbacks])
+	return feedback_schema.dump(feedbacks)
 
 
 @app.route('/feedback/', methods=['DELETE'])
@@ -77,13 +78,13 @@ def delete_feedback():
 	return "Feedback deleted"
 
 
-@app.route('/feedbacks/', methods=['GET'])
-def find_feedback():
+@app.route('/feedback/findByEmployee', methods=['GET'])
+def find_feedback_by_employee():
 	args = request.args
-	feedback_id = args.get('feedback_id')
-	feedback = session.query(Feedback).filter(Feedback.id == feedback_id).first()
+	employee_id = args.get('employee_id')
+	feedbacks = session.query(Feedback).filter(Feedback.employee_id == employee_id)
 	feedback_schema = FeedbackSchema()
-	return feedback_schema.dump(feedback)
+	return json.dumps([feedback_schema.dump(i) for i in feedbacks])
 
 
 @app.route('/employee/', methods=['POST'])
@@ -103,24 +104,28 @@ def new_employee():
 def find_employee():
 	args = request.args
 	employee_id = args.get('employee_id')
-	employee = Session.query(Employee).filter(Employee.id == employee_id)
-	return json.dumps([i.to_dict() for i in employee])
+	employee = session.query(Employee).filter(Employee.id == employee_id).first()
+	employee_schema = EmployeeSchema()
+	return employee_schema.dump(employee)
 
 
 @app.route('/employee/findByCompany', methods=['GET'])
 def find_employee_by_company():
 	args = request.args
 	company_id = args.get('company_id')
-	employees = Session.query(Employee).filter(Employee.company_id == company_id)
-	return json.dumps([i.to_dict() for i in employees])
+	employees = session.query(Employee).filter(Employee.company_id == company_id)
+	employee_schema = EmployeeSchema()
+	return json.dumps([employee_schema.dump(i) for i in employees])
 
 
 @app.route('/employee/findByTeam', methods=['GET'])
 def find_employee_by_team():
 	args = request.args
 	team_id = args.get('team_id')
-	employees = Session.query(Employee).filter(Employee.team_id == team_id)
-	return json.dumps([i.to_dict() for i in employees])
+	employees = session.query(Employee).filter(Employee.team_id == team_id)
+	employee_schema = EmployeeSchema()
+	return json.dumps([employee_schema.dump(i) for i in employees])
+
 
 @app.route('/company/', methods=['POST'])
 def new_company():
@@ -156,12 +161,77 @@ def delete_company():
 	return "Company deleted"
 
 
+@app.route('/feedbackHistory/', methods=['POST'])
+def new_feedback_history():
+	args = request.get_json()
+	try:
+		feedbackHistory_schema = FeedbackHistorySchema()
+		feedback_history = feedbackHistory_schema.load(args, session=session)
+		session.add(feedback_history)
+		session.commit()
+		return feedbackHistory_schema.dump(feedback_history)
+	except ValidationError as err:
+		return str(err)
+
+
+@app.route('/feedbackHistory/id', methods=['GET'])
+def find_feedback_history():
+	args = request.args
+	feedbackHistory_id = args.get('feedbackHistory_id')
+	history = session.query(FeedbackHistory).filter(FeedbackHistory.employee_id == feedbackHistory_id).first()
+	feedbackHistory_schema = FeedbackHistorySchema()
+	return feedbackHistory_schema.dump(history)
+
+
+@app.route('/feedbackHistory/delete', methods=['DELETE'])
+def delete_feedback_history():
+	args = request.args
+	feedbackHistory_id = args.get('feedbackHistory_id')
+	# write redirect
+	# session.query(Feedback).filter(Feedback.employee_id == feedbackHistory_id).delete()
+	session.query(FeedbackHistory).filter(FeedbackHistory.employee_id == feedbackHistory_id).delete()
+	session.commit()
+	return "FeedbackHistory deleted"
+
+
+@app.route('/team', methods=['POST'])
+def new_team():
+	args = request.get_json()
+	try:
+		team_schema = TeamSchema()
+		team = team_schema.load(args, session=session)
+		session.add(team)
+		session.commit()
+		return team_schema.dump(team)
+	except ValidationError as err:
+		return str(err)
+
+
 @app.route('/team/findByCompany', methods=['GET'])
 def find_team_by_company():
 	args = request.args
 	company_id = args.get('company_id')
-	teams = Session.query(Team).filter(Team.company_id == company_id)
-	return json.dumps([i.to_dict() for i in teams])
+	teams = session.query(Team).filter(Team.company_id == company_id)
+	team_schema = TeamSchema()
+	return json.dumps([team_schema.dump(i) for i in teams])
+
+
+@app.route('/team/', methods=['GET'])
+def find_team():
+	args = request.args
+	team_id = args.get('team_id')
+	team = session.query(Team).filter(Team.id == team_id).first()
+	company_schema = CompanySchema()
+	return company_schema.dump(team)
+
+
+@app.route('/team/', methods=['DELETE'])
+def delete_team():
+	args = request.args
+	team_id = args.get('team_id')
+	session.query(Team).filter(Team.id == team_id).delete()
+	session.commit()
+	return "Company deleted"
 
 
 @app.route('/answer', methods=['POST'])
@@ -206,4 +276,3 @@ def find_question_by_property_set_id():
 	questions = session.query(Question).filter(Question.property_set_id == property_set_id)
 	question_schema = AnswerSchema()
 	return json.dumps([question_schema.dump(i) for i in questions])
-
