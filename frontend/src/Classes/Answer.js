@@ -1,10 +1,10 @@
 export class Answer
 {
-    constructor(id, number, text, idFeedback)
+    constructor(id, number, text, feedback_id)
     {
         this.id = id;
         this.number = number;
         this.text = text;
-        this.idFeedback = idFeedback;
+        this.feedback_id = feedback_id;
     }
 }
