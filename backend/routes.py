@@ -109,6 +109,7 @@ def find_employee():
 	return employee_schema.dump(employee)
 
 
+
 @app.route('/employee/findByCompany', methods=['GET'])
 def find_employee_by_company():
 	args = request.args
@@ -276,3 +277,4 @@ def find_question_by_property_set_id():
 	questions = session.query(Question).filter(Question.property_set_id == property_set_id)
 	question_schema = AnswerSchema()
 	return json.dumps([question_schema.dump(i) for i in questions])
+
