@@ -35,7 +35,7 @@ employees = [
 		is_owner=False,
 		password="qwer",
 		phone="38010101010",
-		date_of_birth="2022-26-10",
+		date_of_birth="2022-11-02",
 		role=True
 	),
 	Employee(
@@ -126,28 +126,28 @@ session.add_all(feedbackHistories)
 session.commit()
 feedbacks = [
 	Feedback(
-		date_of_creation="2022-10-26",
-		note="Perfect Employee",
+		date_of_creation="2022-10-27",
+		note="Bohdan is a valuable worker",
 		employee_id=1
 	),
 	Feedback(
-		date_of_creation="2022-10-26",
-		note="Perfect Employee",
+		date_of_creation="2022-10-27",
+		note="Danylo is a valuable worker",
 		employee_id=2
 	),
 	Feedback(
-		date_of_creation="2022-10-26",
-		note="Perfect Employee",
+		date_of_creation="2022-10-27",
+		note="Olena is a valuable worker",
 		employee_id=3
 	),
 	Feedback(
-		date_of_creation="2022-10-26",
-		note="Perfect Employee",
+		date_of_creation="2022-10-27",
+		note="Sofiia is a valuable worker",
 		employee_id=4
 	),
 	Feedback(
-		date_of_creation="2022-10-26",
-		note="Perfect Employee",
+		date_of_creation="2022-10-27",
+		note="Andrii is a valuable worker",
 		employee_id=5
 	)
 ]
@@ -156,51 +156,22 @@ session.commit()
 answers = [
 	Answer(
 		number=1,
-		text="No noticeable progress",
-		feedback_id=1
+		text="Steady progress in most areas",
+		feedback_id=5
 	),
 	Answer(
 		number=2,
-		text="Steady progress in most areas",
-		feedback_id=1
+		text="Significant progress in most areas",
+		feedback_id=5
 	),
 	Answer(
 		number=3,
-		text="Significant progress in most areas",
-		feedback_id=1
+		text="No noticeable progress",
+		feedback_id=5
 	),
 	Answer(
 		number=1,
-		text="No noticeable progress",
-		feedback_id=2
-	),
-	Answer(
-		number=2,
-		text="Steady progress in most areas",
-		feedback_id=2
-	),
-	Answer(
-		number=3,
 		text="Significant progress in most areas",
-		feedback_id=2
-	),
-	Answer(
-		number=1,
-		text="No noticeable progress",
-		feedback_id=3
-	),
-	Answer(
-		number=2,
-		text="Steady progress in most areas",
-		feedback_id=3
-	),
-	Answer(
-		number=3,
-		text="Significant progress in most areas",
-		feedback_id=3
-	), Answer(
-		number=1,
-		text="No noticeable progress",
 		feedback_id=4
 	),
 	Answer(
@@ -210,23 +181,53 @@ answers = [
 	),
 	Answer(
 		number=3,
-		text="Significant progress in most areas",
+		text="No noticeable progress",
 		feedback_id=4
 	),
 	Answer(
 		number=1,
 		text="No noticeable progress",
-		feedback_id=5
+		feedback_id=3
 	),
 	Answer(
 		number=2,
+		text="Significant progress in most areas",
+		feedback_id=3
+	),
+	Answer(
+		number=3,
 		text="Steady progress in most areas",
-		feedback_id=5
+		feedback_id=3
+	),
+	Answer(
+		number=1,
+		text="Steady progress in most areas",
+		feedback_id=2
+	),
+	Answer(
+		number=2,
+		text="No noticeable progress",
+		feedback_id=2
+	),
+	Answer(
+		number=3,
+		text="No noticeable progress",
+		feedback_id=2
+	),
+	Answer(
+		number=1,
+		text="Steady progress in most areas",
+		feedback_id=1
+	),
+	Answer(
+		number=2,
+		text="Significant progress in most areas",
+		feedback_id=1
 	),
 	Answer(
 		number=3,
 		text="Significant progress in most areas",
-		feedback_id=5
+		feedback_id=1
 	)
 ]
 session.add_all(answers)
