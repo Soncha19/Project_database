@@ -39,7 +39,7 @@ class Team(Base):
 class TeamSchema(SQLAlchemyAutoSchema):
 	class Meta:
 		model = Team
-		include_relationships = True
+		include_relationships = False
 		load_instance = True
 		include_fk = True
 
@@ -83,7 +83,7 @@ class PropertySet(Base):
 class PropertySetSchema(SQLAlchemyAutoSchema):
 	class Meta:
 		model = PropertySet
-		include_relationships = True
+		include_relationships = False
 		load_instance = True
 		include_fk = True
 
@@ -101,7 +101,7 @@ class Question(Base):
 class QuestionSchema(SQLAlchemyAutoSchema):
 	class Meta:
 		model = Question
-		include_relationships = True
+		include_relationships = False
 		load_instance = True
 		include_fk = True
 
