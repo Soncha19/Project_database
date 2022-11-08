@@ -127,6 +127,26 @@ def find_employee_by_team():
 	return json.dumps([employee_schema.dump(i) for i in employees])
 
 
+# @app.route('/user/', methods=['PUT'])
+# def update_user():
+# 	args = request.get_json()
+# 	if args.pop('id', False):
+# 		return "You can't input id", 400
+# 	arg = request.args
+# 	user_id = arg.get('user_id')
+# 	if session.query(User).filter(User.id == user_id).count() == 0:
+# 		return "User not found", 404
+# 	user_schema = UserSchema()
+# 	try:
+# 		user = user_schema.load(args, session=session)
+# 		session.query(User).filter(user.id == user_id).update(args)
+# 		user = user_schema.dump(session.query(User).filter(User.id == user_id).first())
+# 		session.commit()
+# 		return user, 200
+# 	except ValidationError as err:
+# 		return str(err), 400
+
+
 @app.route('/company/', methods=['POST'])
 def new_company():
 	args = request.get_json()
@@ -276,3 +296,82 @@ def find_question_by_property_set_id():
 	questions = session.query(Question).filter(Question.property_set_id == property_set_id)
 	question_schema = AnswerSchema()
 	return json.dumps([question_schema.dump(i) for i in questions])
+
+
+@app.route('/allFeedbackHistory/', methods=['GET'])
+def page_feedback_history():
+	args = request.args
+	employee_id = args.get('employee_id')
+
+	feedback_history = session.query(FeedbackHistory).filter(FeedbackHistory.employee_id == employee_id).first()
+	feedbackHistory_schema = FeedbackHistorySchema()
+
+	employee = session.query(Employee).filter(Employee.id == employee_id).first()
+	employee_schema = EmployeeSchema()
+
+	feedbacks = session.query(Feedback).filter(Feedback.employee_id == employee_id)
+	feedback_schema = FeedbackSchema()
+
+	answers = []
+	for i in feedbacks:
+		[answers.append(j) for j in session.query(Answer).filter(Answer.feedback_id == i.id)]
+	answer_schema = AnswerSchema()
+
+	property_set = session.query(PropertySet).filter(PropertySet.id == feedback_history.property_set_id).first()
+	property_set_schema = PropertySetSchema()
+
+	questions = session.query(Question).filter(Question.property_set_id == feedback_history.property_set_id)
+	question_schema = AnswerSchema()
+
+	res = {
+		'feedback_history': feedbackHistory_schema.dump(feedback_history),
+		'employee': employee_schema.dump(employee),
+		'feedbacks:': [feedback_schema.dump(i) for i in feedbacks],
+		'answers': [answer_schema.dump(i) for i in answers],
+		'property_set': property_set_schema.dump(property_set),
+		'questions': [question_schema.dump(i) for i in questions]
+	}
+	return res
+
+
+@app.route('/profile/', methods=['GET'])
+def page_profile():
+	args = request.args
+	employee_id = args.get('employee_id')
+	employee = session.query(Employee).filter(Employee.id == employee_id).first()
+	employee_schema = EmployeeSchema()
+
+	company = session.query(Company).filter(Company.id == employee.company_id).first()
+	company_schema = CompanySchema()
+
+	res = {
+		'employee': employee_schema.dump(employee),
+		'company': company_schema.dump(company)
+	}
+	return res
+
+
+@app.route('/allFeedback', methods=['POST'])
+def page_new_feedback():
+	args = request.get_json()
+	try:
+		feedback_schema = FeedbackSchema()
+		feedback = feedback_schema.load(args['feedback'], session=session)
+		session.add(feedback)
+
+		answer_schema = AnswerSchema()
+		answers = []
+		for i in args['answers']:
+			answers.append(answer_schema.load(i, session=session))
+		for i in answers:
+			session.add(i)
+
+		session.commit()
+
+		res = {
+			'feedback': feedback_schema.dump(feedback),
+			'answers': [answer_schema.dump(i) for i in answers]
+		}
+		return res
+	except ValidationError as err:
+		return str(err)

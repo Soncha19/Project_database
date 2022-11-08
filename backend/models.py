@@ -139,7 +139,7 @@ class Feedback(Base):
 class FeedbackSchema(SQLAlchemyAutoSchema):
 	class Meta:
 		model = Feedback
-		include_relationships = True
+		include_relationships = False
 		load_instance = True
 		include_fk = True
 
@@ -157,7 +157,7 @@ class Answer(Base):
 class AnswerSchema(SQLAlchemyAutoSchema):
 	class Meta:
 		model = Answer
-		include_relationships = True
+		include_relationships = False
 		load_instance = True
 		include_fk = True
 
