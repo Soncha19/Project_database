@@ -326,7 +326,7 @@ def page_feedback_history():
 	res = {
 		'feedback_history': feedbackHistory_schema.dump(feedback_history),
 		'employee': employee_schema.dump(employee),
-		'feedbacks:': [feedback_schema.dump(i) for i in feedbacks],
+		'feedbacks': [feedback_schema.dump(i) for i in feedbacks],
 		'answers': [answer_schema.dump(i) for i in answers],
 		'property_set': property_set_schema.dump(property_set),
 		'questions': [question_schema.dump(i) for i in questions]
