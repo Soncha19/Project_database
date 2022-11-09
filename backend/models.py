@@ -4,11 +4,10 @@ from marshmallow import Schema, fields, validate, ValidationError
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
 engine = create_engine('mysql+pymysql://root:feffKPklJozigUiaF4hy@containers-us-west-29.railway.app:6579/railway')
-SessionFactory = sessionmaker(bind=engine)
-Session = scoped_session(SessionFactory)
 Base = declarative_base()
 Base.metadata.create_all(bind=engine)
-session = Session()
+SessionFactory = sessionmaker(bind=engine)
+Session = scoped_session(SessionFactory)
 
 
 class Company(Base):
