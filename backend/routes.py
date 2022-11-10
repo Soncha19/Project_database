@@ -13,10 +13,12 @@ def new_property_set():
 		property_set = property_set_schema.load(args, session=session)
 		session.add(property_set)
 		session.commit()
+		res = property_set_schema.dump(property_set)
 		session.close()
-		return property_set_schema.dump(property_set)
+		return res, 200
 	except ValidationError as err:
-		return str(err)
+		session.close()
+		return str(err), 400
 
 
 @application.route('/propertySet/', methods=['GET'])
@@ -26,22 +28,9 @@ def find_property_set():
 	property_set_id = args.get('property_set_id')
 	property_set = session.query(PropertySet).filter(PropertySet.id == property_set_id).first()
 	property_set_schema = PropertySetSchema()
+	res = property_set_schema.dump(property_set)
 	session.close()
-	return property_set_schema.dump(property_set)
-
-
-# Needed delete feedback_history... redirect
-@application.route('/propertySet/', methods=['DELETE'])
-def delete_property_set():
-	session = Session()
-	args = request.args
-	property_set_id = args.get('property_set_id')
-	session.query(Question).filter(Question.property_set_id == property_set_id).delete()
-	session.query(FeedbackHistory).filter(FeedbackHistory.property_set_id == property_set_id).delete()
-	session.query(PropertySet).filter(PropertySet.id == property_set_id).delete()
-	session.commit()
-	session.close()
-	return "Feedback deleted"
+	return res, 200
 
 
 @application.route('/propertySets/', methods=['GET'])
@@ -49,8 +38,9 @@ def find_all_property_set():
 	session = Session()
 	property_sets = session.query(PropertySet)
 	property_set_schema = PropertySetSchema()
+	res = json.dumps([property_set_schema.dump(i) for i in property_sets])
 	session.close()
-	return json.dumps([property_set_schema.dump(i) for i in property_sets])
+	return res, 200
 
 
 @application.route('/feedback', methods=['POST'])
@@ -62,11 +52,12 @@ def new_feedback():
 		feedback = feedback_schema.load(args, session=session)
 		session.add(feedback)
 		session.commit()
+		res = feedback_schema.dump(feedback)
 		session.close()
-		return feedback_schema.dump(feedback)
+		return res, 200
 	except ValidationError as err:
 		session.close()
-		return str(err)
+		return str(err), 400
 
 
 @application.route('/feedback/', methods=['GET'])
@@ -76,8 +67,8 @@ def find_feedback():
 	feedback_id = args.get('feedback_id')
 	feedbacks = session.query(Feedback).filter(Feedback.id == feedback_id).first()
 	feedback_schema = FeedbackSchema()
-	session.close()
-	return feedback_schema.dump(feedbacks)
+	res = feedback_schema.dump(feedbacks)
+	return res, 200
 
 
 @application.route('/feedback/', methods=['DELETE'])
@@ -85,11 +76,15 @@ def delete_feedback():
 	session = Session()
 	args = request.args
 	feedback_id = args.get('feedback_id')
+	if session.query(Answer).filter(Answer.feedback_id == feedback_id).count() == 0:
+		session.close()
+		return "Such feedback doesn't exist", 404
+	feedback = session.query(Answer).filter(Answer.feedback_id == feedback_id)
 	session.query(Answer).filter(Answer.feedback_id == feedback_id).delete()
 	session.query(Feedback).filter(Feedback.id == feedback_id).delete()
 	session.commit()
 	session.close()
-	return "Feedback deleted"
+	return feedback, 200
 
 
 @application.route('/feedback/findByEmployee', methods=['GET'])
@@ -99,8 +94,9 @@ def find_feedback_by_employee():
 	employee_id = args.get('employee_id')
 	feedbacks = session.query(Feedback).filter(Feedback.employee_id == employee_id)
 	feedback_schema = FeedbackSchema()
+	res = json.dumps([feedback_schema.dump(i) for i in feedbacks])
 	session.close()
-	return json.dumps([feedback_schema.dump(i) for i in feedbacks])
+	return res, 200
 
 
 @application.route('/employee/', methods=['POST'])
@@ -112,11 +108,12 @@ def new_employee():
 		employee = employee_schema.load(args, session=session)
 		session.add(employee)
 		session.commit()
+		res = employee_schema.dump(employee)
 		session.close()
-		return employee_schema.dump(employee)
+		return res, 200
 	except ValidationError as err:
 		session.close()
-		return str(err)
+		return str(err), 400
 
 
 @application.route('/employee/', methods=['GET'])
@@ -126,8 +123,9 @@ def find_employee():
 	employee_id = args.get('employee_id')
 	employee = session.query(Employee).filter(Employee.id == employee_id).first()
 	employee_schema = EmployeeSchema()
+	res = employee_schema.dump(employee)
 	session.close()
-	return employee_schema.dump(employee)
+	return res, 200
 
 
 @application.route('/employee/findByCompany', methods=['GET'])
@@ -137,8 +135,9 @@ def find_employee_by_company():
 	company_id = args.get('company_id')
 	employees = session.query(Employee).filter(Employee.company_id == company_id)
 	employee_schema = EmployeeSchema()
+	res = json.dumps([employee_schema.dump(i) for i in employees])
 	session.close()
-	return json.dumps([employee_schema.dump(i) for i in employees])
+	return res, 200
 
 
 @application.route('/employee/findByTeam', methods=['GET'])
@@ -148,8 +147,9 @@ def find_employee_by_team():
 	team_id = args.get('team_id')
 	employees = session.query(Employee).filter(Employee.team_id == team_id)
 	employee_schema = EmployeeSchema()
+	res = json.dumps([employee_schema.dump(i) for i in employees])
 	session.close()
-	return json.dumps([employee_schema.dump(i) for i in employees])
+	return res, 200
 
 
 @application.route('/user/', methods=['PUT'])
@@ -158,14 +158,15 @@ def update_user():
 	args = request.get_json()
 	arg = request.args
 	employee_id = arg.get('employee_id')
-	user_schema = EmployeeSchema()
+	employee_schema = EmployeeSchema()
 	try:
-		user = user_schema.load(args, session=session)
-		session.query(Employee).filter(user.id == employee_id).update(args)
-		user = user_schema.dump(session.query(Employee).filter(Employee.id == employee_id).first())
+		employee = employee_schema.load(args, session=session)
+		session.query(Employee).filter(Employee.id == employee_id).update(args)
 		session.commit()
-		return user, 200
+		employee = employee_schema.dump(session.query(Employee).filter(Employee.id == employee_id).first())
+		session.commit()
 		session.close()
+		return employee, 200
 	except ValidationError as err:
 		session.close()
 		return str(err), 400
@@ -180,11 +181,12 @@ def new_company():
 		company = company_schema.load(args, session=session)
 		session.add(company)
 		session.commit()
+		res = company_schema.dump(company)
 		session.close()
-		return company_schema.dump(company)
+		return res, 200
 	except ValidationError as err:
 		session.close()
-		return str(err)
+		return str(err), 400
 
 
 @application.route('/company/', methods=['GET'])
@@ -194,22 +196,43 @@ def find_company():
 	company_id = args.get('company_id')
 	company = session.query(Company).filter(Company.id == company_id).first()
 	company_schema = CompanySchema()
+	res = company_schema.dump(company)
 	session.close()
-	return company_schema.dump(company)
+	return res, 200
 
 
-@application.route('/company/', methods=['DELETE'])
-def delete_company():
+@application.route('/company/', methods=['PUT'])
+def update_company():
 	session = Session()
-	args = request.args
-	company_id = args.get('company_id')
+	args = request.get_json()
+	arg = request.args
+	company_id = arg.get('company_id')
+	company_schema = CompanySchema()
+	try:
+		company = company_schema.load(args, session=session)
+		session.query(Company).filter(Company.id == company_id).update(args)
+		session.commit()
+		company = company_schema.dump(session.query(Company).filter(Company.id == company_id).first())
+		session.commit()
+		session.close()
+		return company, 200
+	except ValidationError as err:
+		session.close()
+		return str(err), 400
 
-	"""redirect to employee, feedback history, feedback, answer needed"""
 
-	session.query(Company).filter(Company.id == company_id).delete()
-	session.commit()
-	session.close()
-	return "Company deleted"
+# @application.route('/company/', methods=['DELETE'])
+# def delete_company():
+# 	session = Session()
+# 	args = request.args
+# 	company_id = args.get('company_id')
+#
+# 	"""redirect to employee, feedback history, feedback, answer needed"""
+#
+# 	session.query(Company).filter(Company.id == company_id).delete()
+# 	session.commit()
+# 	session.close()
+# 	return "Company deleted"
 
 
 @application.route('/feedbackHistory/', methods=['POST'])
@@ -221,11 +244,12 @@ def new_feedback_history():
 		feedback_history = feedbackHistory_schema.load(args, session=session)
 		session.add(feedback_history)
 		session.commit()
+		res = feedbackHistory_schema.dump(feedback_history)
 		session.close()
-		return feedbackHistory_schema.dump(feedback_history)
+		return res, 200
 	except ValidationError as err:
 		session.close()
-		return str(err)
+		return str(err), 400
 
 
 @application.route('/feedbackHistory/id', methods=['GET'])
@@ -235,21 +259,21 @@ def find_feedback_history():
 	feedbackHistory_id = args.get('feedbackHistory_id')
 	history = session.query(FeedbackHistory).filter(FeedbackHistory.employee_id == feedbackHistory_id).first()
 	feedbackHistory_schema = FeedbackHistorySchema()
+	res = feedbackHistory_schema.dump(history)
 	session.close()
-	return feedbackHistory_schema.dump(history)
+	return res, 200
 
 
-@application.route('/feedbackHistory/delete', methods=['DELETE'])
-def delete_feedback_history():
-	session = Session()
-	args = request.args
-	feedbackHistory_id = args.get('feedbackHistory_id')
-	# write redirect
-	# session.query(Feedback).filter(Feedback.employee_id == feedbackHistory_id).delete()
-	session.query(FeedbackHistory).filter(FeedbackHistory.employee_id == feedbackHistory_id).delete()
-	session.commit()
-	session.close()
-	return "FeedbackHistory deleted"
+# @application.route('/feedbackHistory/delete', methods=['DELETE'])
+# def delete_feedback_history():
+# 	session = Session()
+# 	args = request.args
+# 	feedbackHistory_id = args.get('feedbackHistory_id')
+# 	session.query(Feedback).filter(Feedback.employee_id == feedbackHistory_id).delete()
+# 	session.query(FeedbackHistory).filter(FeedbackHistory.employee_id == feedbackHistory_id).delete()
+# 	session.commit()
+# 	session.close()
+# 	return "FeedbackHistory deleted"
 
 
 @application.route('/team', methods=['POST'])
@@ -261,11 +285,12 @@ def new_team():
 		team = team_schema.load(args, session=session)
 		session.add(team)
 		session.commit()
+		res = team_schema.dump(team)
 		session.close()
-		return team_schema.dump(team)
+		return res, 200
 	except ValidationError as err:
 		session.close()
-		return str(err)
+		return str(err), 400
 
 
 @application.route('/team/findByCompany', methods=['GET'])
@@ -275,8 +300,9 @@ def find_team_by_company():
 	company_id = args.get('company_id')
 	teams = session.query(Team).filter(Team.company_id == company_id)
 	team_schema = TeamSchema()
+	res = json.dumps([team_schema.dump(i) for i in teams])
 	session.close()
-	return json.dumps([team_schema.dump(i) for i in teams])
+	return res, 200
 
 
 @application.route('/team/', methods=['GET'])
@@ -286,19 +312,20 @@ def find_team():
 	team_id = args.get('team_id')
 	team = session.query(Team).filter(Team.id == team_id).first()
 	company_schema = CompanySchema()
+	res = company_schema.dump(team)
 	session.close()
-	return company_schema.dump(team)
+	return res, 200
 
 
-@application.route('/team/', methods=['DELETE'])
-def delete_team():
-	session = Session()
-	args = request.args
-	team_id = args.get('team_id')
-	session.query(Team).filter(Team.id == team_id).delete()
-	session.commit()
-	session.close()
-	return "Company deleted"
+# @application.route('/team/', methods=['DELETE'])
+# def delete_team():
+# 	session = Session()
+# 	args = request.args
+# 	team_id = args.get('team_id')
+# 	session.query(Team).filter(Team.id == team_id).delete()
+# 	session.commit()
+# 	session.close()
+# 	return "Company deleted"
 
 
 @application.route('/answer', methods=['POST'])
@@ -310,11 +337,12 @@ def new_answer():
 		answer = answer_schema.load(args, session=session)
 		session.add(answer)
 		session.commit()
+		res = answer_schema.dump(answer)
 		session.close()
-		return answer_schema.dump(answer)
+		return res, 200
 	except ValidationError as err:
 		session.close()
-		return str(err)
+		return str(err), 400
 
 
 @application.route('/answer/', methods=['GET'])
@@ -324,8 +352,9 @@ def find_answer_by_feedback_id():
 	feedback_id = args.get('feedback_id')
 	answers = session.query(Answer).filter(Answer.feedback_id == feedback_id)
 	answer_schema = AnswerSchema()
+	res = json.dumps([answer_schema.dump(i) for i in answers])
 	session.close()
-	return json.dumps([answer_schema.dump(i) for i in answers])
+	return res, 200
 
 
 @application.route('/question', methods=['POST'])
@@ -337,11 +366,12 @@ def new_question():
 		question = question_schema.load(args, session=session)
 		session.add(question)
 		session.commit()
+		res = question_schema.dump(question)
 		session.close()
-		return question_schema.dump(question)
+		return res, 200
 	except ValidationError as err:
 		session.close()
-		return str(err)
+		return str(err), 400
 
 
 @application.route('/question/', methods=['GET'])
@@ -351,8 +381,9 @@ def find_question_by_property_set_id():
 	property_set_id = args.get('property_set_id')
 	questions = session.query(Question).filter(Question.property_set_id == property_set_id)
 	question_schema = AnswerSchema()
+	res = json.dumps([question_schema.dump(i) for i in questions])
 	session.close()
-	return json.dumps([question_schema.dump(i) for i in questions])
+	return res, 200
 
 
 @application.route('/allFeedbackHistory/', methods=['GET'])
@@ -391,7 +422,7 @@ def page_feedback_history():
 		'questions': [question_schema.dump(i) for i in questions]
 	}
 	session.close()
-	return res
+	return res, 200
 
 
 @application.route('/profile/', methods=['GET'])
@@ -410,7 +441,7 @@ def page_profile():
 		'company': company_schema.dump(company)
 	}
 	session.close()
-	return res
+	return res, 200
 
 
 @application.route('/allFeedback', methods=['POST'])
@@ -437,10 +468,10 @@ def page_new_feedback():
 			'answers': [answer_schema.dump(i) for i in answers]
 		}
 		session.close()
-		return res
+		return res, 200
 	except ValidationError as err:
 		session.close()
-		return str(err)
+		return str(err), 400
 
 
 @application.route('/allPropertySet', methods=['POST'])
@@ -467,10 +498,10 @@ def page_new_property_set():
 			'questions': [question_schema.dump(i) for i in questions]
 		}
 		session.close()
-		return res
+		return res, 200
 	except ValidationError as err:
 		session.close()
-		return str(err)
+		return str(err), 400
 
 
 @application.route('/allPropertySet/', methods=['GET'])
@@ -489,4 +520,4 @@ def page_find_property_set():
 		'property_sets': [property_set_schema.dump(i) for i in property_sets]
 	}
 	session.close()
-	return res
+	return res, 200
