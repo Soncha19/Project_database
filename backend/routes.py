@@ -1,7 +1,14 @@
-from flask import current_app as application
+from flask import current_app as application, make_response
 from flask import request
 from models import *
+from flask_httpauth import HTTPBasicAuth
+from flask_jwt import current_identity
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from werkzeug.security import generate_password_hash, check_password_hash
 import json
+
+
+auth = HTTPBasicAuth()
 
 
 @application.route('/propertySet', methods=['POST'])
@@ -106,6 +113,7 @@ def new_employee():
 	try:
 		employee_schema = EmployeeSchema()
 		employee = employee_schema.load(args, session=session)
+		employee.password = generate_password_hash(employee.password)
 		session.add(employee)
 		session.commit()
 		res = employee_schema.dump(employee)
@@ -152,8 +160,8 @@ def find_employee_by_team():
 	return res, 200
 
 
-@application.route('/user/', methods=['PUT'])
-def update_user():
+@application.route('/employee/', methods=['PUT'])
+def update_employee():
 	session = Session()
 	args = request.get_json()
 	arg = request.args
@@ -161,8 +169,9 @@ def update_user():
 	employee_schema = EmployeeSchema()
 	try:
 		employee = employee_schema.load(args, session=session)
+		if 'password' in args.keys():
+			args['password'] = generate_password_hash(employee.password)
 		session.query(Employee).filter(Employee.id == employee_id).update(args)
-		session.commit()
 		employee = employee_schema.dump(session.query(Employee).filter(Employee.id == employee_id).first())
 		session.commit()
 		session.close()
@@ -209,7 +218,7 @@ def update_company():
 	company_id = arg.get('company_id')
 	company_schema = CompanySchema()
 	try:
-		company = company_schema.load(args, session=session)
+		company_schema.load(args, session=session)
 		session.query(Company).filter(Company.id == company_id).update(args)
 		session.commit()
 		company = company_schema.dump(session.query(Company).filter(Company.id == company_id).first())
@@ -505,8 +514,12 @@ def page_new_property_set():
 
 
 @application.route('/allPropertySet/', methods=['GET'])
+@jwt_required()
 def page_find_property_set():
 	session = Session()
+	current_identity_email = get_jwt_identity()
+	if session.query(Employee).filter(Employee.email == current_identity_email).count() != 1:
+		return "Access denied", 403
 	args = request.args
 	company_id = args.get('company_id')
 	employees = session.query(Employee).filter(Employee.company_id == company_id)
@@ -521,3 +534,20 @@ def page_find_property_set():
 	}
 	session.close()
 	return res, 200
+
+
+@application.route("/login", methods=["GET"])
+def login():
+	auth = request.authorization
+
+	if not auth or not auth.username or not auth.password:
+		return make_response('could not verify', 401, {'WWW.Authentication': 'Basic realm: "login required"'})
+
+	session = Session()
+	user = session.query(Employee).filter(Employee.email == auth.username).first()
+
+	if check_password_hash(user.password, auth.password):
+		access_token = create_access_token(identity=auth.username)
+		return json.dumps({'token': access_token})
+
+	return make_response('could not verify', 401, {'WWW.Authentication': 'Basic realm: "login required"'})

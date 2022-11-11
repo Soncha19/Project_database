@@ -1,6 +1,7 @@
 from models import *
 
 
+session = Session()
 
 companies = [
 	Company(name="The Boring Team")

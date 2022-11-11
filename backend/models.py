@@ -47,9 +47,9 @@ class Employee(Base):
 	__tablename__ = 'employee'
 
 	id = Column('id', Integer, primary_key=True, autoincrement=True)
-	first_name = Column('first_name', String(15), nullable=False)
-	last_name = Column('last_name', String(15), nullable=False)
-	email = Column('email', String(30), nullable=False)
+	first_name = Column('first_name', String(15))
+	last_name = Column('last_name', String(15))
+	email = Column('email', String(30))
 
 	company_id = Column('company_id', Integer, ForeignKey(Company.id))
 	company = relationship(Company, backref='employee', lazy='joined')
@@ -57,11 +57,17 @@ class Employee(Base):
 	team_id = Column('team_id', Integer, ForeignKey(Team.id))
 	team = relationship(Team, backref='employee', lazy='joined')
 
-	is_owner = Column('is_owner', Boolean, nullable=False)
-	password = Column('password', String(20), nullable=False)
-	phone = Column('phone', String(13), nullable=False)
-	date_of_birth = Column('date_of_birth', DATE, nullable=False)
-	role = Column('role', Boolean, nullable=False)
+	is_owner = Column('is_owner', Boolean)
+	password = Column('password', String(150))
+	phone = Column('phone', String(13))
+	date_of_birth = Column('date_of_birth', DATE)
+	role = Column('role', Boolean)
+
+
+def validate_email(email1):
+	session = Session()
+	if not (session.query(Employee).filter(Employee.email == email1).count() == 0):
+		raise ValidationError("Email exists")
 
 
 class EmployeeSchema(SQLAlchemyAutoSchema):
@@ -70,6 +76,8 @@ class EmployeeSchema(SQLAlchemyAutoSchema):
 		include_relationships = False
 		load_instance = True
 		include_fk = True
+
+	email = fields.Email(validate=validate_email)
 
 
 class PropertySet(Base):
