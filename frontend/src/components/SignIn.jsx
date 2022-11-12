@@ -32,17 +32,29 @@ const SignIn = () => {
     const handleClose = () => {
         setOpen(false);
     }
+
+    const handleSignIn = () => {
+
+    };
+
     return (
-
-        <DialogContent>
-            <h1>Sign in</h1>
-            <TextField onChange={e => email.onChange(e)} onBlur={e => email.onBlur(e)} autoFocus margin="dense"
-                       id="email" label="Email" type="email" fullWidth variant="filled"/>
-            <TextField onChange={e => password.onChange(e)} onBlur={e => password.onBlur(e)} autoFocus margin="dense"
-                       id="password" label="Password" type="password" fullWidth variant="filled"/>
-        </DialogContent>
-
-
+        <>
+            <Button color="inherit" variant="contained" onClick={handleClickOpen}>Sign in</Button>
+            <Dialog open={open} onClose={handleClose} arial-labelledby="form-dialog-title">
+                <DialogContent>
+                    <h1>Sign in</h1>
+                    <TextField onChange={e => email.onChange(e)} onBlur={e => email.onBlur(e)} autoFocus margin="dense"
+                               id="email" label="Email" type="email" fullWidth variant="filled"/>
+                    <TextField onChange={e => password.onChange(e)} onBlur={e => password.onBlur(e)} autoFocus
+                               margin="dense"
+                               id="password" label="Password" type="password" fullWidth variant="filled"/>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose} variant="contained" color="primary">Cancel</Button>
+                    <Button onClick={handleSignIn} variant="contained" color="success">Sign in</Button>
+                </DialogActions>
+            </Dialog>
+        </>
     );
 };
 

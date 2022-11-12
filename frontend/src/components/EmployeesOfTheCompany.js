@@ -34,8 +34,14 @@ const EmployeesOfTheCompany = () => {
     return (
         <>
             <Header/>
-            <TextField onChange={(event) => setValue(event.target.value)} autoFocus margin="dense" id="employee_name"
-                       label="Name" type="text" fullWidth variant="filled"/>
+            <TextField sx={{
+                color: "#012E95",
+                ml: 20,
+                width: '50ch',
+                bgcolor: 'white',
+                borderColor: '#E2CEB5',
+            }} onChange={(event) => setValue(event.target.value)} autoFocus margin="dense" id="employee_name"
+                       label="Name" type="text" variant="outlined"/>
 
             <Grid container spacing={0}>
                 {
@@ -53,21 +59,20 @@ const Emp = ({first_name, last_name, key, id}) => {
     return (
         <Link to="/feedbackhistory" state={{id: {id}}} style={{textDecoration: 'none'}}>
             <Card sx={{
-
-                p: 20,
+                bgcolor: '#E2CEB5',
                 margin: 2,
                 padding: 15,
-                flexGrow: 2,
-                elevation: 2,
+                borderRadius: 9
+
             }}>
-                <Grid>
-                    <Grid item xs={0}>
+
+
                         <h5>{first_name}</h5>
-                    </Grid>
-                    <Grid item xs={0}>
+
+
                         <h5>{last_name}</h5>
-                    </Grid>
-                </Grid>
+
+
 
 
             </Card>

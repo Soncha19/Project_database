@@ -6,27 +6,43 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import {Link} from 'react-router-dom';
-
+import {createTheme, ThemeProvider} from "@mui/material";
+import RoundedAppBar from "./RoundedAppBar";
 const pages = ['teams', 'employees'];
 
+const theme = createTheme({
+
+  palette: {
+    now: {
+      main: '#093CA9',
+      contrastText: '#fff',
+    },
+          button: {
+      main: '#012E95',
+      contrastText: '#fff',
+    },
+  },
+});
 const Header = () => {
 
     return (
-        <AppBar position="static">
+        <ThemeProvider theme={theme}>
+        <RoundedAppBar  borderRadius="2" color="now"   position="static">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
                     <Link to="/teams" style={{textDecoration: 'none'}}>
                         <Typography
-                            variant="h6"
-                            noWrap
-                            component="a"
+                            variant="h5"
+
+
 
                             sx={{
-                                mr: 2,
+                                mr: 125,
+                                ml: 0,
                                 display: {xs: 'none', md: 'flex'},
                                 fontFamily: 'monospace',
                                 fontWeight: 700,
-                                letterSpacing: '.3rem',
+                                letterSpacing: '.2rem',
                                 color: 'white',
                                 textDecoration: 'none',
                             }}
@@ -34,12 +50,12 @@ const Header = () => {
                             PROCADI
                         </Typography>
                     </Link>
-                    <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}>
+                    <Box  sx={{  display: {xs: 'none', md: 'flex'}}}>
 
                         <Link to={"/teams"} style={{textDecoration: 'none'}}>
-                            <Button
+                            <Button size="large" variant="contained" color="button"
                                 key={"teams"}
-                                sx={{my: 2, color: 'white', display: 'block'}}
+                                sx={{ my: 2, color: 'white', display: 'block'}}
                             >
                                 teams
                             </Button>
@@ -47,22 +63,19 @@ const Header = () => {
 
 
                         <Link to={"/employeesofthecompany"} style={{textDecoration: 'none'}}>
-                            <Button
+                            <Button  size="large" variant="contained" color="button"
                                 key={""}
-                                sx={{my: 2, color: 'white', display: 'block'}}
+                                sx={{mx: 2, my: 2, display: 'block'}}
                             >
                                 employees
                             </Button>
                         </Link>
 
-                    </Box>
-
-                    <Box sx={{flexGrow: 0}}>
                         <Link to="/profile" style={{textDecoration: 'none'}}>
-                            <Button
-                                key="Profile"
+                            <Button  size="large" variant="contained" color="button"
+                                key="Profile" textTransform='none'
 
-                                sx={{my: 2, color: 'white', display: 'block'}}>
+                                sx={{my: 2, color: 'white', }} >
 
                                 Profile
                             </Button>
@@ -70,7 +83,8 @@ const Header = () => {
                     </Box>
                 </Toolbar>
             </Container>
-        </AppBar>
+        </RoundedAppBar>
+        </ThemeProvider>
     );
 };
 

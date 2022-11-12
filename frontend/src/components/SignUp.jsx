@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {DialogContent, Grid} from "@mui/material";
+import {Button, Dialog, DialogActions, DialogContent, Grid} from "@mui/material";
 import TextField from "@mui/material/TextField";
 
 
@@ -30,9 +30,17 @@ const SignUp = () => {
     const phone = useInput('',)
     const companyId = useInput('',)
     const CreateCompany = useInput('',)
-
+        const [open2, setOpen2] = useState(false)
+    const handleClickOpen2 = () => {
+        setOpen2(true)
+    }
+    const handleClose2 = () => {
+        setOpen2(false);
+    }
     return (
-
+        <>
+        <Button color="secondary" variant="contained" onClick={handleClickOpen2}>Sign up</Button>
+    <Dialog open={open2} onClose={handleClose2} arial-labelledby="pop">
         <DialogContent>
             <h1>Sign up</h1>
             <TextField onChange={e => name.onChange(e)} onBlur={e => name.onBlur(e)} autoFocus margin="dense" id="name"
@@ -59,7 +67,15 @@ const SignUp = () => {
                 </Grid>
             </Grid>
         </DialogContent>
-    );
+        <DialogActions>
+            <Button onClick={handleClose2} variant="contained" color="primary">Cancel</Button>
+            <Button onClick={handleClose2} variant="contained" color="success">Sign up</Button>
+        </DialogActions>
+    </Dialog>
+            </>
+)
+    ;
 };
 
 export default SignUp;
+

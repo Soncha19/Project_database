@@ -4,9 +4,9 @@ import {Card, Grid} from "@mui/material";
 import {Link, useLocation} from "react-router-dom";
 
 const Employee = () => {
-    let teamId;
+
     const location = useLocation();
-    teamId = location.state.id.id;
+    let teamId = location.state.id.id;
 
     const [teammates, setTeammates] = useState();
 
@@ -36,7 +36,7 @@ const Employee = () => {
                              last_name={item?.last_name}/>
                     )
                 }
-                <Link to="/addpropertysettoemployee" style={{textDecoration: 'none'}}>
+                <Link to="/addpropertysettoemployee" state={{id: {teamId}}} style={{textDecoration: 'none'}}>
                     <Card variant="outlined" sx={{
                         p: 20,
                         margin: 2,

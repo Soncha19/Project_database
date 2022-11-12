@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 flask = "*"
 waitress = "*"
+alembic = "*"
+marshmallow = "*"
 
 [dev-packages]
 

@@ -6,16 +6,19 @@ import TextField from "@mui/material/TextField";
 
 const AddPropertySetToEmployee = () => {
     let companyId;
-    const location = useLocation();
-    //companyId = location.state.id.id;
 
-    const [employees, setEmployees] = useState();
+    const location = useLocation();
+    let teamId = location.state.id.id;
+
+    const [employeesAndPropertySets, setEmployeesAndPropertySets] = useState();
     const [properties, setProperties] = useState();
     const [idProperties, setIdProperties] = useState();
     const [idEmployee, setIdEmployee] = useState();
     const [nameOfProp, setPropName] = useState();
     const [inputFields, setInputFields] = useState([{title: ''}])
     const [isShown, setIsShown] = useState(false);
+    console.log(idEmployee)
+
     const handleChange = (event) => {
         setIdEmployee(event.target.value);
     };
@@ -38,20 +41,50 @@ const AddPropertySetToEmployee = () => {
         let data = [...inputFields];
         data[index][event.target.name] = event.target.value;
         setInputFields(data);
-    }
+    };
     const addFields = () => {
         let newfield = {title: ''}
         setInputFields([...inputFields, newfield])
-    }
+    };
     const submit = (e) => {
-        //e.preventDefault(); // запобігає оновленню сторінки
-        console.log(inputFields)
-    }
+        e.preventDefault(); // запобігає оновленню сторінки
+      //   fetch('http://localhost:8080/employee/?employee_id='+ idEmployee.toString(), {
+      //    method: 'PUT',
+      //    body: JSON.stringify({
+      //       team_id: teamId,
+      //    }),
+      //    headers: {
+      //       'Content-type': 'application/json; charset=UTF-8',
+      //    },
+      // })
+      //    .then((response) => response.json())
+      //    .then((post) => {
+      //
+      //    })
+      //    .catch((err) => {
+      //       console.log(err.message);
+      //    });
+
+
+    //
+
+    const requestOptions = {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            team_id: teamId
+        })
+    };
+    fetch('http://localhost:8080/employee/?employee_id=2'  , requestOptions)
+        .then(response => response.json());
+    };
     const removeFields = (index) => {
         let data = [...inputFields];
         data.splice(index, 1)
         setInputFields(data)
-    }
+    };
 
     const handleClickOwnTrue = (e) => {
 
@@ -64,36 +97,21 @@ const AddPropertySetToEmployee = () => {
 
     };
 
-    function GetEmployees() {
+    function GetEmployeesAndPropertySets() {
         useEffect(() => {
-            fetch("http://localhost:8080/employee/findByCompany?company_id=1", {
+            fetch("http://localhost:8080/allPropertySet/?company_id=1", {
                 'methods': 'GET',
                 headers: {
                     'Content-Type': 'application/json'
                 }
             })
                 .then(response => response.json())
-                .then(response => setEmployees(response))
+                .then(response => setEmployeesAndPropertySets(response))
                 .catch(error => console.log(error))
         }, [])
-    }
+    };
 
-    function GetPropertySet() {
-        useEffect(() => {
-            fetch("http://localhost:8080/property_set/?property_set_id=1", {
-                'methods': 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-                .then(response => response.json())
-                .then(response => setProperties(response))
-                .catch(error => console.log(error))
-        }, [])
-    }
-
-    GetEmployees();
-    GetPropertySet();
+    GetEmployeesAndPropertySets();
 
 
     return (
@@ -102,24 +120,25 @@ const AddPropertySetToEmployee = () => {
             <TextField id="filled-select-employee_name" select label="Employee" onChange={handleChange} type="text"
                        fullWidth variant="filled"
             >
-                {employees?.map((option) => (
+                {employeesAndPropertySets?.employees.map((option) => (
                     <MenuItem key={option.id} value={option.id}>
                         {option.first_name + " " + option.last_name}
                     </MenuItem>
                 ))}
             </TextField>
-
             <TextField id="prop" select label="Property set" onChange={handleChangeProperties} type="text" fullWidth
                        variant="filled"
             >
-                {properties?.map((option) => (
+                {employeesAndPropertySets?.property_sets.map((option) => (
                     <MenuItem key={option.id} value={option.id}>
                         {option.name}
                     </MenuItem>
                 ))}
                 <MenuItem value={-1}>Own</MenuItem>
             </TextField>
-            {isShown && (<form onSubmit={submit}>
+            {isShown && (<form
+                    // onSubmit={submit}
+                >
                     <TextField id="pp" label="Name" onChange={handleChangePropName} type="text" fullWidth
                                variant="filled"></TextField>
                     {inputFields.map((input, index) => {

@@ -1,51 +1,95 @@
 import React, {useState} from 'react';
-import {Button, Card, Grid} from "@mui/material";
+import {Button, Card, createTheme, Grid, ThemeProvider} from "@mui/material";
 import TextField from "@mui/material/TextField";
 
-const useInput = (initialValue) => {
-    const [value, setValue] = useState(initialValue)
-    const [isDirty, setDirty] = useState(false)
+const theme = createTheme({
 
-    const onChange = (e) => {
-        setValue(e.target.value)
-    }
-    const onBlur = (e) => {
-        setDirty(true)
-    }
-    return {
-        value,
-        onChange,
-        onBlur,
-        isDirty,
+    palette: {
+        now: {
+            main: '#093CA9',
+            contrastText: '#fff',
+        },
+        button: {
+            main: '#012E95',
+            contrastText: '#fff',
+        },
+    },
+});
 
-    }
-}
+
 const AddNewTeam = () => {
-    const teamName = useInput('',)
-    const tag = useInput('',)
-    return (
-        <Card sx={{
-            margin: 2,
+    const [teamName, setTeamName] = useState(false);
+    let companyId = 1;
+    const handleChangeTeamName = (event) => {
+        setTeamName(event.target.value);
+    };
+    const [tag, setTag] = useState(false);
+    const handleChangeTag = (event) => {
+        setTag(event.target.value);
+    };
 
-        }}>
-            <Grid container direction="column" justifyContent="center" alignItems="center" spacing={2}>
-                <Grid item xs={0}>
-                    <TextField onChange={e => teamName.onChange(e)} onBlur={e => teamName.onBlur(e)} autoFocus
-                               margin="dense" id="teamName" label="New team name" type="teamName" fullWidth
-                               variant="filled"/>
-                </Grid>
-                <Grid item xs={0}>
-                    <TextField onChange={e => tag.onChange(e)} onBlur={e => tag.onBlur(e)} autoFocus margin="dense"
-                               id="tag" label="Tag" type="tag" fullWidth variant="filled"/>
-                </Grid>
-                <Grid item xs={0}>
-                    <Button color="inherit" variant="contained">Save</Button>
-                </Grid>
-            </Grid>
+    const handleSubmit = (e) => {
+      e.preventDefault();
+
+      fetch('http://localhost:8080/team', {
+         method: 'POST',
+         body: JSON.stringify({
+            name: teamName,
+            tag: tag,
+            company_id: companyId,
+         }),
+         headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+         },
+      })
+         .then((response) => response.json())
+         .then((post) => {
+            setTeamName();
+            setTag();
+         })
+         .catch((err) => {
+            console.log(err.message);
+         });
+   };
+
+        return (
+
+            <ThemeProvider theme={theme}>
+                <Card sx={{
+                    bgcolor: '#E2CEB5',
+                    margin: 2,
+                    padding: 5,
+                    borderRadius: 9
+
+                }}>
+                    <Grid container direction="column" justifyContent="center" alignItems="center" spacing={2}>
+                        <Grid item xs={0}>
+                            <TextField color="button" sx={{
+                                bgcolor: 'white',
+                                borderColor: '#E2CEB5',
+                                borderRadius: 2,
+                            }} onChange={handleChangeTeamName}
+                                       autoFocus
+                                       margin="dense" id="teamName" label="Name" type="teamName" fullWidth
+                                       variant="outlined"/>
+                        </Grid>
+                        <Grid item xs={0}>
+                            <TextField color="button" sx={{
+                                'background-color': 'white',
+                                borderColor: '#E2CEB5',
+                                borderRadius: 2,
+                            }} onChange={handleChangeTag} autoFocus margin="dense"
+                                       id="tag" label="Tag" type="tag" fullWidth variant="outlined"/>
+                        </Grid>
+                        <Grid item xs={0}>
+                            <Button color="button" variant="contained" onClick={handleSubmit}>Save</Button>
+                        </Grid>
+                    </Grid>
 
 
-        </Card>
-    );
-};
+                </Card>
+            </ThemeProvider>
+        );
+    };
 
-export default AddNewTeam;
+    export default AddNewTeam;

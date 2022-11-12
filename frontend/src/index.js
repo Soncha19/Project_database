@@ -7,6 +7,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
         <BrowserRouter>
+             <style>{'body { background-color: #FFE7CB; }'}</style>
             <App />
         </BrowserRouter>
     </React.StrictMode>

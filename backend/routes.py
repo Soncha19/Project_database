@@ -1,71 +1,111 @@
-from flask import request, Flask
-from models import *
+from flask import Flask
+
 from flask_cors import CORS
-import json
 
 app = Flask(__name__)
 CORS(app)
 
-
-@app.route('/team/findByCompany', methods=['GET'])
-def find_team_by_company():
-    args = request.args
-    company_id = args.get('company_id')
-    teams = Session.query(Team).filter(Team.company_id == company_id)
-    return json.dumps([i.to_dict() for i in teams])
-
-
-@app.route('/employee/findByCompany', methods=['GET'])
-def find_employee_by_company():
-    args = request.args
-    company_id = args.get('company_id')
-    employees = Session.query(Employee).filter(Employee.company_id == company_id)
-    return json.dumps([i.to_dict() for i in employees])
+from flask import current_app as application
+from flask import request
+from models import *
+import json
+    session.close()
+    return res, 200
 
 
-@app.route('/employee/findByTeam', methods=['GET'])
-def find_employee_by_team():
-    args = request.args
-    team_id = args.get('team_id')
-    employees = Session.query(Employee).filter(Employee.team_id == team_id)
-    return json.dumps([i.to_dict() for i in employees])
-
-
-@app.route('/answer/', methods=['GET'])
-def find_answer_by_feedback_id():
-    args = request.args
-    feedback_id = args.get('feedback_id')
-    answers = Session.query(Answer).filter(Answer.feedback_id == feedback_id)
-    return json.dumps([i.to_dict() for i in answers])
-
-
-@app.route('/feedback/', methods=['GET'])
-def find_feedback_by_employee_id():
+@application.route('/profile/', methods=['GET'])
+def page_profile():
+    session = Session()
     args = request.args
     employee_id = args.get('employee_id')
-    feedbacks = Session.query(Feedback).filter(Feedback.employee_id == employee_id)
-    return json.dumps([i.to_dict() for i in feedbacks])
+    employee = session.query(Employee).filter(Employee.id == employee_id).first()
+    employee_schema = EmployeeSchema()
+
+    company = session.query(Company).filter(Company.id == employee.company_id).first()
+    company_schema = CompanySchema()
+
+    res = {
+        'employee': employee_schema.dump(employee),
+        'company': company_schema.dump(company)
+    }
+    session.close()
+    return res, 200
 
 
-@app.route('/question/', methods=['GET'])
-def find_question_by_property_set_id():
+@application.route('/allFeedback', methods=['POST'])
+def page_new_feedback():
+    session = Session()
+    args = request.get_json()
+    try:
+        feedback_schema = FeedbackSchema()
+        feedback = feedback_schema.load(args['feedback'], session=session)
+        session.add(feedback)
+
+        answer_schema = AnswerSchema()
+        answers = []
+        for i in args['answers']:
+            answers.append(answer_schema.load(i, session=session))
+        for i in answers:
+            i.feedback = feedback
+            session.add(i)
+
+        session.commit()
+
+        res = {
+            'feedback': feedback_schema.dump(feedback),
+            'answers': [answer_schema.dump(i) for i in answers]
+        }
+        session.close()
+        return res, 200
+    except ValidationError as err:
+        session.close()
+        return str(err), 400
+
+
+@application.route('/allPropertySet', methods=['POST'])
+def page_new_property_set():
+    session = Session()
+    args = request.get_json()
+    try:
+        property_set_schema = PropertySetSchema()
+        property_set = property_set_schema.load(args['property_set'], session=session)
+        session.add(property_set)
+
+        question_schema = QuestionSchema()
+        questions = []
+        for i in args['questions']:
+            questions.append(question_schema.load(i, session=session))
+        for i in questions:
+            i.property_set = property_set
+            session.add(i)
+
+        session.commit()
+
+        res = {
+            'property_set': property_set_schema.dump(property_set),
+            'questions': [question_schema.dump(i) for i in questions]
+        }
+        session.close()
+        return res, 200
+    except ValidationError as err:
+        session.close()
+        return str(err), 400
+
+
+@application.route('/allPropertySet/', methods=['GET'])
+def page_find_property_set():
+    session = Session()
     args = request.args
-    property_set_id = args.get('property_set_id')
-    questions = Session.query(Question).filter(Question.property_set_id == property_set_id)
-    return json.dumps([i.to_dict() for i in questions])
+    company_id = args.get('company_id')
+    employees = session.query(Employee).filter(Employee.company_id == company_id)
+    employee_schema = EmployeeSchema()
 
+    property_sets = session.query(PropertySet)
+    property_set_schema = PropertySetSchema()
 
-@app.route('/property_set/', methods=['GET'])
-def find_property_set():
-    args = request.args
-    property_set_id = args.get('property_set_id')
-    property_sets = Session.query(PropertySet).filter(PropertySet.id == property_set_id)
-    return json.dumps([i.to_dict() for i in property_sets])
-
-
-@app.route('/employee/', methods=['GET'])
-def find_employee():
-    args = request.args
-    employee_id = args.get('employee_id')
-    employee = Session.query(Employee).filter(Employee.id == employee_id)
-    return json.dumps([i.to_dict() for i in employee])
+    res = {
+        'employees': [employee_schema.dump(i) for i in employees],
+        'property_sets': [property_set_schema.dump(i) for i in property_sets]
+    }
+    session.close()
+    return res, 200

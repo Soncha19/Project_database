@@ -1,34 +1,32 @@
-from uuid import UUID
 from sqlalchemy import *
 from sqlalchemy.orm import sessionmaker, relationship, declarative_base, scoped_session
-from sqlalchemy_serializer import SerializerMixin
+from marshmallow import Schema, fields, validate, ValidationError
+from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
-engine = create_engine('mysql+pymysql://sql11529451:gBwQQdWTri@sql11.freemysqlhosting.net:3306/sql11529451')
-SessionFactory = sessionmaker(bind=engine)
-Session = scoped_session(SessionFactory)
+engine = create_engine('mysql+pymysql://root:feffKPklJozigUiaF4hy@containers-us-west-29.railway.app:6579/railway')
 Base = declarative_base()
 Base.metadata.create_all(bind=engine)
+SessionFactory = sessionmaker(bind=engine)
+Session = scoped_session(SessionFactory)
 
 
-class CustomSerializerMixin(SerializerMixin):
-	serialize_types = (
-		(UUID, lambda x: str(x)),
-	)
-
-
-class Company(Base, CustomSerializerMixin):
+class Company(Base):
 	__tablename__ = 'company'
-
-	serialize_only = {'id', 'name'}
 
 	id = Column('id', Integer, primary_key=True, autoincrement=True)
 	name = Column('name', String(45))
 
 
-class Team(Base, CustomSerializerMixin):
-	__tablename__ = 'team'
+class CompanySchema(SQLAlchemyAutoSchema):
+	class Meta:
+		model = Company
+		include_relationships = False
+		load_instance = True
+		include_fk = True
 
-	serialize_only = ('id', 'tag', 'name', 'company_id')
+
+class Team(Base):
+	__tablename__ = 'team'
 
 	id = Column('id', Integer, primary_key=True, autoincrement=True)
 	tag = Column('tag', String(45))
@@ -37,10 +35,16 @@ class Team(Base, CustomSerializerMixin):
 	company = relationship(Company, backref='team', lazy='joined')
 
 
-class Employee(Base, CustomSerializerMixin):
-	__tablename__ = 'employee'
+class TeamSchema(SQLAlchemyAutoSchema):
+	class Meta:
+		model = Team
+		include_relationships = False
+		load_instance = True
+		include_fk = True
 
-	serialize_only = {'id', 'first_name', 'last_name', 'email', 'company_id', 'team_id', 'is_owner', 'password', 'phone', 'date_of_birth', 'role'}
+
+class Employee(Base):
+	__tablename__ = 'employee'
 
 	id = Column('id', Integer, primary_key=True, autoincrement=True)
 	first_name = Column('first_name', String(15), nullable=False)
@@ -60,19 +64,31 @@ class Employee(Base, CustomSerializerMixin):
 	role = Column('role', Boolean, nullable=False)
 
 
-class PropertySet(Base, CustomSerializerMixin):
-	__tablename__ = 'property_set'
+class EmployeeSchema(SQLAlchemyAutoSchema):
+	class Meta:
+		model = Employee
+		include_relationships = False
+		load_instance = True
+		include_fk = True
 
-	serialize_only = {'id', 'name'}
+
+class PropertySet(Base):
+	__tablename__ = 'property_set'
 
 	id = Column('id', Integer, primary_key=True, autoincrement=True)
 	name = Column('name', String(45))
 
 
-class Question(Base, CustomSerializerMixin):
-	__tablename__ = 'question'
+class PropertySetSchema(SQLAlchemyAutoSchema):
+	class Meta:
+		model = PropertySet
+		include_relationships = False
+		load_instance = True
+		include_fk = True
 
-	serialize_only = {'id', 'number', 'text', 'property_set_id'}
+
+class Question(Base):
+	__tablename__ = 'question'
 
 	id = Column('id', Integer, primary_key=True, autoincrement=True)
 	number = Column('number', Integer, nullable=False)
@@ -81,10 +97,16 @@ class Question(Base, CustomSerializerMixin):
 	property_set = relationship(PropertySet, backref='question', lazy='joined')
 
 
-class FeedbackHistory(Base, CustomSerializerMixin):
-	__tablename__ = 'feedback_history'
+class QuestionSchema(SQLAlchemyAutoSchema):
+	class Meta:
+		model = Question
+		include_relationships = False
+		load_instance = True
+		include_fk = True
 
-	serialize_only = {'employee_id', 'feedback_history', 'property_set_id'}
+
+class FeedbackHistory(Base):
+	__tablename__ = 'feedback_history'
 
 	employee_id = Column('employee_id', Integer, ForeignKey(Employee.id), primary_key=True)
 	employee = relationship(Employee, backref='feedback_history', lazy='joined')
@@ -92,22 +114,37 @@ class FeedbackHistory(Base, CustomSerializerMixin):
 	property_set = relationship(PropertySet, backref='feedback_history', lazy='joined')
 
 
-class Feedback(Base, CustomSerializerMixin):
-	__tablename__ = 'feedback'
+class FeedbackHistorySchema(SQLAlchemyAutoSchema):
+	class Meta:
+		model = FeedbackHistory
+		include_relationships = False
+		load_instance = True
+		include_fk = True
 
-	serialize_only = {'id', 'date_of_creation', 'note', 'employee_id'}
+	employee_id = fields.Integer()
+	property_set_id = fields.Integer()
+
+
+class Feedback(Base):
+	__tablename__ = 'feedback'
 
 	id = Column('id', Integer, primary_key=True, autoincrement=True)
 	date_of_creation = Column('date_of_creation', DATE, nullable=False)
-	note = Column('note', String(45), nullable=False)
+	note = Column('note', String(500), nullable=False)
 	employee_id = Column('employee_id', Integer, ForeignKey(FeedbackHistory.employee_id))
 	feedbackHistory = relationship(FeedbackHistory, backref='feedback', lazy='joined')
 
 
-class Answer(Base, CustomSerializerMixin):
-	__tablename__ = 'answer'
+class FeedbackSchema(SQLAlchemyAutoSchema):
+	class Meta:
+		model = Feedback
+		include_relationships = False
+		load_instance = True
+		include_fk = True
 
-	serialize_only = {'id', 'number', 'text', 'feedback_id'}
+
+class Answer(Base):
+	__tablename__ = 'answer'
 
 	id = Column('id', Integer, primary_key=True, autoincrement=True)
 	number = Column('number', Integer, nullable=False)
@@ -116,4 +153,11 @@ class Answer(Base, CustomSerializerMixin):
 	feedback = relationship(Feedback, backref='answer', lazy='joined')
 
 
-Base.metadata.create_all(bind=engine)
+class AnswerSchema(SQLAlchemyAutoSchema):
+	class Meta:
+		model = Answer
+		include_relationships = False
+		load_instance = True
+		include_fk = True
+
+
