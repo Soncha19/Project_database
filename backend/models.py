@@ -51,17 +51,17 @@ class Employee(Base):
 	last_name = Column('last_name', String(15))
 	email = Column('email', String(30))
 
-	company_id = Column('company_id', Integer, ForeignKey(Company.id))
+	company_id = Column('company_id', Integer, ForeignKey(Company.id), default=1)
 	company = relationship(Company, backref='employee', lazy='joined')
 
-	team_id = Column('team_id', Integer, ForeignKey(Team.id))
+	team_id = Column('team_id', Integer, ForeignKey(Team.id), default=1)
 	team = relationship(Team, backref='employee', lazy='joined')
 
-	is_owner = Column('is_owner', Boolean)
+	is_owner = Column('is_owner', Boolean, default=False)
 	password = Column('password', String(150))
 	phone = Column('phone', String(13))
 	date_of_birth = Column('date_of_birth', DATE)
-	role = Column('role', Boolean)
+	role = Column('role', Boolean, default=False)
 
 
 def validate_email(email1):
@@ -85,6 +85,9 @@ class PropertySet(Base):
 
 	id = Column('id', Integer, primary_key=True, autoincrement=True)
 	name = Column('name', String(45))
+	is_used = Column('is_used', Boolean, default=True)
+	company_id = Column('company_id', Integer, ForeignKey(Company.id))
+	company = relationship(Company, backref='property_set', lazy='joined')
 
 
 class PropertySetSchema(SQLAlchemyAutoSchema):
@@ -99,8 +102,8 @@ class Question(Base):
 	__tablename__ = 'question'
 
 	id = Column('id', Integer, primary_key=True, autoincrement=True)
-	number = Column('number', Integer, nullable=False)
-	text = Column('text', String(100), nullable=False)
+	number = Column('number', Integer)
+	text = Column('text', String(100))
 	property_set_id = Column('property_set_id', Integer, ForeignKey(PropertySet.id))
 	property_set = relationship(PropertySet, backref='question', lazy='joined')
 
@@ -118,8 +121,12 @@ class FeedbackHistory(Base):
 
 	employee_id = Column('employee_id', Integer, ForeignKey(Employee.id), primary_key=True)
 	employee = relationship(Employee, backref='feedback_history', lazy='joined')
+
 	property_set_id = Column('property_set_id', Integer, ForeignKey(PropertySet.id))
 	property_set = relationship(PropertySet, backref='feedback_history', lazy='joined')
+
+	team_id = Column('team_id', Integer, ForeignKey(Team.id))
+	team = relationship(Team, backref='feedback_history', lazy='joined')
 
 
 class FeedbackHistorySchema(SQLAlchemyAutoSchema):
@@ -137,8 +144,8 @@ class Feedback(Base):
 	__tablename__ = 'feedback'
 
 	id = Column('id', Integer, primary_key=True, autoincrement=True)
-	date_of_creation = Column('date_of_creation', DATE, nullable=False)
-	note = Column('note', String(500), nullable=False)
+	date_of_creation = Column('date_of_creation', DATE)
+	note = Column('note', String(500))
 	employee_id = Column('employee_id', Integer, ForeignKey(FeedbackHistory.employee_id))
 	feedbackHistory = relationship(FeedbackHistory, backref='feedback', lazy='joined')
 
@@ -151,12 +158,33 @@ class FeedbackSchema(SQLAlchemyAutoSchema):
 		include_fk = True
 
 
+class PreAnswer(Base):
+	__tablename__ = 'pre_answer'
+
+	id = Column('id', Integer, primary_key=True, autoincrement=True)
+	text = Column('text', String(100))
+	numeric_value = Column('numeric_value', Integer)
+	property_set_id = Column('feedback_id', Integer, ForeignKey(PropertySet.id))
+	property_set = relationship(PropertySet, backref='pre_answer', lazy='joined')
+
+
+class PreAnswerSchema(SQLAlchemyAutoSchema):
+	class Meta:
+		model = PreAnswer
+		include_relationships = False
+		load_instance = True
+		include_fk = True
+
+
 class Answer(Base):
 	__tablename__ = 'answer'
 
 	id = Column('id', Integer, primary_key=True, autoincrement=True)
-	number = Column('number', Integer, nullable=False)
-	text = Column('text', String(100), nullable=False)
+	number = Column('number', Integer)
+
+	pre_answer_id = Column('pre_answer_id', Integer, ForeignKey(PreAnswer.id))
+	pre_answer = relationship(PreAnswer, backref='answer', lazy='joined')
+
 	feedback_id = Column('feedback_id', Integer, ForeignKey(Feedback.id))
 	feedback = relationship(Feedback, backref='answer', lazy='joined')
 

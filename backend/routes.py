@@ -7,7 +7,6 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 from werkzeug.security import generate_password_hash, check_password_hash
 import json
 
-
 auth = HTTPBasicAuth()
 
 
@@ -41,9 +40,11 @@ def find_property_set():
 
 
 @application.route('/propertySets/', methods=['GET'])
-def find_all_property_set():
+def find_property_set_by_company():
 	session = Session()
-	property_sets = session.query(PropertySet)
+	args = request.args
+	company_id = args.get('company_id')
+	property_sets = session.query(PropertySet).filter(or_(PropertySet.company_id == company_id, PropertySet.id == 1)).filter(PropertySet.is_used == 1)
 	property_set_schema = PropertySetSchema()
 	res = json.dumps([property_set_schema.dump(i) for i in property_sets])
 	session.close()
@@ -142,6 +143,18 @@ def find_employee_by_company():
 	args = request.args
 	company_id = args.get('company_id')
 	employees = session.query(Employee).filter(Employee.company_id == company_id)
+	employee_schema = EmployeeSchema()
+	res = json.dumps([employee_schema.dump(i) for i in employees])
+	session.close()
+	return res, 200
+
+
+@application.route('/employee/findByCompany/noTeam', methods=['GET'])
+def find_employee_by_company_no_team():
+	session = Session()
+	args = request.args
+	company_id = args.get('company_id')
+	employees = session.query(Employee).filter(and_(Employee.team_id == 1, Employee.company_id == company_id))
 	employee_schema = EmployeeSchema()
 	res = json.dumps([employee_schema.dump(i) for i in employees])
 	session.close()
@@ -251,6 +264,8 @@ def new_feedback_history():
 	try:
 		feedbackHistory_schema = FeedbackHistorySchema()
 		feedback_history = feedbackHistory_schema.load(args, session=session)
+		user = session.query(Employee).filter(Employee.id == args.get('employee_id')).first()
+		feedback_history.team_id = user.team_id
 		session.add(feedback_history)
 		session.commit()
 		res = feedbackHistory_schema.dump(feedback_history)
@@ -366,6 +381,35 @@ def find_answer_by_feedback_id():
 	return res, 200
 
 
+@application.route('/preAnswer', methods=['POST'])
+def new_pre_answer():
+	session = Session()
+	args = request.get_json()
+	try:
+		pre_answer_schema = PreAnswerSchema()
+		pre_answer = pre_answer_schema.load(args, session=session)
+		session.add(pre_answer)
+		session.commit()
+		res = pre_answer_schema.dump(pre_answer)
+		session.close()
+		return res, 200
+	except ValidationError as err:
+		session.close()
+		return str(err), 400
+
+
+@application.route('/preAnswer/', methods=['GET'])
+def find_pre_answer_by_property_set_id():
+	session = Session()
+	args = request.args
+	property_set_id = args.get('property_set_id')
+	pre_answers = session.query(PreAnswer).filter(PreAnswer.property_set_id == property_set_id)
+	pre_answer_schema = PreAnswerSchema()
+	res = json.dumps([pre_answer_schema.dump(i) for i in pre_answers])
+	session.close()
+	return res, 200
+
+
 @application.route('/question', methods=['POST'])
 def new_question():
 	session = Session()
@@ -422,13 +466,17 @@ def page_feedback_history():
 	questions = session.query(Question).filter(Question.property_set_id == feedback_history.property_set_id)
 	question_schema = AnswerSchema()
 
+	pre_answers = session.query(PreAnswer).filter(PreAnswer.property_set_id == feedback_history.property_set_id)
+	pre_answers_schema = AnswerSchema()
+
 	res = {
 		'feedback_history': feedbackHistory_schema.dump(feedback_history),
 		'employee': employee_schema.dump(employee),
 		'feedbacks': [feedback_schema.dump(i) for i in feedbacks],
 		'answers': [answer_schema.dump(i) for i in answers],
 		'property_set': property_set_schema.dump(property_set),
-		'questions': [question_schema.dump(i) for i in questions]
+		'questions': [question_schema.dump(i) for i in questions],
+		'pre_answers': pre_answers_schema.dump(pre_answers)
 	}
 	session.close()
 	return res, 200
@@ -500,11 +548,20 @@ def page_new_property_set():
 			i.property_set = property_set
 			session.add(i)
 
+		pre_answer_schema = PreAnswerSchema()
+		pre_answers = []
+		for i in args['pre_answers']:
+			pre_answers.append(pre_answer_schema.load(i, session=session))
+		for i in pre_answers:
+			i.property_set = property_set
+			session.add(i)
+
 		session.commit()
 
 		res = {
 			'property_set': property_set_schema.dump(property_set),
-			'questions': [question_schema.dump(i) for i in questions]
+			'questions': [question_schema.dump(i) for i in questions],
+			'pre_answers': [pre_answer_schema.dump(i) for i in pre_answers]
 		}
 		session.close()
 		return res, 200
