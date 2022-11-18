@@ -1,7 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import Header from "./Header";
-import {Card, Grid} from "@mui/material";
+import {Card, CardHeader, CardMedia, Grid} from "@mui/material";
 import {Link, useLocation} from "react-router-dom";
+import PropsButton from "./PropsButton";
+import Typography from "@mui/material/Typography";
+import EmployeePropsButton from "./EmployeePropsButton";
 
 const Employee = () => {
 
@@ -32,17 +35,17 @@ const Employee = () => {
             <Grid container spacing={0}>
                 {
                     teammates?.map((item, index) =>
-                        <Emp company_id={item?.company_id} id={item?.id} key={item?.id} first_name={item?.first_name}
+                        <Emp company_id={ item?.company_id} teamId={teamId} id={item?.id} key={item?.id} first_name={item?.first_name}
                              last_name={item?.last_name}/>
                     )
                 }
-                <Link to="/addpropertysettoemployee" state={{id: {teamId}}} style={{textDecoration: 'none'}}>
+                <Link to="/addpropertysettoemployee" state={{teamId: {teamId}}} style={{textDecoration: 'none'}}>
                     <Card variant="outlined" sx={{
-                        p: 20,
-                        margin: 2,
+                        bgcolor: '#E2CEB5',
                         padding: 15,
-                        flexGrow: 2,
-                        elevation: 2,
+                        margin: 2,
+                        borderRadius: 9
+
 
                     }}>
 
@@ -52,6 +55,7 @@ const Employee = () => {
                             </Grid>
                         </Grid>
 
+
                     </Card>
                 </Link>
             </Grid>
@@ -60,35 +64,41 @@ const Employee = () => {
     );
 };
 
-const Emp = ({company_id, first_name, last_name, key, id}) => {
+const Emp = ({teamId, first_name, last_name, key, id}) => {
 
     return (
-        <Link to="/feedbackhistory" state={{id: {id}}} style={{textDecoration: 'none'}}>
-            <Card sx={{
+        <Card sx={{
+            bgcolor: '#E2CEB5',
+            borderRadius: 9,
+            minWidth: 400,
+            margin: 1,
+            height: 350,
 
-                p: 20,
-                margin: 2,
-                padding: 15,
-                flexGrow: 2,
-                elevation: 2,
-            }}>
+        }}>
+            <CardHeader
+                action={
+                    <EmployeePropsButton props={{id: {id}, teamId: {teamId}}}/>
+                }/>
 
+             <Link to="/feedbackhistory" state={{id: {id}}} style={{textDecoration: 'none'}}>
 
-                <Grid>
-                    <Grid item xs={0}>
-                        <h5>{first_name}</h5>
-                    </Grid>
-                    <Grid item xs={0}>
-                        <h5>{company_id}</h5>
-                    </Grid>
-                    <Grid item xs={0}>
-                        <h5>{last_name}</h5>
-                    </Grid>
-                </Grid>
+            <CardMedia>
+                <Typography sx={{color:"black", ml:4}} variant="h3">
+                   {first_name}
+                </Typography>
 
 
-            </Card>
-        </Link>
+                <Card variant="filled" sx={{
+                    bgcolor: '#E2CEB5',
+                    height: 200,
+                }}></Card>
+                <Typography sx={{color:"black", ml:25, my:-7}} variant="h3">
+                    {last_name}
+                </Typography>
+            </CardMedia>
+             </Link>
+        </Card>
+
     );
 
 };

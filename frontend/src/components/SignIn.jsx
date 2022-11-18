@@ -26,6 +26,7 @@ const SignIn = () => {
     const email = useInput('',)
     const password = useInput('',)
     const [open, setOpen] = useState(false)
+    const [token, setToken] = useState();
     const handleClickOpen = () => {
         setOpen(true)
     }
@@ -34,12 +35,25 @@ const SignIn = () => {
     }
 
     const handleSignIn = () => {
+        fetch('http://localhost:8080/login', {
+            method: 'POST',
+            body: JSON.stringify({
+                email: email,
+                password: password,
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+            },
+        })
+            .then(response => response.json())
+                .then(response => setToken(response))
+                .catch(error => console.log(error));
 
     };
 
     return (
         <>
-            <Button color="inherit" variant="contained" onClick={handleClickOpen}>Sign in</Button>
+            <Button size="large"bgcolor="#012E95" variant="contained" onClick={handleClickOpen}>Sign in</Button>
             <Dialog open={open} onClose={handleClose} arial-labelledby="form-dialog-title">
                 <DialogContent>
                     <h1>Sign in</h1>

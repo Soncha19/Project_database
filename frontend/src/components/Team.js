@@ -116,10 +116,11 @@ const Teamsd = ({name, tag, key, id, companyId}) => {
         // <Link to="/employees" state={{id: {id}}} style={{textDecoration: 'none'}}>
         <Card sx={{
             bgcolor: '#E2CEB5',
+            borderRadius: 9,
             minWidth: 400,
             margin: 1,
             height: 350,
-            borderRadius: 9
+
         }}>
             <CardHeader
                 action={

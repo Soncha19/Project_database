@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {Card, Grid} from "@mui/material";
+import {Card, CardContent, CardHeader, CardMedia, Grid} from "@mui/material";
 import Header from "./Header";
+import PropsButton from "./PropsButton";
 
 const Profile = () => {
     const [employee, setEmployee] = useState();
@@ -46,52 +47,103 @@ const Profile = () => {
             <Header/>
 
 
-            <Grid container spacing={0}>
-                <Card sx={{
-                    margin: 4,
-                    flexGrow: 2,
-                    elevation: 2,
-                    maxWidth: 250
-                }}>
-                    <h4>First name</h4>
-                    <h1>{employee?.employee.first_name}</h1>
-                </Card>
-                <Card sx={{
-                    margin: 4,
-                    flexGrow: 2,
-                    elevation: 2,
-                    maxWidth: 250
-                }}>
-                    <h4>Last name</h4>
-                    <h1>{employee?.employee.last_name}</h1>
-                </Card>
-                <Card sx={{
-                    margin: 4,
-                    flexGrow: 2,
-                    elevation: 2,
-                    maxWidth: 250
-                }}>
-                    <h4>Company</h4>
-                    <h1>{employee?.company.name}</h1>
-                </Card>
-                <Card sx={{
-                    margin: 4,
-                    flexGrow: 5,
-                    elevation: 2,
-                    maxWidth: 1000
-                }}>
-                    <h4>email</h4>
-                    <h1> {employee?.employee.email}</h1>
-                </Card>
-                <Card sx={{
-                    margin: 4,
-                    flexGrow: 5,
-                    elevation: 2,
-                    maxWidth: 500
-                }}>
-                    <h4>phone</h4>
-                    <h1> {employee?.employee.phone}</h1>
-                </Card>
+                    <Grid container justifyContent="center"
+                          alignItems="center" >
+
+
+                            <Card sx={{
+                                my:10,
+                                margin: 10,
+                                maxWidth: 500,
+                                bgcolor: '#E2CEB5',
+                                borderRadius: 9,
+
+                            }}>
+                                <CardHeader
+                                    sx={{my: -2, mr: 2}}
+                                    action={
+                                        <h4>First name</h4>
+                                    }/>
+                                <CardContent sx={{my: -4}}>
+                                    <h1>{employee?.employee.first_name}</h1>
+                                </CardContent>
+                            </Card>
+
+
+                            <Card sx={{
+
+                                maxWidth: 250,
+                                margin: 10,
+                                bgcolor: '#E2CEB5',
+                                borderRadius: 9,
+                            }}>
+                                <CardHeader
+                                    sx={{my: -2, mr: 2}}
+                                    action={
+                                        <h4>Last name</h4>
+                                    }/>
+                                <CardContent sx={{my: -4}}>
+                                    <h1>{employee?.employee.last_name}</h1>
+                                </CardContent>
+                            </Card>
+
+                            <Card sx={{
+
+                                maxWidth: 250,
+                                margin: 10,
+                                bgcolor: '#E2CEB5',
+                                borderRadius: 9,
+                            }}>
+                                <CardHeader
+                                    sx={{my: -2, mr: 2}}
+                                    action={
+                                        <h4>Company</h4>
+                                    }/>
+                                <CardContent sx={{my: -4}}>
+                                    <h1>{employee?.company.name}</h1>
+                                </CardContent>
+                            </Card>
+
+
+                    </Grid>
+                    <Grid  container justifyContent="center"
+                          alignItems="center" >
+
+                            <Card sx={{
+                                my:10,
+                                margin: 10,
+                                maxWidth: 400,
+                                bgcolor: '#E2CEB5',
+                                borderRadius: 9,
+                            }}>
+                                <CardHeader
+                                    sx={{my: -2, mr: 2}}
+                                    action={
+                                        <h4>Email</h4>
+                                    }/>
+                                <CardContent sx={{my: -4}}>
+                                    <h1>{employee?.employee.email}</h1>
+                                </CardContent>
+                            </Card>
+
+
+                            <Card sx={{
+                                maxWidth: 400,
+                                margin: 10,
+
+                                bgcolor: '#E2CEB5',
+                                borderRadius: 9,
+                            }}>
+                                <CardHeader
+                                    sx={{my: -3, mr: 2}}
+                                    action={
+                                        <h4>Phone number</h4>
+                                    }/>
+                                <CardContent sx={{my: -4}}>
+                                    <h1>{employee?.employee.phone}</h1>
+                                </CardContent>
+                            </Card>
+
 
             </Grid>
         </>

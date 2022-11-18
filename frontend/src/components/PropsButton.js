@@ -60,17 +60,17 @@ const PropsButton = (props) => {
         const handleDeleteTeam = () => {
             setDialogDel(null);
 
-            useEffect(() => {
-                // DELETE request using fetch with set headers
-                const requestOptions = {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': 'Bearer my-token',
-                    }
-                };
-                fetch('http://localhost:8080/team' + props.props.id.id.toString(), requestOptions)
-                    .then();
-            }, [])
+            // useEffect(() => {
+            //     // DELETE request using fetch with set headers
+            //     const requestOptions = {
+            //         method: 'DELETE',
+            //         headers: {
+            //             'Authorization': 'Bearer my-token',
+            //         }
+            //     };
+            //     fetch('http://localhost:8080/team' + props.props.id.id.toString(), requestOptions)
+            //         .then();
+            // }, [])
         };
 
         return (

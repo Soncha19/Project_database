@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import SignIn from "./SignIn";
 import SignUp from "./SignUp";
+import RoundedAppBar from "./RoundedAppBar";
 
 
 const Start = () => {
@@ -20,7 +21,7 @@ const Start = () => {
 
     return (
         <>
-            <AppBar position="static">
+            <RoundedAppBar   sx={{bgcolor:"#093CA9"}} position="static">
                 <Container maxWidth="xl">
                     <Toolbar disableGutters>
                         <Typography
@@ -42,7 +43,7 @@ const Start = () => {
                         </Typography>
                     </Toolbar>
                 </Container>
-            </AppBar>
+            </RoundedAppBar>
 
             <Grid m={35} pl={80} container rowSpacing={5} columnSpacing={{xs: 2, sm: 2, md: 0}}>
                 <Grid item xs={4}>

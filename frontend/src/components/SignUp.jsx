@@ -39,7 +39,7 @@ const SignUp = () => {
     }
     return (
         <>
-        <Button color="secondary" variant="contained" onClick={handleClickOpen2}>Sign up</Button>
+        <Button size="large" bgcolor="#012E95" variant="contained" onClick={handleClickOpen2}>Sign up</Button>
     <Dialog open={open2} onClose={handleClose2} arial-labelledby="pop">
         <DialogContent>
             <h1>Sign up</h1>

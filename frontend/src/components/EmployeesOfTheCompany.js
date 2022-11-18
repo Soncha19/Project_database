@@ -34,7 +34,7 @@ const EmployeesOfTheCompany = () => {
     return (
         <>
             <Header/>
-            <TextField sx={{
+            <TextField    sx={{
                 color: "#012E95",
                 ml: 20,
                 width: '50ch',
