@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker, relationship, declarative_base, scoped_
 from marshmallow import Schema, fields, validate, ValidationError
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
-engine = create_engine('mysql+pymysql://root:feffKPklJozigUiaF4hy@containers-us-west-29.railway.app:6579/railway')
+engine = create_engine("mysql+pymysql://root:kV7vdF9d6onam64KQopq@containers-us-west-16.railway.app:7583/railway")
 Base = declarative_base()
 Base.metadata.create_all(bind=engine)
 SessionFactory = sessionmaker(bind=engine)

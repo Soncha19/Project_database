@@ -1,4 +1,4 @@
-from flask import current_app as application, make_response
+from flask import current_app as application, make_response, jsonify
 from flask import request
 from models import *
 from flask_httpauth import HTTPBasicAuth
@@ -589,6 +589,17 @@ def page_find_property_set():
 		'employees': [employee_schema.dump(i) for i in employees],
 		'property_sets': [property_set_schema.dump(i) for i in property_sets]
 	}
+	session.close()
+	return res, 200
+
+
+@application.route('/employee/findByToken', methods=['GET'])
+@jwt_required()
+def find_employee_by_token():
+	session = Session()
+	employee = session.query(Employee).filter(Employee.email == get_jwt_identity()).first()
+	employee_schema = EmployeeSchema()
+	res = employee_schema.dump(employee)
 	session.close()
 	return res, 200
 
