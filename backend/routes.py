@@ -44,7 +44,8 @@ def find_property_set_by_company():
 	session = Session()
 	args = request.args
 	company_id = args.get('company_id')
-	property_sets = session.query(PropertySet).filter(or_(PropertySet.company_id == company_id, PropertySet.id == 1)).filter(PropertySet.is_used == 1)
+	property_sets = session.query(PropertySet).filter(
+		or_(PropertySet.company_id == company_id, PropertySet.id == 1)).filter(PropertySet.is_used == 1)
 	property_set_schema = PropertySetSchema()
 	res = json.dumps([property_set_schema.dump(i) for i in property_sets])
 	session.close()
@@ -154,7 +155,7 @@ def find_employee_by_company_no_team():
 	session = Session()
 	args = request.args
 	company_id = args.get('company_id')
-	employees = session.query(Employee).filter(and_(Employee.team_id == 1, Employee.company_id == company_id))
+	employees = session.query(Employee).filter(Employee.company_id == company_id).filter(Employee.team_id == 1)
 	employee_schema = EmployeeSchema()
 	res = json.dumps([employee_schema.dump(i) for i in employees])
 	session.close()
@@ -243,18 +244,65 @@ def update_company():
 		return str(err), 400
 
 
-# @application.route('/company/', methods=['DELETE'])
-# def delete_company():
-# 	session = Session()
-# 	args = request.args
-# 	company_id = args.get('company_id')
-#
-# 	"""redirect to employee, feedback history, feedback, answer needed"""
-#
-# 	session.query(Company).filter(Company.id == company_id).delete()
-# 	session.commit()
-# 	session.close()
-# 	return "Company deleted"
+@application.route('/company/', methods=['DELETE'])
+def delete_company():
+	session = Session()
+	args = request.args
+	company_id = args.get('company_id')
+	if int(company_id) == 1:
+		return "This company can't be deleted", 400
+	if session.query(Company).filter(Company.id == company_id).count() == 0:
+		session.close()
+		return "Such company doesn't exist", 404
+
+	teams = session.query(Team).filter(Team.company_id == company_id)
+	for team in teams:
+		session.query(Employee).filter(Employee.team_id == team.id).update({'team_id': 1})
+		session.query(Team).filter(Team.id == team.id).delete()
+
+	session.query(Employee).filter(Employee.company_id == company_id).update({'company_id': 1})
+	session.query(Company).filter(Company.id == company_id).delete()
+
+	session.commit()
+	session.close()
+	return "Company deleted", 200
+
+
+@application.route('/team/', methods=['PUT'])
+def update_team():
+	session = Session()
+	args = request.get_json()
+	arg = request.args
+	team_id = arg.get('team_id')
+	team_schema = TeamSchema()
+	try:
+		team_schema.load(args, session=session)
+		session.query(Team).filter(Team.id == team_id).update(args)
+		session.commit()
+		team = team_schema.dump(session.query(Team).filter(Team.id == team_id).first())
+		session.commit()
+		session.close()
+		return team, 200
+	except ValidationError as err:
+		session.close()
+		return str(err), 400
+
+
+@application.route('/team/', methods=['DELETE'])
+def delete_team():
+	session = Session()
+	args = request.args
+	team_id = args.get('team_id')
+	if int(team_id) == 1:
+		return "This team can't be deleted", 400
+	if session.query(Team).filter(Team.id == team_id).count() == 0:
+		session.close()
+		return "Such team doesn't exist", 404
+	session.query(Employee).filter(Employee.team_id == team_id).update({'team_id': 1})
+	session.query(Team).filter(Team.id == team_id).delete()
+	session.commit()
+	session.close()
+	return "Team deleted", 200
 
 
 @application.route('/feedbackHistory/', methods=['POST'])
@@ -604,18 +652,24 @@ def find_employee_by_token():
 	return res, 200
 
 
-@application.route("/login", methods=["GET"])
+@application.route("/login", methods=["POST"])
 def login():
-	auth = request.authorization
+	auth = request.get_json()
 
-	if not auth or not auth.username or not auth.password:
+	try:
+		email = auth['email']
+		password = auth['password']
+	except:
 		return make_response('could not verify', 401, {'WWW.Authentication': 'Basic realm: "login required"'})
 
 	session = Session()
-	user = session.query(Employee).filter(Employee.email == auth.username).first()
+	users = session.query(Employee).filter(Employee.email == email)
+	if users.count() == 0:
+		return jsonify({'response': 'user with such email not found'}), 404
+	user = users.first()
 
-	if check_password_hash(user.password, auth.password):
-		access_token = create_access_token(identity=auth.username)
+	if check_password_hash(user.password, password):
+		access_token = create_access_token(identity=email)
 		return json.dumps({'token': access_token})
 
 	return make_response('could not verify', 401, {'WWW.Authentication': 'Basic realm: "login required"'})
