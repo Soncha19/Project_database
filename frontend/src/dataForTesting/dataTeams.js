@@ -1,9 +1,8 @@
-import Team from "../Team";
 
 export const teamsData = [
   {
-      name: "Green",
-      tag: "Gamedev"
+      "name": "Green",
+      "tag": "Gamedev"
   },
     {
       name: "Boring team",

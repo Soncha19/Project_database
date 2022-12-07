@@ -1,9 +1,11 @@
 import React from 'react';
 import {Card, Grid} from "@mui/material";
+import Header from "./components/Header";
 
 const Profile = () => {
     return (
-
+          <>
+              <Header/>
             <Grid container spacing={0}>
   <Card sx={{
         margin: 4,
@@ -51,7 +53,7 @@ const Profile = () => {
     <h1> +380680475894</h1>
   </Card>
 </Grid>
-
+</>
     );
 };
 

@@ -9,6 +9,7 @@ import json
 auth = HTTPBasicAuth()
 
 
+
 @application.route('/propertySet', methods=['POST'])
 @jwt_required()
 def new_property_set():
@@ -877,3 +878,4 @@ def check_personal(session, email):
 	if user.count() == 1:
 		return user.first().id
 	return 0
+
