@@ -3,9 +3,8 @@ from sqlalchemy.orm import sessionmaker, relationship, declarative_base, scoped_
 from marshmallow import Schema, fields, validate, ValidationError, validates
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
-engine = create_engine("mysql+pymysql://root:kV7vdF9d6onam64KQopq@containers-us-west-16.railway.app:7583/railway")
+engine = create_engine("mysql+pymysql://root:LaZh2kVrkAldhN9LQW94@containers-us-west-144.railway.app:7861/railway")
 Base = declarative_base()
-Base.metadata.create_all(bind=engine)
 SessionFactory = sessionmaker(bind=engine)
 Session = scoped_session(SessionFactory)
 
@@ -164,8 +163,8 @@ class PreAnswer(Base):
 	id = Column('id', Integer, primary_key=True, autoincrement=True)
 	text = Column('text', String(100))
 	numeric_value = Column('numeric_value', Integer)
-	property_set_id = Column('feedback_id', Integer, ForeignKey(PropertySet.id))
-	property_set = relationship(PropertySet, backref='pre_answer', lazy='joined')
+	question_id = Column('question_id', Integer, ForeignKey(Question.id))
+	question = relationship(Question, backref='pre_answer', lazy='joined')
 
 
 class PreAnswerSchema(SQLAlchemyAutoSchema):

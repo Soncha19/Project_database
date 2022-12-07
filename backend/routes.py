@@ -2,7 +2,6 @@ from flask import current_app as application, make_response, jsonify
 from flask import request
 from models import *
 from flask_httpauth import HTTPBasicAuth
-from flask_jwt import current_identity
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
 import json
@@ -11,8 +10,13 @@ auth = HTTPBasicAuth()
 
 
 @application.route('/propertySet', methods=['POST'])
+@jwt_required()
 def new_property_set():
 	session = Session()
+
+	if not check_admin(session, get_jwt_identity()):
+		return "Access denied", 403
+
 	args = request.get_json()
 	try:
 		property_set_schema = PropertySetSchema()
@@ -28,8 +32,13 @@ def new_property_set():
 
 
 @application.route('/propertySet/', methods=['GET'])
+@jwt_required()
 def find_property_set():
 	session = Session()
+
+	if not check_admin(session, get_jwt_identity()):
+		return "Access denied", 403
+
 	args = request.args
 	property_set_id = args.get('property_set_id')
 	property_set = session.query(PropertySet).filter(PropertySet.id == property_set_id).first()
@@ -40,8 +49,13 @@ def find_property_set():
 
 
 @application.route('/propertySets/', methods=['GET'])
+@jwt_required()
 def find_property_set_by_company():
 	session = Session()
+
+	if not check_admin(session, get_jwt_identity()):
+		return "Access denied", 403
+
 	args = request.args
 	company_id = args.get('company_id')
 	property_sets = session.query(PropertySet).filter(
@@ -53,8 +67,13 @@ def find_property_set_by_company():
 
 
 @application.route('/feedback', methods=['POST'])
+@jwt_required()
 def new_feedback():
 	session = Session()
+
+	if not check_admin(session, get_jwt_identity()):
+		return "Access denied", 403
+
 	args = request.get_json()
 	try:
 		feedback_schema = FeedbackSchema()
@@ -70,8 +89,13 @@ def new_feedback():
 
 
 @application.route('/feedback/', methods=['GET'])
+@jwt_required()
 def find_feedback():
 	session = Session()
+
+	if not check_access(session, get_jwt_identity()):
+		return "Access denied", 403
+
 	args = request.args
 	feedback_id = args.get('feedback_id')
 	feedbacks = session.query(Feedback).filter(Feedback.id == feedback_id).first()
@@ -81,8 +105,13 @@ def find_feedback():
 
 
 @application.route('/feedback/', methods=['DELETE'])
+@jwt_required()
 def delete_feedback():
 	session = Session()
+
+	if not check_admin(session, get_jwt_identity()):
+		return "Access denied", 403
+
 	args = request.args
 	feedback_id = args.get('feedback_id')
 	if session.query(Answer).filter(Answer.feedback_id == feedback_id).count() == 0:
@@ -97,10 +126,15 @@ def delete_feedback():
 
 
 @application.route('/feedback/findByEmployee', methods=['GET'])
+@jwt_required()
 def find_feedback_by_employee():
 	session = Session()
 	args = request.args
 	employee_id = args.get('employee_id')
+
+	if not(check_admin(session, get_jwt_identity()) or check_personal(session, get_jwt_identity()) == employee_id):
+		return "Access denied", 403
+
 	feedbacks = session.query(Feedback).filter(Feedback.employee_id == employee_id)
 	feedback_schema = FeedbackSchema()
 	res = json.dumps([feedback_schema.dump(i) for i in feedbacks])
@@ -118,17 +152,22 @@ def new_employee():
 		employee.password = generate_password_hash(employee.password)
 		session.add(employee)
 		session.commit()
-		res = employee_schema.dump(employee)
+		access_token = create_access_token(identity=employee.email)
 		session.close()
-		return res, 200
+		return json.dumps({'token': access_token}), 200
 	except ValidationError as err:
 		session.close()
 		return str(err), 400
 
 
 @application.route('/employee/', methods=['GET'])
+@jwt_required()
 def find_employee():
 	session = Session()
+
+	if not check_access(session, get_jwt_identity()):
+		return "Access denied", 403
+
 	args = request.args
 	employee_id = args.get('employee_id')
 	employee = session.query(Employee).filter(Employee.id == employee_id).first()
@@ -139,8 +178,13 @@ def find_employee():
 
 
 @application.route('/employee/findByCompany', methods=['GET'])
+@jwt_required()
 def find_employee_by_company():
 	session = Session()
+
+	if not check_access(session, get_jwt_identity()):
+		return "Access denied", 403
+
 	args = request.args
 	company_id = args.get('company_id')
 	employees = session.query(Employee).filter(Employee.company_id == company_id)
@@ -151,8 +195,13 @@ def find_employee_by_company():
 
 
 @application.route('/employee/findByCompany/noTeam', methods=['GET'])
+@jwt_required()
 def find_employee_by_company_no_team():
 	session = Session()
+
+	if not check_access(session, get_jwt_identity()):
+		return "Access denied", 403
+
 	args = request.args
 	company_id = args.get('company_id')
 	employees = session.query(Employee).filter(Employee.company_id == company_id).filter(Employee.team_id == 1)
@@ -163,8 +212,13 @@ def find_employee_by_company_no_team():
 
 
 @application.route('/employee/findByTeam', methods=['GET'])
+@jwt_required()
 def find_employee_by_team():
 	session = Session()
+
+	if not check_access(session, get_jwt_identity()):
+		return "Access denied", 403
+
 	args = request.args
 	team_id = args.get('team_id')
 	employees = session.query(Employee).filter(Employee.team_id == team_id)
@@ -175,11 +229,16 @@ def find_employee_by_team():
 
 
 @application.route('/employee/', methods=['PUT'])
+@jwt_required()
 def update_employee():
 	session = Session()
 	args = request.get_json()
 	arg = request.args
 	employee_id = arg.get('employee_id')
+
+	if not (check_personal(session, get_jwt_identity()) == int(employee_id)):
+		return "Access denied", 403
+
 	employee_schema = EmployeeSchema()
 	try:
 		employee = employee_schema.load(args, session=session)
@@ -196,13 +255,21 @@ def update_employee():
 
 
 @application.route('/company/', methods=['POST'])
+@jwt_required()
 def new_company():
 	session = Session()
+
+	if not check_access(session, get_jwt_identity()):
+		return "Access denied", 403
+
 	args = request.get_json()
 	try:
 		company_schema = CompanySchema()
 		company = company_schema.load(args, session=session)
 		session.add(company)
+		session.commit()
+		owner_email = get_jwt_identity()
+		session.query(Employee).filter(Employee.email == owner_email).update({'is_owner': True, 'company_id': company.id})
 		session.commit()
 		res = company_schema.dump(company)
 		session.close()
@@ -213,8 +280,13 @@ def new_company():
 
 
 @application.route('/company/', methods=['GET'])
+@jwt_required()
 def find_company():
 	session = Session()
+
+	if not check_access(session, get_jwt_identity()):
+		return "Access denied", 403
+
 	args = request.args
 	company_id = args.get('company_id')
 	company = session.query(Company).filter(Company.id == company_id).first()
@@ -225,8 +297,13 @@ def find_company():
 
 
 @application.route('/company/', methods=['PUT'])
+@jwt_required()
 def update_company():
 	session = Session()
+
+	if not check_admin(session, get_jwt_identity()):
+		return "Access denied", 403
+
 	args = request.get_json()
 	arg = request.args
 	company_id = arg.get('company_id')
@@ -245,8 +322,13 @@ def update_company():
 
 
 @application.route('/company/', methods=['DELETE'])
+@jwt_required()
 def delete_company():
 	session = Session()
+
+	if not check_admin(session, get_jwt_identity()):
+		return "Access denied", 403
+
 	args = request.args
 	company_id = args.get('company_id')
 	if int(company_id) == 1:
@@ -260,7 +342,8 @@ def delete_company():
 		session.query(Employee).filter(Employee.team_id == team.id).update({'team_id': 1})
 		session.query(Team).filter(Team.id == team.id).delete()
 
-	session.query(Employee).filter(Employee.company_id == company_id).update({'company_id': 1})
+
+	session.query(Employee).filter(Employee.company_id == company_id).update({'company_id': 1, 'role': False, 'is_owner': False})
 	session.query(Company).filter(Company.id == company_id).delete()
 
 	session.commit()
@@ -269,8 +352,13 @@ def delete_company():
 
 
 @application.route('/team/', methods=['PUT'])
+@jwt_required()
 def update_team():
 	session = Session()
+
+	if not check_admin(session, get_jwt_identity()):
+		return "Access denied", 403
+
 	args = request.get_json()
 	arg = request.args
 	team_id = arg.get('team_id')
@@ -289,8 +377,13 @@ def update_team():
 
 
 @application.route('/team/', methods=['DELETE'])
+@jwt_required()
 def delete_team():
 	session = Session()
+
+	if not check_admin(session, get_jwt_identity()):
+		return "Access denied", 403
+
 	args = request.args
 	team_id = args.get('team_id')
 	if int(team_id) == 1:
@@ -306,8 +399,13 @@ def delete_team():
 
 
 @application.route('/feedbackHistory/', methods=['POST'])
+@jwt_required()
 def new_feedback_history():
 	session = Session()
+
+	if not check_admin(session, get_jwt_identity()):
+		return "Access denied", 403
+
 	args = request.get_json()
 	try:
 		feedbackHistory_schema = FeedbackHistorySchema()
@@ -325,8 +423,13 @@ def new_feedback_history():
 
 
 @application.route('/feedbackHistory/id', methods=['GET'])
+@jwt_required()
 def find_feedback_history():
 	session = Session()
+
+	if not check_access(session, get_jwt_identity()):
+		return "Access denied", 403
+
 	args = request.args
 	feedbackHistory_id = args.get('feedbackHistory_id')
 	history = session.query(FeedbackHistory).filter(FeedbackHistory.employee_id == feedbackHistory_id).first()
@@ -336,21 +439,14 @@ def find_feedback_history():
 	return res, 200
 
 
-# @application.route('/feedbackHistory/delete', methods=['DELETE'])
-# def delete_feedback_history():
-# 	session = Session()
-# 	args = request.args
-# 	feedbackHistory_id = args.get('feedbackHistory_id')
-# 	session.query(Feedback).filter(Feedback.employee_id == feedbackHistory_id).delete()
-# 	session.query(FeedbackHistory).filter(FeedbackHistory.employee_id == feedbackHistory_id).delete()
-# 	session.commit()
-# 	session.close()
-# 	return "FeedbackHistory deleted"
-
-
 @application.route('/team', methods=['POST'])
+@jwt_required()
 def new_team():
 	session = Session()
+
+	if not check_admin(session, get_jwt_identity()):
+		return "Access denied", 403
+
 	args = request.get_json()
 	try:
 		team_schema = TeamSchema()
@@ -366,8 +462,13 @@ def new_team():
 
 
 @application.route('/team/findByCompany', methods=['GET'])
+@jwt_required()
 def find_team_by_company():
 	session = Session()
+
+	if not check_access(session, get_jwt_identity()):
+		return "Access denied", 403
+
 	args = request.args
 	company_id = args.get('company_id')
 	teams = session.query(Team).filter(Team.company_id == company_id)
@@ -378,8 +479,13 @@ def find_team_by_company():
 
 
 @application.route('/team/', methods=['GET'])
+@jwt_required()
 def find_team():
 	session = Session()
+
+	if not check_access(session, get_jwt_identity()):
+		return "Access denied", 403
+
 	args = request.args
 	team_id = args.get('team_id')
 	team = session.query(Team).filter(Team.id == team_id).first()
@@ -389,20 +495,13 @@ def find_team():
 	return res, 200
 
 
-# @application.route('/team/', methods=['DELETE'])
-# def delete_team():
-# 	session = Session()
-# 	args = request.args
-# 	team_id = args.get('team_id')
-# 	session.query(Team).filter(Team.id == team_id).delete()
-# 	session.commit()
-# 	session.close()
-# 	return "Company deleted"
-
-
 @application.route('/answer', methods=['POST'])
+@jwt_required()
 def new_answer():
 	session = Session()
+	if not check_admin(session, get_jwt_identity()):
+		return "Access denied", 403
+
 	args = request.get_json()
 	try:
 		answer_schema = AnswerSchema()
@@ -418,8 +517,12 @@ def new_answer():
 
 
 @application.route('/answer/', methods=['GET'])
+@jwt_required()
 def find_answer_by_feedback_id():
 	session = Session()
+	if not check_access(session, get_jwt_identity()):
+		return "Access denied", 403
+
 	args = request.args
 	feedback_id = args.get('feedback_id')
 	answers = session.query(Answer).filter(Answer.feedback_id == feedback_id)
@@ -430,8 +533,12 @@ def find_answer_by_feedback_id():
 
 
 @application.route('/preAnswer', methods=['POST'])
+@jwt_required()
 def new_pre_answer():
 	session = Session()
+	if not check_admin(session, get_jwt_identity()):
+		return "Access denied", 403
+
 	args = request.get_json()
 	try:
 		pre_answer_schema = PreAnswerSchema()
@@ -447,8 +554,11 @@ def new_pre_answer():
 
 
 @application.route('/preAnswer/', methods=['GET'])
+@jwt_required()
 def find_pre_answer_by_property_set_id():
 	session = Session()
+	if not check_access(session, get_jwt_identity()):
+		return "Access denied", 403
 	args = request.args
 	property_set_id = args.get('property_set_id')
 	pre_answers = session.query(PreAnswer).filter(PreAnswer.property_set_id == property_set_id)
@@ -459,8 +569,11 @@ def find_pre_answer_by_property_set_id():
 
 
 @application.route('/question', methods=['POST'])
+@jwt_required()
 def new_question():
 	session = Session()
+	if not check_admin(session, get_jwt_identity()):
+		return "Access denied", 403
 	args = request.get_json()
 	try:
 		question_schema = QuestionSchema()
@@ -476,8 +589,11 @@ def new_question():
 
 
 @application.route('/question/', methods=['GET'])
+@jwt_required()
 def find_question_by_property_set_id():
 	session = Session()
+	if not check_access(session, get_jwt_identity()):
+		return "Access denied", 403
 	args = request.args
 	property_set_id = args.get('property_set_id')
 	questions = session.query(Question).filter(Question.property_set_id == property_set_id)
@@ -488,11 +604,14 @@ def find_question_by_property_set_id():
 
 
 @application.route('/allFeedbackHistory/', methods=['GET'])
+@jwt_required()
 def page_feedback_history():
 	session = Session()
-
 	args = request.args
 	employee_id = args.get('employee_id')
+
+	if not(check_admin(session, get_jwt_identity()) or check_personal(session, get_jwt_identity()) == employee_id):
+		return "Access denied", 403
 
 	feedback_history = session.query(FeedbackHistory).filter(FeedbackHistory.employee_id == employee_id).first()
 	feedbackHistory_schema = FeedbackHistorySchema()
@@ -503,19 +622,21 @@ def page_feedback_history():
 	feedbacks = session.query(Feedback).filter(Feedback.employee_id == employee_id)
 	feedback_schema = FeedbackSchema()
 
-	answers = []
-	for i in feedbacks:
-		[answers.append(j) for j in session.query(Answer).filter(Answer.feedback_id == i.id)]
-	answer_schema = AnswerSchema()
-
 	property_set = session.query(PropertySet).filter(PropertySet.id == feedback_history.property_set_id).first()
 	property_set_schema = PropertySetSchema()
 
 	questions = session.query(Question).filter(Question.property_set_id == feedback_history.property_set_id)
 	question_schema = AnswerSchema()
 
-	pre_answers = session.query(PreAnswer).filter(PreAnswer.property_set_id == feedback_history.property_set_id)
-	pre_answers_schema = AnswerSchema()
+	answers = []
+	answer_schema = AnswerSchema()
+	for i in feedbacks:
+		[answers.append(i) for i in session.query(Answer).filter(Answer.feedback_id == i.id)]
+
+	pre_answers = []
+	pre_answer_schema = PreAnswerSchema()
+	for i in questions:
+		[pre_answers.append(i) for i in session.query(PreAnswer).filter(PreAnswer.question_id == i.id)]
 
 	res = {
 		'feedback_history': feedbackHistory_schema.dump(feedback_history),
@@ -524,17 +645,22 @@ def page_feedback_history():
 		'answers': [answer_schema.dump(i) for i in answers],
 		'property_set': property_set_schema.dump(property_set),
 		'questions': [question_schema.dump(i) for i in questions],
-		'pre_answers': pre_answers_schema.dump(pre_answers)
+		'pre_answers': [pre_answer_schema.dump(i) for i in pre_answers]
 	}
 	session.close()
 	return res, 200
 
 
 @application.route('/profile/', methods=['GET'])
+@jwt_required()
 def page_profile():
 	session = Session()
 	args = request.args
 	employee_id = args.get('employee_id')
+
+	if not (check_personal(session, get_jwt_identity()) == employee_id):
+		return "Access denied", 403
+
 	employee = session.query(Employee).filter(Employee.id == employee_id).first()
 	employee_schema = EmployeeSchema()
 
@@ -550,9 +676,12 @@ def page_profile():
 
 
 @application.route('/allFeedback', methods=['POST'])
+@jwt_required()
 def page_new_feedback():
 	session = Session()
 	args = request.get_json()
+	if not check_admin(session, get_jwt_identity()):
+		return "Access denied", 403
 	try:
 		feedback_schema = FeedbackSchema()
 		feedback = feedback_schema.load(args['feedback'], session=session)
@@ -580,9 +709,12 @@ def page_new_feedback():
 
 
 @application.route('/allPropertySet', methods=['POST'])
+@jwt_required()
 def page_new_property_set():
 	session = Session()
 	args = request.get_json()
+	if not check_admin(session, get_jwt_identity()):
+		return "Access denied", 403
 	try:
 		property_set_schema = PropertySetSchema()
 		property_set = property_set_schema.load(args['property_set'], session=session)
@@ -618,12 +750,52 @@ def page_new_property_set():
 		return str(err), 400
 
 
+@application.route('/allPropertySetUnique', methods=['POST'])
+@jwt_required()
+def page_new_property_set_unique():
+	session = Session()
+	args = request.get_json()
+	if not check_admin(session, get_jwt_identity()):
+		return "Access denied", 403
+	try:
+		property_set_schema = PropertySetSchema()
+		property_set = property_set_schema.load(args['property_set'], session=session)
+		session.add(property_set)
+
+		question_schema = QuestionSchema()
+		questions = []
+
+		pre_answer_schema = PreAnswerSchema()
+		pre_answers = []
+
+		for i in args['questions']:
+			questions.append(question_schema.load(i['question'], session=session))
+			questions[-1].property_set = property_set
+			session.add(questions[-1])
+			for j in i['pre_answers']:
+				pre_answers.append(pre_answer_schema.load(j, session=session))
+				pre_answers[-1].question = questions[-1]
+				session.add(pre_answers[-1])
+
+		session.commit()
+
+		res = {
+			'property_set': property_set_schema.dump(property_set),
+			'questions': [question_schema.dump(i) for i in questions],
+			'pre_answers': [pre_answer_schema.dump(i) for i in pre_answers]
+		}
+		session.close()
+		return res, 200
+	except ValidationError as err:
+		session.close()
+		return str(err), 400
+
+
 @application.route('/allPropertySet/', methods=['GET'])
 @jwt_required()
 def page_find_property_set():
 	session = Session()
-	current_identity_email = get_jwt_identity()
-	if session.query(Employee).filter(Employee.email == current_identity_email).count() != 1:
+	if not check_admin(session, get_jwt_identity()):
 		return "Access denied", 403
 	args = request.args
 	company_id = args.get('company_id')
@@ -645,6 +817,8 @@ def page_find_property_set():
 @jwt_required()
 def find_employee_by_token():
 	session = Session()
+	if not check_admin(session, get_jwt_identity()):
+		return "Access denied", 403
 	employee = session.query(Employee).filter(Employee.email == get_jwt_identity()).first()
 	employee_schema = EmployeeSchema()
 	res = employee_schema.dump(employee)
@@ -673,3 +847,33 @@ def login():
 		return json.dumps({'token': access_token})
 
 	return make_response('could not verify', 401, {'WWW.Authentication': 'Basic realm: "login required"'})
+
+
+def check_admin(session, email):
+	user = session.query(Employee).filter(Employee.email == email)
+	if user.count() == 1:
+		if user.first().role or user.first().is_owner:
+			return True
+	return False
+
+
+def check_owner(session, email):
+	user = session.query(Employee).filter(Employee.email == email)
+	if user.count() == 1:
+		if user.first().is_owner:
+			return True
+	return False
+
+
+def check_access(session, email):
+	user = session.query(Employee).filter(Employee.email == email)
+	if user.count() == 1:
+		return True
+	return False
+
+
+def check_personal(session, email):
+	user = session.query(Employee).filter(Employee.email == email)
+	if user.count() == 1:
+		return user.first().id
+	return 0
