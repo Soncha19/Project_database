@@ -12,6 +12,7 @@ import {
     MenuItem,
     Select
 } from "@mui/material";
+import {getToken} from "./UserLog";
 
 const AddNewPropertySet = () => {
     const [nameOfProp, setPropName] = useState();
@@ -104,7 +105,6 @@ const AddNewPropertySet = () => {
     }))
 
     const submit = (e) => {
-
         fetch('http://localhost:8080/allPropertySet', {
             method: 'POST',
             body: JSON.stringify({
@@ -117,6 +117,7 @@ const AddNewPropertySet = () => {
             }),
             headers: {
                 'Content-type': 'application/json; charset=UTF-8',
+                Authorization: `Bearer ${getToken()}`
             },
         })
             .then((response) => response.json())

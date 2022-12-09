@@ -5,12 +5,13 @@ import {Link, useLocation} from "react-router-dom";
 import PropsButton from "./PropsButton";
 import Typography from "@mui/material/Typography";
 import EmployeePropsButton from "./EmployeePropsButton";
+import {getToken} from "./UserLog";
 
 const Employee = () => {
 
     const location = useLocation();
     let teamId = location.state.id.id;
-
+    let isOwner = localStorage.getItem("is_owner").toString() == "false" ? false: true;
     const [teammates, setTeammates] = useState();
 
     function GetTeammates() {
@@ -18,17 +19,18 @@ const Employee = () => {
             fetch("http://localhost:8080/employee/findByTeam?team_id=" + teamId.toString(), {
                 'methods': 'GET',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                     Authorization: `Bearer ${getToken()}`
                 }
             })
                 .then(response => response.json())
                 .then(response => setTeammates(response))
                 .catch(error => console.log(error))
         }, [])
+
     }
 
     GetTeammates();
-
     return (
         <>
             <Header/>
@@ -39,7 +41,7 @@ const Employee = () => {
                              last_name={item?.last_name}/>
                     )
                 }
-                <Link to="/addpropertysettoemployee" state={{teamId: {teamId}}} style={{textDecoration: 'none'}}>
+                {isOwner && (<Link to="/addpropertysettoemployee" state={{teamId: {teamId}}} style={{textDecoration: 'none'}}>
                     <Card variant="outlined" sx={{
                         bgcolor: '#E2CEB5',
                         padding: 15,
@@ -57,7 +59,7 @@ const Employee = () => {
 
 
                     </Card>
-                </Link>
+                </Link>)}
             </Grid>
 
         </>
@@ -65,7 +67,7 @@ const Employee = () => {
 };
 
 const Emp = ({teamId, first_name, last_name, key, id}) => {
-
+    let isOwner = localStorage.getItem("is_owner").toString() == "false" ? false: true;
     return (
         <Card sx={{
             bgcolor: '#E2CEB5',
@@ -77,7 +79,7 @@ const Emp = ({teamId, first_name, last_name, key, id}) => {
         }}>
             <CardHeader
                 action={
-                    <EmployeePropsButton props={{id: {id}, teamId: {teamId}}}/>
+                   isOwner && ( <EmployeePropsButton props={{id: {id}, teamId: {teamId}}}/>)
                 }/>
 
              <Link to="/feedbackhistory" state={{id: {id}}} style={{textDecoration: 'none'}}>

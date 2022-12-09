@@ -20,6 +20,8 @@ import Box from "@mui/material/Box";
 import PropsButton from "./PropsButton";
 import IconButton from "@mui/material/IconButton";
 import Employee from "./Employee";
+import {GetEmp, getEmpCompanyId, GetEmployee, getToken, getUser, UserLog} from "./UserLog";
+import GetEmployeeInfo from "./GetEmployeeInfo";
 
 const theme = createTheme({
     status: {
@@ -44,7 +46,24 @@ const theme = createTheme({
 const Team = (props) => {
     const [team, setTeam] = useState();
     const [isShown, setIsShown] = useState(false);
-    let companyId = 1;
+    const [emp, setEmp] = useState(false);
+    let companyId = localStorage.getItem("company_id");
+    let isOwner = localStorage.getItem("is_owner").toString() == "false" ? false: true;
+    console.log(isOwner)
+    // console.log(localStorage.getItem("id"));
+    // CallToGetEmp();
+    // function CallToGetEmp() {
+    //     GetEmployee().then(response => setEmp(response));
+    // }
+
+    function checkDefaultEmployee() {
+
+        if (companyId == 1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     const handleClick = event => {
 
@@ -56,7 +75,8 @@ const Team = (props) => {
             fetch('http://localhost:8080/team/findByCompany?company_id=' + companyId.toString(), {
                 'methods': 'GET',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${getToken()}`
                 }
             })
                 .then(response => response.json())
@@ -72,7 +92,7 @@ const Team = (props) => {
         <>
             <Header/>
 
-            <Grid container spacing={0}>
+            {checkDefaultEmployee() && <Grid container spacing={0}>
 
                 {
 
@@ -80,7 +100,7 @@ const Team = (props) => {
                         <Teamsd companyId={companyId} id={item?.id} key={item?.id} name={item?.name} tag={item?.tag}/>
                     )
                 }
-                <Button onClick={handleClick} style={{textDecoration: 'none'}}>
+                {isOwner &&  (<Button onClick={handleClick} style={{textDecoration: 'none'}}>
                     <Card variant="outlined" sx={{
                         bgcolor: '#E2CEB5',
                         padding: 15,
@@ -98,9 +118,9 @@ const Team = (props) => {
 
 
                     </Card>
-                </Button>
-                {isShown && (<AddNewTeam/>)}
-            </Grid>
+                </Button>)}
+                 {isShown && (<AddNewTeam/>)}
+            </Grid>}
 
 
         </>
@@ -110,7 +130,7 @@ const Team = (props) => {
 };
 
 const Teamsd = ({name, tag, key, id, companyId}) => {
-
+    let isOwner = localStorage.getItem("is_owner").toString() == "false" ? false: true;
     return (
 
         // <Link to="/employees" state={{id: {id}}} style={{textDecoration: 'none'}}>
@@ -124,25 +144,25 @@ const Teamsd = ({name, tag, key, id, companyId}) => {
         }}>
             <CardHeader
                 action={
-                    <PropsButton props={{id: {id}, companyId: {companyId}}}/>
+                    isOwner && (<PropsButton props={{id: {id}, companyId: {companyId}}}/>)
                 }/>
 
-             <Link to="/employees" color="black" state={{id: {id}}} style={{textDecoration: 'none'}}>
+            <Link to="/employees" color="black" state={{id: {id}}} style={{textDecoration: 'none'}}>
 
-            <CardMedia>
-                <Typography sx={{color:"black", ml:4}} variant="h3">
-                    {name}
-                </Typography>
+                <CardMedia>
+                    <Typography sx={{color: "black", ml: 4}} variant="h3">
+                        {name}
+                    </Typography>
 
-                <Card variant="filled" sx={{
-                    bgcolor: '#E2CEB5',
-                    height: 200,
-                }}></Card>
-                <Typography sx={{color:"black", ml:25, my:-7}} variant="h3">
-                    {tag}
-                </Typography>
-            </CardMedia>
-             </Link>
+                    <Card variant="filled" sx={{
+                        bgcolor: '#E2CEB5',
+                        height: 200,
+                    }}></Card>
+                    <Typography sx={{color: "black", ml: 25, my: -7}} variant="h3">
+                        {tag}
+                    </Typography>
+                </CardMedia>
+            </Link>
         </Card>
 
     );

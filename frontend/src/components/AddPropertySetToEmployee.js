@@ -6,9 +6,10 @@ import TextField from "@mui/material/TextField";
 import AddNewPropertySet from "./AddNewPropertySet";
 import Team from "./Team";
 import DeleteTwoToneIcon from "@mui/icons-material/DeleteTwoTone";
+import {getToken} from "./UserLog";
 
 const AddPropertySetToEmployee = () => {
-    let companyId = 1;
+    let companyId = localStorage.getItem("company_id");;
 
     const location = useLocation();
     let teamId = location.state.teamId.teamId;
@@ -57,11 +58,12 @@ const AddPropertySetToEmployee = () => {
 
 
         // window.open("http://localhost:3000/teams", '_blank', 'noopener,noreferrer')
-        e.preventDefault(); // запобігає оновленню сторінки
+        // e.preventDefault(); // запобігає оновленню сторінки
         const requestOptions = {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
+                Authorization: `Bearer ${getToken()}`
             },
             body: JSON.stringify({
                 team_id: teamId
@@ -79,6 +81,7 @@ const AddPropertySetToEmployee = () => {
             }),
             headers: {
                 'Content-type': 'application/json; charset=UTF-8',
+                Authorization: `Bearer ${getToken()}`
             },
         })
             .then((response) => response.json())
@@ -96,7 +99,8 @@ const AddPropertySetToEmployee = () => {
             fetch("http://localhost:8080/propertySets/?company_id=" + companyId.toString(), {
                 'methods': 'GET',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${getToken()}`
                 }
             })
                 .then(response => response.json())
@@ -110,7 +114,8 @@ const AddPropertySetToEmployee = () => {
             fetch("http://localhost:8080/employee/findByCompany/noTeam?company_id=" + companyId.toString(), {
                 'methods': 'GET',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${getToken()}`
                 }
             })
                 .then(response => response.json())

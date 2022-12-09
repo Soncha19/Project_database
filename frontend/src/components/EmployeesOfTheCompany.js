@@ -3,22 +3,25 @@ import {Link, useLocation} from "react-router-dom";
 import Header from "./Header";
 import {Card, Grid} from "@mui/material";
 import TextField from "@mui/material/TextField";
+import {getToken, UserLog} from "./UserLog";
 
 
 const EmployeesOfTheCompany = () => {
-    let companyId;
-    const location = useLocation();
+    // let companyId;
+    // const location = useLocation();
     //companyId = location.state.id.id;
+    let companyId = localStorage.getItem("company_id");
 
     const [employees, setEmployees] = useState();
     const [value, setValue] = useState('');
 
     function GetEmployees() {
         useEffect(() => {
-            fetch("http://localhost:8080/employee/findByCompany?company_id=1", {
+            fetch("http://localhost:8080/employee/findByCompany?company_id=" + companyId.toString(), {
                 'methods': 'GET',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${getToken()}`
                 }
             })
                 .then(response => response.json())
@@ -34,7 +37,7 @@ const EmployeesOfTheCompany = () => {
     return (
         <>
             <Header/>
-            <TextField    sx={{
+            <TextField sx={{
                 color: "#012E95",
                 ml: 20,
                 width: '50ch',
@@ -67,12 +70,10 @@ const Emp = ({first_name, last_name, key, id}) => {
             }}>
 
 
-                        <h5>{first_name}</h5>
+                <h5>{first_name}</h5>
 
 
-                        <h5>{last_name}</h5>
-
-
+                <h5>{last_name}</h5>
 
 
             </Card>
