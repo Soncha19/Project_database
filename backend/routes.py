@@ -147,14 +147,28 @@ def new_employee():
 	session = Session()
 	args = request.get_json()
 	try:
+		email = args['email']
 		employee_schema = EmployeeSchema()
 		employee = employee_schema.load(args, session=session)
 		employee.password = generate_password_hash(employee.password)
 		session.add(employee)
 		session.commit()
-		access_token = create_access_token(identity=employee.email)
+		employee = session.query(Employee).filter(Employee.email == email).first()
+		token = create_access_token(identity=employee.email)
+		res = {
+			"id": employee.id,
+			"first_name": employee.first_name,
+			"last_name": employee.last_name,
+			"email": employee.email,
+			"company_id": employee.company_id,
+			"team_id": employee.team_id,
+			"is_owner": employee.is_owner,
+			"phone": employee.phone,
+			"role": employee.role,
+			"token": token
+		}
 		session.close()
-		return json.dumps({'token': access_token}), 200
+		return res, 200
 	except ValidationError as err:
 		session.close()
 		return str(err), 400
@@ -235,11 +249,34 @@ def update_employee():
 	args = request.get_json()
 	arg = request.args
 	employee_id = arg.get('employee_id')
+	employee_schema = EmployeeSchema()
 
 	if not (check_personal(session, get_jwt_identity()) == int(employee_id)):
-		return "Access denied", 403
 
-	employee_schema = EmployeeSchema()
+		if check_owner(session, get_jwt_identity()):
+			res = ""
+			if 'role' in args:
+				session.query(Employee).filter(Employee.id == employee_id).update({'role': args['role']})
+				session.commit()
+				session.close()
+				res += 'Role changed to {}\n'.format(args['role'])
+
+			if 'team_id' in args:
+				session.query(Employee).filter(Employee.id == employee_id).update({'team_id': args['team_id']})
+				session.commit()
+				session.close()
+				res += 'Team changed to {}'.format(args['role'])
+			return res, 200
+
+		if check_admin(session, get_jwt_identity()):
+			if 'team_id' in args:
+				session.query(Employee).filter(Employee.id == employee_id).update({'team_id': args['team_id']})
+				session.commit()
+				session.close()
+				return 'Team changed to {}'.format(args['team_id']), 200
+
+		return 'Access denied', 403
+
 	try:
 		employee = employee_schema.load(args, session=session)
 		if 'password' in args.keys():
@@ -610,7 +647,7 @@ def page_feedback_history():
 	args = request.args
 	employee_id = args.get('employee_id')
 
-	if not(check_admin(session, get_jwt_identity()) or check_personal(session, get_jwt_identity()) == employee_id):
+	if not(check_admin(session, get_jwt_identity()) or check_personal(session, get_jwt_identity()) == int(employee_id)):
 		return "Access denied", 403
 
 	feedback_history = session.query(FeedbackHistory).filter(FeedbackHistory.employee_id == employee_id).first()
@@ -626,7 +663,7 @@ def page_feedback_history():
 	property_set_schema = PropertySetSchema()
 
 	questions = session.query(Question).filter(Question.property_set_id == feedback_history.property_set_id)
-	question_schema = AnswerSchema()
+	question_schema = QuestionSchema()
 
 	answers = []
 	answer_schema = AnswerSchema()
@@ -658,7 +695,7 @@ def page_profile():
 	args = request.args
 	employee_id = args.get('employee_id')
 
-	if not (check_personal(session, get_jwt_identity()) == employee_id):
+	if not (check_personal(session, get_jwt_identity()) == int(employee_id)):
 		return "Access denied", 403
 
 	employee = session.query(Employee).filter(Employee.id == employee_id).first()
@@ -718,6 +755,9 @@ def page_new_property_set():
 	try:
 		property_set_schema = PropertySetSchema()
 		property_set = property_set_schema.load(args['property_set'], session=session)
+
+		user = session.query(Employee).filter(Employee.email == get_jwt_identity()).first()
+		property_set.company_id = user.company_id
 		session.add(property_set)
 
 		question_schema = QuestionSchema()
@@ -760,6 +800,8 @@ def page_new_property_set_unique():
 	try:
 		property_set_schema = PropertySetSchema()
 		property_set = property_set_schema.load(args['property_set'], session=session)
+		user = session.query(Employee).filter(Employee.email == get_jwt_identity()).first()
+		property_set.company_id = user.company_id
 		session.add(property_set)
 
 		question_schema = QuestionSchema()
@@ -776,6 +818,7 @@ def page_new_property_set_unique():
 				pre_answers.append(pre_answer_schema.load(j, session=session))
 				pre_answers[-1].question = questions[-1]
 				session.add(pre_answers[-1])
+
 
 		session.commit()
 
@@ -817,8 +860,6 @@ def page_find_property_set():
 @jwt_required()
 def find_employee_by_token():
 	session = Session()
-	if not check_admin(session, get_jwt_identity()):
-		return "Access denied", 403
 	employee = session.query(Employee).filter(Employee.email == get_jwt_identity()).first()
 	employee_schema = EmployeeSchema()
 	res = employee_schema.dump(employee)
@@ -837,14 +878,28 @@ def login():
 		return make_response('could not verify', 401, {'WWW.Authentication': 'Basic realm: "login required"'})
 
 	session = Session()
-	users = session.query(Employee).filter(Employee.email == email)
-	if users.count() == 0:
+	employees = session.query(Employee).filter(Employee.email == email)
+	if employees.count() == 0:
 		return jsonify({'response': 'user with such email not found'}), 404
-	user = users.first()
+	employee = employees.first()
 
-	if check_password_hash(user.password, password):
-		access_token = create_access_token(identity=email)
-		return json.dumps({'token': access_token})
+	if check_password_hash(employee.password, password):
+		token = create_access_token(identity=employee.email)
+		res = {
+			"id": employee.id,
+			"first_name": employee.first_name,
+			"last_name": employee.last_name,
+			"email": employee.email,
+			"company_id": employee.company_id,
+			"team_id": employee.team_id,
+			"is_owner": employee.is_owner,
+			"phone": employee.phone,
+			"role": employee.role,
+			"token": token
+		}
+		session.commit()
+		session.close()
+		return res, 200
 
 	return make_response('could not verify', 401, {'WWW.Authentication': 'Basic realm: "login required"'})
 

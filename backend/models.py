@@ -59,7 +59,6 @@ class Employee(Base):
 	is_owner = Column('is_owner', Boolean, default=False)
 	password = Column('password', String(150))
 	phone = Column('phone', String(13))
-	date_of_birth = Column('date_of_birth', DATE)
 	role = Column('role', Boolean, default=False)
 
 
