@@ -1,10 +1,13 @@
 from sqlalchemy import *
 from sqlalchemy.orm import sessionmaker, relationship, declarative_base, scoped_session
-from marshmallow import Schema, fields, validate, ValidationError, validates
+
+from marshmallow import Schema, fields, validate, ValidationError
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
-engine = create_engine("mysql+pymysql://root:LaZh2kVrkAldhN9LQW94@containers-us-west-144.railway.app:7861/railway")
+engine = create_engine('mysql+pymysql://root:feffKPklJozigUiaF4hy@containers-us-west-29.railway.app:6579/railway')
 Base = declarative_base()
+Base.metadata.create_all(bind=engine)
+
 SessionFactory = sessionmaker(bind=engine)
 Session = scoped_session(SessionFactory)
 
@@ -22,7 +25,6 @@ class CompanySchema(SQLAlchemyAutoSchema):
 		include_relationships = False
 		load_instance = True
 		include_fk = True
-
 
 class Team(Base):
 	__tablename__ = 'team'
@@ -63,6 +65,7 @@ class Employee(Base):
 	role = Column('role', Boolean, default=False)
 
 
+
 def validate_email(email1):
 	session = Session()
 	if not (session.query(Employee).filter(Employee.email == email1).count() == 0):
@@ -77,6 +80,7 @@ class EmployeeSchema(SQLAlchemyAutoSchema):
 		include_fk = True
 
 	email = fields.Email(validate=validate_email)
+
 
 
 class PropertySet(Base):
@@ -114,7 +118,6 @@ class QuestionSchema(SQLAlchemyAutoSchema):
 		load_instance = True
 		include_fk = True
 
-
 class FeedbackHistory(Base):
 	__tablename__ = 'feedback_history'
 
@@ -128,6 +131,7 @@ class FeedbackHistory(Base):
 	team = relationship(Team, backref='feedback_history', lazy='joined')
 
 
+
 class FeedbackHistorySchema(SQLAlchemyAutoSchema):
 	class Meta:
 		model = FeedbackHistory
@@ -139,12 +143,15 @@ class FeedbackHistorySchema(SQLAlchemyAutoSchema):
 	property_set_id = fields.Integer()
 
 
+
 class Feedback(Base):
 	__tablename__ = 'feedback'
 
 	id = Column('id', Integer, primary_key=True, autoincrement=True)
+
 	date_of_creation = Column('date_of_creation', DATE)
 	note = Column('note', String(500))
+
 	employee_id = Column('employee_id', Integer, ForeignKey(FeedbackHistory.employee_id))
 	feedbackHistory = relationship(FeedbackHistory, backref='feedback', lazy='joined')
 
@@ -157,8 +164,13 @@ class FeedbackSchema(SQLAlchemyAutoSchema):
 		include_fk = True
 
 
+
 class PreAnswer(Base):
 	__tablename__ = 'pre_answer'
+
+class Answer(Base):
+	__tablename__ = 'answer'
+
 
 	id = Column('id', Integer, primary_key=True, autoincrement=True)
 	text = Column('text', String(100))
@@ -195,5 +207,5 @@ class AnswerSchema(SQLAlchemyAutoSchema):
 		load_instance = True
 		include_fk = True
 
-
 Base.metadata.create_all(bind=engine)
+
