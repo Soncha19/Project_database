@@ -1,9 +1,10 @@
 export class Feedback
 {
-    constructor(id, dateOfCreation, feedbackHistoryId, note) {
+    constructor(id, date_of_creation, employee_id, note)
+    {
         this.id = id;
-        this.dateOfCreation = dateOfCreation;
-        this.feedbackHistoryId = feedbackHistoryId;
+        this.date_of_creation = date_of_creation;
         this.note = note;
+        this.employee_id = employee_id;
     }
 }

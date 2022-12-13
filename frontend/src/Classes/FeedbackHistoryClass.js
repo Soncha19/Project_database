@@ -1,8 +1,8 @@
 export class FeedbackHistoryClass
 {
-    constructor(idEmployee, idPropertySet)
+    constructor(employee_id, property_set_id)
     {
-        this.idEmployee = idEmployee;
-        this.idPropertySet = idPropertySet;
+        this.employee_id = employee_id;
+        this.property_set_id = property_set_id;
     }
 }

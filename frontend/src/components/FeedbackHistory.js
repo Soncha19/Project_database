@@ -5,8 +5,8 @@ import {useLocation} from "react-router-dom";
 
 export const FeedbackHistory = (props) =>
 {
-
-    const [idOfEmployee, setIdEmployee] = useState(1);
+    const location = useLocation();
+    const [idOfEmployee, setIdEmployee] = useState();
     const [employee, setEmployee] = useState();
     const [feedbackHistory, setFeedbackHistory] = useState();
     const [propertySets, setPropertySets] = useState();
@@ -18,7 +18,7 @@ export const FeedbackHistory = (props) =>
     function GetEmployee()
     {
         useEffect(() => {
-            fetch('http://localhost:8080/employee/?employee_id=1', {
+            fetch('http://localhost:8080/employee/?employee_id=' + idOfEmployee, {
                 'methods': 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -115,22 +115,47 @@ export const FeedbackHistory = (props) =>
         return table;
     }
 
-    GetEmployee();
+    useEffect(() => {
+        setIdEmployee(location.state.id.id);
+    },[location]);
+
+    //GetEmployee();
     GetFeedbackHistory();
     GetPropertySets();
     GetQuestion();
     GetFeedbacks();
     GetAnswers();
 
+    console.log(idOfEmployee);
+    console.log(employee);
+
     useEffect(() => {
         setMarks(GetTable());
     },[question, feedback, answer]);
+
+    useEffect(() => {
+        setIdEmployee(location.state.id.id);
+        GetEmployee();
+    },[location]);
+
+    // useEffect(() => {
+    //
+    // },[idOfEmployee]);
 
     return(
 
         <>
             <h1 id="PageName">Feedback history</h1>
-            <p id="EmployeeInfo"></p>
+            <Stack direction="row" justifyContent="center" alignItems="center" spacing={3}>
+                {propertySets?.map((item, index) =>
+                    <div>{item?.name}:</div>
+                )
+                }
+                {employee?.map((item, index) =>
+                    <div>{item?.first_name} {item?.last_name}</div>
+                )
+                }
+            </Stack>
             <Stack direction="column" justifyContent="center" alignItems="center" spacing={3}>
                 <Stack direction="row" justifyContent="center" alignItems="center" spacing={3}>
                     <div className="Date">Date</div>
