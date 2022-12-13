@@ -10,9 +10,10 @@ import {
     Grid,
     InputLabel,
     MenuItem,
-    Select
+    Select, Typography
 } from "@mui/material";
 import {getToken} from "./UserLog";
+import AddNewPropertySetDiffPreAns from "./AddNewPropertySetDiffPreAns";
 
 const AddNewPropertySet = () => {
     const [nameOfProp, setPropName] = useState();
@@ -21,7 +22,19 @@ const AddNewPropertySet = () => {
     const [inputFields, setInputFields] = useState([{title: ''}])
     const [inputAnswer, setInputAnswer] = useState([{answer: ''}])
     const [dialog, setDialog] = useState(null);
-    let companyId = 1;
+    let companyId = localStorage.getItem("company_id");
+    ;
+
+    const [winChoseAdd, setWinChoseAdd] = useState(false)
+
+
+    function handleClickWinChoseAdd() {
+        setWinChoseAdd(true)
+    }
+
+    const handleCloseWinChoseAdd = () => {
+        setWinChoseAdd(false);
+    }
 
 
     const open = Boolean(dialog);
@@ -191,10 +204,12 @@ const AddNewPropertySet = () => {
 
     return (
         <div>
-            <Button size="large" sx={{bgcolor: "#093CA9"}} variant="contained" onClick={handleClickOpen}>+</Button>
+            <Button size="large" sx={{bgcolor: "#093CA9"}} variant="contained"
+                    onClick={handleClickWinChoseAdd}>+</Button>
+
             <Dialog PaperProps={{
                 style: {
-                    backgroundColor: '#E2CEB5',
+                    backgroundColor: '#36342C',
 
                 },
             }} fullWidth maxWidth="lg" open={open} onClose={handleClose}>
@@ -284,6 +299,35 @@ const AddNewPropertySet = () => {
                     <Button sx={{bgcolor: "white", color: "black"}} variant="contained"
                             onClick={handleClose}>Close</Button>
                     <Button size="large" sx={{bgcolor: "#093CA9"}} variant="contained" onClick={submit}>Save</Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog PaperProps={{
+                style: {
+                    backgroundColor: '#36342C',
+                },
+            }} open={winChoseAdd} onClose={handleCloseWinChoseAdd}
+                    arial-labelledby="form-dialog-title">
+                <DialogContent>
+                    <DialogTitle bgcolor='#093CA9' color="white" textAlign='center'>Choose the type of property set
+                    </DialogTitle>
+                    <Box textAlign='center' component="form"
+                         sx={{
+                             '& > :not(style)': {m: 1, width: '50ch'}, marginTop: 3,
+                         }}
+                         noValidate
+                         autoComplete="off"
+                    >
+                        <AddNewPropertySetDiffPreAns/>
+                        <Typography justifyContent="centre" margin="auto" variant="h6" component="h6">
+                            or
+                        </Typography>
+                        <Button onClick={handleClickOpen} margin="auto" size="large" variant="contained" sx={{bgcolor: "#093CA9"}}>same answers to
+                            all</Button>
+                    </Box>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseWinChoseAdd} variant="contained" color="primary">Cancel</Button>
+
                 </DialogActions>
             </Dialog>
         </div>

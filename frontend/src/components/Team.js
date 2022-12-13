@@ -20,7 +20,7 @@ import Box from "@mui/material/Box";
 import PropsButton from "./PropsButton";
 import IconButton from "@mui/material/IconButton";
 import Employee from "./Employee";
-import {GetEmp, getEmpCompanyId, GetEmployee, getToken, getUser, UserLog} from "./UserLog";
+import {GetEmp, getEmpCompanyId, GetEmployee, getToken, getUser, setUser, UserLog} from "./UserLog";
 import GetEmployeeInfo from "./GetEmployeeInfo";
 
 const theme = createTheme({
@@ -48,8 +48,10 @@ const Team = (props) => {
     const [isShown, setIsShown] = useState(false);
     const [emp, setEmp] = useState(false);
     let companyId = localStorage.getItem("company_id");
-    let isOwner = localStorage.getItem("is_owner").toString() == "false" ? false: true;
-    console.log(isOwner)
+    let isOwner = localStorage.getItem("is_owner").toString() == "false" ? false : true;
+
+
+    console.log(companyId)
     // console.log(localStorage.getItem("id"));
     // CallToGetEmp();
     // function CallToGetEmp() {
@@ -100,7 +102,7 @@ const Team = (props) => {
                         <Teamsd companyId={companyId} id={item?.id} key={item?.id} name={item?.name} tag={item?.tag}/>
                     )
                 }
-                {isOwner &&  (<Button onClick={handleClick} style={{textDecoration: 'none'}}>
+                {isOwner && (<Button onClick={handleClick} style={{textDecoration: 'none'}}>
                     <Card variant="outlined" sx={{
                         bgcolor: '#E2CEB5',
                         padding: 15,
@@ -119,7 +121,7 @@ const Team = (props) => {
 
                     </Card>
                 </Button>)}
-                 {isShown && (<AddNewTeam/>)}
+                {isShown && (<AddNewTeam/>)}
             </Grid>}
 
 
@@ -130,7 +132,7 @@ const Team = (props) => {
 };
 
 const Teamsd = ({name, tag, key, id, companyId}) => {
-    let isOwner = localStorage.getItem("is_owner").toString() == "false" ? false: true;
+    let isOwner = localStorage.getItem("is_owner").toString() == "false" ? false : true;
     return (
 
         // <Link to="/employees" state={{id: {id}}} style={{textDecoration: 'none'}}>

@@ -1,9 +1,10 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import IconButton from "@mui/material/IconButton";
 import ModeEditOutlineTwoToneIcon from "@mui/icons-material/ModeEditOutlineTwoTone";
 import DeleteTwoToneIcon from "@mui/icons-material/DeleteTwoTone";
 import {Dialog, DialogActions, DialogContent, DialogTitle, TextField} from "@mui/material";
 import Button from "@mui/material/Button";
+import {getToken} from "./UserLog";
 
 const EmployeePropsButton = (props) => {
             const [anchorEl, setAnchorEl] = useState(null);
@@ -31,18 +32,20 @@ const EmployeePropsButton = (props) => {
         const handleDeleteEmployee = () => {
             setDialogDel(null);
 
-            // useEffect(() => {
-            //     // DELETE request using fetch with set headers
-            //     const requestOptions = {
-            //         method: 'DELETE',
-            //         headers: {
-            //             'Authorization': 'Bearer my-token',
-            //         }
-            //     };
-            //     fetch('http://localhost:8080/team' + props.props.id.id.toString(), requestOptions)
-            //         .then();
-            // }, [])
+            const requestOptions = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${getToken()}`
+            },
+            body: JSON.stringify({
+                team_id: 1
+            })
         };
+        fetch('http://localhost:8080/employee/?employee_id=' + employeeId.toString(), requestOptions)
+            .then(response => response.json());
+        };
+        window.location.reload(false);
 
     return (
         <div>
@@ -57,7 +60,7 @@ const EmployeePropsButton = (props) => {
                     <DeleteTwoToneIcon/>
                 </IconButton>
                 <Dialog open={openDialogDel} onClose={handleClose}>
-                    <DialogTitle>Delete this team? </DialogTitle>
+                    <DialogTitle>Delete this employee from the team? </DialogTitle>
                     <DialogActions>
                         <Button onClick={handleClose}>Cancel</Button>
                         <Button onClick={handleDeleteEmployee}>Delete</Button>

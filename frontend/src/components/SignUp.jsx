@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Button, Dialog, DialogActions, DialogContent, Grid} from "@mui/material";
+import {Button, Dialog, DialogActions, DialogContent, Grid, Typography} from "@mui/material";
 import TextField from "@mui/material/TextField";
 import {getToken, setToken, setUser, UserLog} from "./UserLog";
 import {useNavigate} from "react-router-dom";
@@ -43,6 +43,11 @@ const SignUp = () => {
     const handleClose2 = () => {
         setOpen2(false);
     }
+
+    function sleep(time) {
+        return new Promise((resolve) => setTimeout(resolve, time));
+    }
+
     const handleSignUp = () => {
         fetch('http://localhost:8080/employee/', {
             method: 'POST',
@@ -58,42 +63,41 @@ const SignUp = () => {
             },
         })
             .then(response => response.json())
-            .then(response => setToken(response))
-            .catch(error => console.log(error));
-        let path = '/teams';
-        navigate(path);
-
-        fetch("http://localhost:8080/employee/findByToken", {
-            'methods': 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${getToken()}`
-            }
-        })
-            .then(response => response.json())
             .then(response => setUser(response))
-            .catch(error => console.log(error))
+            .catch(error => console.log(error));
+
+        sleep(3000).then(() => {
+            navigate('/teams');
+            window.location.reload(false);
+
+        })
 
     }
 
     return (
         <>
             <Button size="large" bgcolor="#012E95" variant="contained" onClick={handleClickOpen2}>Sign up</Button>
-            <Dialog open={open2} onClose={handleClose2} arial-labelledby="pop">
+            <Dialog PaperProps={{
+                    style: {
+                        backgroundColor: '#36342C',
+                    },
+                }} open={open2} onClose={handleClose2} arial-labelledby="pop">
                 <DialogContent>
-                    <h1>Sign up</h1>
-                    <TextField onChange={e => first_name.onChange(e)} onBlur={e => first_name.onBlur(e)} autoFocus
+                    <Typography sx={{color:"white"}} justifyContent="centre" margin="auto" variant="h2" component="h2">
+                            Sign up
+                        </Typography>
+                    <TextField sx={{bgcolor:"white"}} onChange={e => first_name.onChange(e)} onBlur={e => first_name.onBlur(e)} autoFocus
                                margin="dense"
                                id="first_name" label="First Name" type="string" fullWidth variant="filled"/>
-                    <TextField onChange={e => last_name.onChange(e)} onBlur={e => last_name.onBlur(e)} autoFocus
+                    <TextField sx={{bgcolor:"white"}} onChange={e => last_name.onChange(e)} onBlur={e => last_name.onBlur(e)} autoFocus
                                margin="dense"
                                id="last_name" label="Last Name" type="string" fullWidth variant="filled"/>
-                    <TextField onChange={e => email.onChange(e)} onBlur={e => email.onBlur(e)} autoFocus margin="dense"
+                    <TextField sx={{bgcolor:"white"}}onChange={e => email.onChange(e)} onBlur={e => email.onBlur(e)} autoFocus margin="dense"
                                id="email" label="Email" type="email" fullWidth variant="filled"/>
-                    <TextField onChange={e => password.onChange(e)} onBlur={e => password.onBlur(e)} autoFocus
+                    <TextField sx={{bgcolor:"white"}} onChange={e => password.onChange(e)} onBlur={e => password.onBlur(e)} autoFocus
                                margin="dense"
                                id="password" label="Password" type="password" fullWidth variant="filled"/>
-                    <TextField onChange={e => phone.onChange(e)} onBlur={e => phone.onBlur(e)} autoFocus margin="dense"
+                    <TextField sx={{bgcolor:"white"}} onChange={e => phone.onChange(e)} onBlur={e => phone.onBlur(e)} autoFocus margin="dense"
                                id="phone" label="Phone" type="phone" fullWidth variant="filled"/>
                     {/*<Grid container justifyContent="space-between" alignItems="center">*/}
                     {/*    <Grid item>*/}

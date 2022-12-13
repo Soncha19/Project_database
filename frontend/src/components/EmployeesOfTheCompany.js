@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Link, useLocation} from "react-router-dom";
 import Header from "./Header";
-import {Card, Grid} from "@mui/material";
+import {Box, Card, Grid} from "@mui/material";
 import TextField from "@mui/material/TextField";
 import {getToken, UserLog} from "./UserLog";
 
@@ -37,19 +37,31 @@ const EmployeesOfTheCompany = () => {
     return (
         <>
             <Header/>
+            <Box textAlign='center' component="form"
+                     sx={{
+                         '& > :not(style)': {m: 1, width: '50ch'}, marginTop: 3,
+                     }}
+
+                     noValidate
+                     autoComplete="off"
+                >
             <TextField sx={{
                 color: "#012E95",
                 ml: 20,
+
                 width: '50ch',
                 bgcolor: 'white',
                 borderColor: '#E2CEB5',
+                marginTop: 3,
+                marginBottom:3
             }} onChange={(event) => setValue(event.target.value)} autoFocus margin="dense" id="employee_name"
                        label="Name" type="text" variant="outlined"/>
+</Box>
 
             <Grid container spacing={0}>
                 {
                     filteredEmployees?.map((item, index) =>
-                        <Emp id={item?.id} key={item?.id} first_name={item?.first_name} last_name={item?.last_name}/>
+                        <Emp id={item?.id} key={item?.id} first_name={item?.first_name} last_name={item?.last_name} role={item?.role}/>
                     )
                 }
             </Grid>
@@ -58,25 +70,27 @@ const EmployeesOfTheCompany = () => {
     );
 };
 
-const Emp = ({first_name, last_name, key, id}) => {
+const Emp = ({first_name, last_name, key, id, role}) => {
     return (
         <Link to="/feedbackhistory" state={{id: {id}}} style={{textDecoration: 'none'}}>
             <Card sx={{
                 bgcolor: '#E2CEB5',
                 margin: 2,
-                padding: 15,
+                padding: 13,
                 borderRadius: 9
 
             }}>
 
 
-                <h5>{first_name}</h5>
+                <h2>{first_name}</h2>
 
 
-                <h5>{last_name}</h5>
+                <h2>{last_name}</h2>
+                <h5>{role}</h5>
 
 
             </Card>
+
         </Link>
     );
 

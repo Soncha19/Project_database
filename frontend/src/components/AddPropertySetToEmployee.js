@@ -7,6 +7,7 @@ import AddNewPropertySet from "./AddNewPropertySet";
 import Team from "./Team";
 import DeleteTwoToneIcon from "@mui/icons-material/DeleteTwoTone";
 import {getToken} from "./UserLog";
+import AddNewPropertySetDiffPreAns from "./AddNewPropertySetDiffPreAns";
 
 const AddPropertySetToEmployee = () => {
     let companyId = localStorage.getItem("company_id");;
@@ -152,6 +153,7 @@ const AddPropertySetToEmployee = () => {
                     ))}
                 </TextField>
             </Box>
+
             <Box textAlign='center'>
                 <Grid container justifyContent="center"
                       alignItems="center">
@@ -177,6 +179,7 @@ const AddPropertySetToEmployee = () => {
                         <DeleteTwoToneIcon/>
                     </Button>}
                     <AddNewPropertySet/>
+
                 </Grid>
             </Box>
             <Box sx={{my: 10}} x textAlign='center'>

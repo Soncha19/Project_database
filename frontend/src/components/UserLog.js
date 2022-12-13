@@ -24,12 +24,20 @@ import React, {useEffect, useState} from 'react';
 export const getToken = () => {
     if (typeof localStorage !== 'undefined') {
         const saved = localStorage.getItem("token");
-        const initialValue = JSON.parse(saved);
-        console.log(initialValue.token)
-        return initialValue.token;
-    }
+        if (saved) {
+            const initialValue = JSON.parse(saved);
+            console.log(initialValue)
+            return initialValue;
+            // console.log(saved)
+            // return saved
+        } else {
+            return ''
+        }
 
+    }
 }
+
+
 export const getUser = () => {
     if (typeof localStorage !== 'undefined') {
         const saved = localStorage.getItem("company_id");
@@ -50,7 +58,8 @@ export function setToken(token) {
 
 export function setUser(user) {
     if (typeof localStorage !== 'undefined') {
-        console.log(user.id)
+        console.log(user.token)
+        localStorage.setItem("token", JSON.stringify(user.token));
         localStorage.setItem("id", JSON.stringify(user.id));
         localStorage.setItem("first_name", JSON.stringify(user.first_name));
         localStorage.setItem("last_name", JSON.stringify(user.last_name));

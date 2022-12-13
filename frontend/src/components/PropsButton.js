@@ -4,6 +4,7 @@ import ModeEditOutlineTwoToneIcon from '@mui/icons-material/ModeEditOutlineTwoTo
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
 import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField} from "@mui/material";
 import Button from "@mui/material/Button";
+import {getToken} from "./UserLog";
 
 
 const PropsButton = (props) => {
@@ -45,6 +46,7 @@ const PropsButton = (props) => {
                 }),
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
+                    Authorization: `Bearer ${getToken()}`
                 },
             })
                 .then((response) => response.json())
@@ -55,21 +57,24 @@ const PropsButton = (props) => {
                     console.log(err.message);
                 });
 
-
+             window.location.reload(false);
         };
         const handleDeleteTeam = () => {
-            setDialogDel(null);
+
 
 
                 // DELETE request using fetch with set headers
                 const requestOptions = {
                     method: 'DELETE',
                     headers: {
-                        'Authorization': 'Bearer my-token',
+                        Authorization: `Bearer ${getToken()}`
+
                     }
                 };
-                fetch('http://localhost:8080/team/' + props.props.id.id.toString(), requestOptions)
+                fetch('http://localhost:8080/team/?team_id=' + props.props.id.id.toString(), requestOptions)
                     .then();
+                setDialogDel(null);
+
         };
 
         return (
@@ -95,10 +100,14 @@ const PropsButton = (props) => {
                     <DeleteTwoToneIcon/>
                 </IconButton>
 
-                <Dialog open={open} onClose={handleClose}>
-                    <DialogTitle>Update team name </DialogTitle>
+                <Dialog PaperProps={{
+                    style: {
+                        backgroundColor: '#36342C',
+                    },
+                }} open={open} onClose={handleClose}>
+                    <DialogTitle sx={{color:"white"}}>Update team name </DialogTitle>
                     <DialogContent>
-                        <TextField
+                        <TextField sx={{bgcolor:"white"}}
                             autoFocus
                             onChange={handleChangeTeamName}
                             margin="dense"
@@ -106,12 +115,12 @@ const PropsButton = (props) => {
                             label="enter new name"
                             type="text"
                             fullWidth
-                            variant="standard"
+                            variant="filled"
                         />
                     </DialogContent>
-                    <DialogTitle>Update Tag</DialogTitle>
+                    <DialogTitle sx={{color:"white"}} >Update Tag</DialogTitle>
                     <DialogContent>
-                        <TextField
+                        <TextField sx={{bgcolor:"white"}}
                             autoFocus
                             onChange={handleChangeTeamTag}
                             margin="dense"
@@ -119,7 +128,7 @@ const PropsButton = (props) => {
                             label="enter new tag"
                             type="text"
                             fullWidth
-                            variant="standard"
+                            variant="filled"
                         />
                     </DialogContent>
                     <DialogActions>
@@ -127,8 +136,12 @@ const PropsButton = (props) => {
                         <Button onClick={handleUpdate}>Submit</Button>
                     </DialogActions>
                 </Dialog>
-                <Dialog open={openDialogDel} onClose={handleClose}>
-                    <DialogTitle>Delete this team? </DialogTitle>
+                <Dialog PaperProps={{
+                    style: {
+                        backgroundColor: '#36342C',
+                    },
+                }} open={openDialogDel} onClose={handleClose}>
+                    <DialogTitle sx={{color:"white"}}>Delete this team? </DialogTitle>
                     <DialogActions>
                         <Button onClick={handleClose}>Cancel</Button>
                         <Button onClick={handleDeleteTeam}>Delete</Button>

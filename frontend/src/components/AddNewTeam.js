@@ -31,7 +31,7 @@ const AddNewTeam = () => {
 
     const handleSubmit = (e) => {
 
-        window.location.reload();
+
         fetch('http://localhost:8080/team', {
             method: 'POST',
             body: JSON.stringify({
@@ -50,7 +50,7 @@ const AddNewTeam = () => {
             .catch((err) => {
                 console.log(err.message);
             });
-
+    window.location.reload(false);
     };
 
     return (

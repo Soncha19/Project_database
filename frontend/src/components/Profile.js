@@ -18,7 +18,8 @@ import AddIcon from '@mui/icons-material/Add';
 import PropsButton from "./PropsButton";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import {getToken, UserLog} from "./UserLog";
+import {getToken, removeToken, UserLog} from "./UserLog";
+import Footer from "./Footer";
 
 const options = ['Create a new company', 'Join to the company', 'Leave company',];
 const theme = createTheme({
@@ -48,18 +49,34 @@ const Profile = () => {
     let arr = ['first_name', 'last_name', 'company_id'];
     let isInCompany = companyId !== 1 ? false : true // якщо в компанії тоді присвоюється 0
     let isntInCompany = companyId == 1 ? true : false
-    let isOwner = localStorage.getItem("is_owner").toString() == "false" ? false: true;
+    let isOwner = localStorage.getItem("is_owner").toString() == "false" ? false : true;
+    const [winLogOut, setWinLogOut] = useState(false)
+
+
+    function handleClickWinLogOut() {
+        setWinLogOut(true)
+    }
+
+    const handleCloseWinLogOut = () => {
+        setWinLogOut(false);
+    }
     const [leaveCompany, setLeaveCompany] = useState(false)
 
 
-function handleClickLeaveCompany() {
+    function handleClickLeaveCompany() {
         setLeaveCompany(true)
     }
+
     const handleCloseLeaveCompany = () => {
         setLeaveCompany(false);
     }
-const [deleteCompany, setDeleteCompany] = useState(false)
 
+    const [deleteCompany, setDeleteCompany] = useState(false)
+
+    const handleLogOut = () => {
+        removeToken()
+        window.location.reload(false);
+    }
 
     function handleClickDeleteCompany() {
         setDeleteCompany(true)
@@ -69,18 +86,21 @@ const [deleteCompany, setDeleteCompany] = useState(false)
         setDeleteCompany(false);
     }
     const handleDeleteCompany = () => {
- const requestOptions = {
-        method: 'DELETE',
-        headers: {
-            Authorization: `Bearer ${getToken()}`,
-        }
-    };
-    fetch('http://localhost:8080/company/?company_id='+companyId.toString(), requestOptions)
-        .then(() => this.setState({ status: 'Delete successful' }));
-    // fetch('http://localhost:8080/company/?company_id='+companyId.toString(), { method: 'DELETE' })
-    //     .then(() => this.setState({ status: 'Delete successful' }));
-    localStorage.setItem("company_id", JSON.stringify(1));
-    localStorage.setItem("is_owner", JSON.stringify(false))
+        const requestOptions = {
+            method: 'DELETE',
+            headers: {
+                Authorization: `Bearer ${getToken()}`,
+            }
+        };
+        fetch('http://localhost:8080/company/?company_id=' + companyId.toString(), requestOptions)
+            .then(() => this.setState({status: 'Delete successful'}));
+        // fetch('http://localhost:8080/company/?company_id='+companyId.toString(), { method: 'DELETE' })
+        //     .then(() => this.setState({ status: 'Delete successful' }));
+        localStorage.setItem("company_id", JSON.stringify(1));
+        localStorage.setItem("is_owner", JSON.stringify(false));
+        setDeleteCompany(false);
+        window.location.reload(false);
+
     }
     const handleLeaveCompany = () => {
         const requestOptions = {
@@ -91,6 +111,8 @@ const [deleteCompany, setDeleteCompany] = useState(false)
         fetch('http://localhost:8080/employee/?employee_id=' + localStorage.getItem("id").toString(), requestOptions)
             .then(response => response.json())
             .then(response => localStorage.setItem("company_id", JSON.stringify(response.company_id)));
+        setLeaveCompany(false);
+        window.location.reload(false);
 
     }
 
@@ -108,6 +130,8 @@ const [deleteCompany, setDeleteCompany] = useState(false)
         fetch('http://localhost:8080/employee/?employee_id=' + localStorage.getItem("id").toString(), requestOptions)
             .then(response => response.json())
             .then(response => localStorage.setItem("company_id", JSON.stringify(response.company_id)));
+        setJoinToCompany(false);
+        window.location.reload(false);
 
     }
     // const requestOptions = {
@@ -143,6 +167,9 @@ const [deleteCompany, setDeleteCompany] = useState(false)
                 console.log(err.message);
             });
         localStorage.setItem("is_owner", JSON.stringify(true))
+        setOpenNewCompany(false);
+        window.location.reload(false);
+
     }
     const handleChangeCompanyName = (event) => {
         setCompanyName(event.target.value);
@@ -171,6 +198,7 @@ const [deleteCompany, setDeleteCompany] = useState(false)
                 .then(response => setEmployee(response))
                 .catch(error => console.log(error))
         }, [])
+
     }
 
     GetEmployees();
@@ -335,32 +363,50 @@ const [deleteCompany, setDeleteCompany] = useState(false)
                         Join to the company
                     </Button>)}
                     {!isOwner && !isntInCompany && (<Button size="large" variant="contained" color="button"
-                                                key="f3" textTransform='none' onClick={handleClickLeaveCompany}
+                                                            key="f3" textTransform='none'
+                                                            onClick={handleClickLeaveCompany}
 
-                                                sx={{
-                                                    my: 2, color: 'white', maxWidth: 400,
-                                                    margin: 10,
-                                                    // borderRadius: 9,
-                                                }}>
+                                                            sx={{
+                                                                my: 2, color: 'white', maxWidth: 400,
+                                                                margin: 10,
+                                                                // borderRadius: 9,
+                                                            }}>
 
                         Leave Company
                     </Button>)}
-                    {isOwner &&  (<Button size="large" variant="contained" color="button"
-                                                key="f4" textTransform='none' onClick={handleClickDeleteCompany}
+                    {isOwner && (<Button size="large" variant="contained" color="button"
+                                         key="f4" textTransform='none' onClick={handleClickDeleteCompany}
 
-                                                sx={{
-                                                    my: 2, color: 'white', maxWidth: 400,
-                                                    margin: 10,
-                                                    // borderRadius: 9,
-                                                }}>
+                                         sx={{
+                                             my: 2, color: 'white', maxWidth: 400,
+                                             margin: 10,
+                                             // borderRadius: 9,
+                                         }}>
 
                         Delete Company
                     </Button>)}
 
+                    <Button size="large" variant="contained" color="button"
+                            key="f5" textTransform='none' onClick={handleClickWinLogOut}
+
+                            sx={{
+                                my: 2, color: 'white', maxWidth: 400,
+                                margin: 10,
+                                // borderRadius: 9,
+                            }}>
+
+                        Log out
+                    </Button>
+
 
                 </Grid>
 
-                <Dialog open={openNewCompany} onClose={handleCloseNewCompany}
+                <Dialog PaperProps={{
+                    style: {
+                        backgroundColor: '#36342C',
+
+                    },
+                }} open={openNewCompany} onClose={handleCloseNewCompany}
                         arial-labelledby="form-dialog-title">
                     <DialogContent>
                         <DialogTitle bgcolor='#093CA9' color="white" textAlign='center'>Create new company
@@ -385,7 +431,12 @@ const [deleteCompany, setDeleteCompany] = useState(false)
                     </DialogActions>
                 </Dialog>
 
-                <Dialog open={joinToCompany} onClose={handleCloseJoinToCompany}
+                <Dialog PaperProps={{
+                    style: {
+                        backgroundColor: '#36342C',
+
+                    },
+                }} open={joinToCompany} onClose={handleCloseJoinToCompany}
                         arial-labelledby="form-dialog-title">
                     <DialogContent>
                         <DialogTitle bgcolor='#093CA9' color="white" textAlign='center'>Join to the company
@@ -410,15 +461,17 @@ const [deleteCompany, setDeleteCompany] = useState(false)
                     </DialogActions>
                 </Dialog>
 
-                <Dialog open={leaveCompany} onClose={handleCloseLeaveCompany}
+                <Dialog PaperProps={{
+                    style: {
+                        backgroundColor: '#36342C',
+
+                    },
+                }} open={leaveCompany} onClose={handleCloseLeaveCompany}
                         arial-labelledby="form-dialog-title">
                     <DialogContent>
                         <DialogTitle bgcolor='#093CA9' color="white" textAlign='center'>Leave company
                         </DialogTitle>
                         <Box textAlign='center' component="form"
-                             sx={{
-                                 '& > :not(style)': {m: 1, width: '50ch'}, marginTop: 3,
-                             }}
                              noValidate
                              autoComplete="off"
                         >
@@ -430,15 +483,18 @@ const [deleteCompany, setDeleteCompany] = useState(false)
                         <Button onClick={handleLeaveCompany} variant="contained" color="success">Yes</Button>
                     </DialogActions>
                 </Dialog>
-                <Dialog open={deleteCompany} onClose={handleCloseDeleteCompany}
+                <Dialog PaperProps={{
+                    style: {
+                        backgroundColor: '#36342C',
+
+                    },
+                }} open={deleteCompany} onClose={handleCloseDeleteCompany}
                         arial-labelledby="form-dialog-title">
                     <DialogContent>
-                        <DialogTitle bgcolor='#093CA9' color="white" textAlign='center'>Really delete company?
+                        <DialogTitle color="white" textAlign='center'>Really delete company?
                         </DialogTitle>
                         <Box textAlign='center' component="form"
-                             sx={{
-                                 '& > :not(style)': {m: 1, width: '50ch'}, marginTop: 3,
-                             }}
+
                              noValidate
                              autoComplete="off"
                         >
@@ -450,6 +506,27 @@ const [deleteCompany, setDeleteCompany] = useState(false)
                         <Button onClick={handleDeleteCompany} variant="contained" color="success">Yes</Button>
                     </DialogActions>
                 </Dialog>
+                <Dialog PaperProps={{
+                    style: {
+                        backgroundColor: '#36342C',
+                    },
+                }} open={winLogOut} onClose={handleCloseWinLogOut}
+                        >
+                    <DialogContent>
+                        <DialogTitle color="white" textAlign='center'>Really log out?
+                        </DialogTitle>
+                        <Box textAlign='center' component="form"
+                             noValidate
+                             autoComplete="off"
+                        >
+                        </Box>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleCloseWinLogOut} variant="contained" color="primary">No</Button>
+                        <Button onClick={handleLogOut} variant="contained" color="success">Yes</Button>
+                    </DialogActions>
+                </Dialog>
+
             </>
         </ThemeProvider>
     );
