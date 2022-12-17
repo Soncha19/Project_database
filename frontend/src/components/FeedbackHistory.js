@@ -220,9 +220,7 @@ export const FeedbackHistory = (props) => {
 
                     </div>
                 </main>
-                <footer>
-                    ©Procadi
-                </footer>
+
             </div>
         </>
     )

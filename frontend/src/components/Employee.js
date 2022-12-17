@@ -117,7 +117,7 @@ const Emp = ({teamId, first_name, last_name, id}) => {
             <Link to="/feedbackhistory" state={{id: {id}}} style={{textDecoration: 'none'}}>
 
                 <CardMedia>
-                    <Typography sx={{color: "black", ml: 4, mt:3}} variant="h3">
+                    <Typography sx={{color: "black", ml: 4, mt:3}} variant="h4">
                         <Grid>
                             {first_name}
                         </Grid>
@@ -131,7 +131,7 @@ const Emp = ({teamId, first_name, last_name, id}) => {
                         bgcolor: '#E2CEB5',
                         height: 200,
                     }}></Card>
-                    <Typography sx={{minWidth: 195, color: "black", ml: 13, my: -13}} variant="h3">
+                    <Typography sx={{minWidth: 195, color: "black", ml: 13, my: -13}} variant="h4">
                         {propName}
                     </Typography>
                 </CardMedia>

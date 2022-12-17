@@ -259,9 +259,7 @@ export const NewFeedBack = (props) =>
                 <div id={"AddFeedbackButton"} disabled={buttonDisabled} onClick={function(event){setButtonLabel("Wait");setButtonDisabled(true);PostFeedback();redirectToFeedbackHistory();}}><h2>{buttonLabel}</h2></div>
             </div>
     </main>
-            <footer>
-                ©Procadi
-            </footer>
+
 </div>
         </>
     )

@@ -88,7 +88,7 @@ const Emp = ({first_name, last_name, id, role}) => {
                 <CardMedia sx={{
                     marginTop: 4,
                 }}>
-                    <Typography sx={{color: "black", ml: 4}} variant="h3">
+                    <Typography sx={{color: "black", ml: 4}} variant="h4">
                         <Grid>
                             {first_name}
                         </Grid>

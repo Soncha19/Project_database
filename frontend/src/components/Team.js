@@ -158,7 +158,7 @@ const Teamsd = ({name, tag, key, id, companyId}) => {
             <Link to="/employees" color="black" state={{id: {id}}} style={{textDecoration: 'none'}}>
 
                 <CardMedia>
-                    <Typography sx={{color: "black", ml: 4}} variant="h3">
+                    <Typography sx={{color: "black", ml: 4}} variant="h4">
                         {name}
                     </Typography>
 
@@ -166,7 +166,7 @@ const Teamsd = ({name, tag, key, id, companyId}) => {
                         bgcolor: '#E2CEB5',
                         height: 250,
                     }}></Card>
-                    <Typography sx={{minWidth: 195, color: "black", ml: 8, my: -17}} variant="h3">
+                    <Typography sx={{minWidth: 195, color: "black", ml: 12, my: -17}} variant="h4">
                         {tag}
                     </Typography>
                 </CardMedia>

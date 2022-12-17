@@ -44,6 +44,7 @@ const AddPropertySetToEmployee = () => {
     }
 
     console.log(question)
+    console.log(preAnswer)
 
     const handleChange = (event) => {
         setIdEmployee(event.target.value);
@@ -101,8 +102,9 @@ const AddPropertySetToEmployee = () => {
             .then(response => setQuestion(response))
             .catch(error => console.log(error))
 
-        for (var i = 0; i < question.length; i++) {
-            fetch("http://localhost:8080/preAnswer/?property_set_id=" + question[i].id.toString(), {
+        for (let i = 0; i < question.length; i++) {
+            console.log(question[i].id)
+            fetch("http://localhost:8080/preAnswer/?question_id=" + question[i].id.toString(), {
                 'methods': 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -110,9 +112,10 @@ const AddPropertySetToEmployee = () => {
                 }
             })
                 .then(response => response.json())
-                .then(response => setPreAnswer(response))
+                .then(response => setPreAnswer([...preAnswer, [response]]))
                 .catch(error => console.log(error))
         }
+
     };
 
 
@@ -192,13 +195,13 @@ const AddPropertySetToEmployee = () => {
     const filteredPropertySets = propertySets?.filter(propertySet => {
         return propertySet?.is_used == 1
     });
-const Item = styled(Paper)(({ theme }) => ({
-  ...theme.typography.body2,
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-  height: 60,
-  lineHeight: '60px',
-}));
+    const Item = styled(Paper)(({theme}) => ({
+        ...theme.typography.body2,
+        textAlign: 'center',
+        color: theme.palette.text.secondary,
+        height: 60,
+        lineHeight: '60px',
+    }));
 
     return (
         <>
@@ -268,21 +271,17 @@ const Item = styled(Paper)(({ theme }) => ({
                          noValidate
                          autoComplete="off"
                     >
+                        {
+                            question?.map((item) =>
+                                <Item sx={{m: 1}}>
+                                    <Typography sx={{color: "black"}} variant="h7"
+                                    >
+                                        {item?.text}
+                                    </Typography>
 
-
-                                {
-                                    question?.map((item) =>
-                                        <Item sx={{m:1}} >
-                                        <Typography sx={{color: "black"}} variant="h7"
-                                        >
-                                            {item?.text}
-                                        </Typography>
-
-                                            </Item>
-                                    )
-                                }
-
-
+                                </Item>
+                            )
+                        }
                     </Box>
                 </DialogContent>
                 <DialogActions>
@@ -291,7 +290,7 @@ const Item = styled(Paper)(({ theme }) => ({
                 </DialogActions>
             </Dialog>
         </>
-);
+    );
 };
 
 

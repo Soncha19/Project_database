@@ -102,7 +102,7 @@ const SignIn = () => {
 
                         <Typography sx={{color: "white"}} justifyContent="centre" margin="auto" variant="h2"
                                     component="h2">
-                            Sign in
+                            Log in
                         </Typography>
                         <TextField sx={{bgcolor: "white"}} onChange={e => email.onChange(e)}
                                    onBlur={e => email.onBlur(e)} autoFocus margin="dense"

@@ -189,9 +189,7 @@ export const FeedbackView = (props) =>
 
             </div>
                 </main>
-            <footer>
-                ©Procadi
-            </footer>
+
             </div>
         </>
     );

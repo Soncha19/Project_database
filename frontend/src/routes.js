@@ -19,24 +19,34 @@ function RoutesM() {
     console.log(check)
     return (
         <>
-            <Routes>
+            <div className={"page"}>
+                <main className={"main"}>
 
-                {check && <Route path="/teams" element={<Team/>}/>}
-                {check && <Route path="/employees" element={<Employee/>}/>}
-                {check && <Route path="/profile" element={<Profile/>}/>}
-                <Route path="/sign" element={<Start/>}/>
-                {check && <Route path="/addpropertysettoemployee" element={<AddPropertySetToEmployee/>}/>}
-                {check && <Route path="/employeesofthecompany" element={<EmployeesOfTheCompany/>}/>}
-                {check && <Route path="/feedbackhistory" element={<FeedbackHistory/>}/>}
-                {check && <Route path="/feedbackview" element={<FeedbackView/>}/>}
-                {check && <Route path="/newfeedback" element={<NewFeedBack/>}/>}
-                <Route
-                    path="*"
-                    element={<Navigate to="/sign" replace/>}
-                />
 
-            </Routes>
+                    <Routes>
 
+
+                        {check && <Route path="/teams" element={<Team/>}/>}
+                        {check && <Route path="/employees" element={<Employee/>}/>}
+                        {check && <Route path="/profile" element={<Profile/>}/>}
+                        <Route path="/sign" element={<Start/>}/>
+                        {check && <Route path="/addpropertysettoemployee" element={<AddPropertySetToEmployee/>}/>}
+                        {check && <Route path="/employeesofthecompany" element={<EmployeesOfTheCompany/>}/>}
+                        {check && <Route path="/feedbackhistory" element={<FeedbackHistory/>}/>}
+                        {check && <Route path="/feedbackview" element={<FeedbackView/>}/>}
+                        {check && <Route path="/newfeedback" element={<NewFeedBack/>}/>}
+                        <Route
+                            path="*"
+                            element={<Navigate to="/sign" replace/>}
+                        />
+
+                    </Routes>
+                </main>
+
+                <footer>
+                    ©Procadi
+                </footer>
+            </div>
         </>
     );
 }
