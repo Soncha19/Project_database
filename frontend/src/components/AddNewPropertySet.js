@@ -6,7 +6,7 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogTitle, FormControl,
+    DialogTitle, Divider, FormControl,
     Grid,
     InputLabel,
     MenuItem,
@@ -14,6 +14,8 @@ import {
 } from "@mui/material";
 import {getToken} from "./UserLog";
 import AddNewPropertySetDiffPreAns from "./AddNewPropertySetDiffPreAns";
+import CloseIcon from '@mui/icons-material/Close';
+import AddIcon from '@mui/icons-material/Add';
 
 const AddNewPropertySet = () => {
     const [nameOfProp, setPropName] = useState();
@@ -209,11 +211,11 @@ const AddNewPropertySet = () => {
 
             <Dialog PaperProps={{
                 style: {
-                    backgroundColor: '#36342C',
+                    backgroundColor: '#E2CEB5',
 
                 },
             }} fullWidth maxWidth="lg" open={open} onClose={handleClose}>
-                <DialogTitle bgcolor='#093CA9' color="white" textAlign='center'>Create new property set </DialogTitle>
+                <DialogTitle sx={{bgcolor:"#093CA9", color:"white", borderRadius:'9px', m:2}} textAlign='center'>Create new property set </DialogTitle>
                 <Box textAlign='center' component="form"
                      sx={{
                          '& > :not(style)': {m: 1, width: '50ch'}, marginTop: 3,
@@ -246,13 +248,13 @@ const AddNewPropertySet = () => {
                                                    variant="outlined"></TextField>
 
                                         <Button sx={{bgcolor: "#093CA9", my: 1, ml: 2}} variant="contained"
-                                                onClick={() => removeFields(index)}>Remove</Button>
+                                                onClick={() => removeFields(index)}><CloseIcon/></Button>
                                     </div>
 
                                 )
                             })}
                             <Button sx={{bgcolor: "#093CA9", my: 2, ml: 9}} variant="contained"
-                                    onClick={addFields}>Add</Button>
+                                    onClick={addFields}><AddIcon/> </Button>
 
 
                         </DialogContent>
@@ -281,7 +283,7 @@ const AddNewPropertySet = () => {
                                                        variant="outlined"></TextField>
 
                                             <Button sx={{bgcolor: "#093CA9", my: 1, ml: 2}} variant="contained"
-                                                    onClick={() => removeFieldsAnswer(index)}>Remove</Button>
+                                                    onClick={() => removeFieldsAnswer(index)}><CloseIcon/></Button>
                                         </Grid>
 
                                     </div>
@@ -290,7 +292,7 @@ const AddNewPropertySet = () => {
                             })}
 
                             <Button sx={{bgcolor: "#093CA9", my: 2, ml: 9}} variant="contained"
-                                    onClick={addFieldsAnswer}>Add</Button>
+                                    onClick={addFieldsAnswer}><AddIcon/></Button>
 
                         </DialogContent>
                     </Grid>
@@ -303,12 +305,14 @@ const AddNewPropertySet = () => {
             </Dialog>
             <Dialog PaperProps={{
                 style: {
-                    backgroundColor: '#36342C',
+                    backgroundColor: '#E2CEB5',
                 },
-            }} open={winChoseAdd} onClose={handleCloseWinChoseAdd}
+            }}
+                     open={winChoseAdd} onClose={handleCloseWinChoseAdd}
                     arial-labelledby="form-dialog-title">
                 <DialogContent>
-                    <DialogTitle bgcolor='#093CA9' color="white" textAlign='center'>Choose the type of property set
+                    <DialogTitle sx={{bgcolor:"#093CA9", color:"white", borderRadius:'9px', mb:'12%'}} textAlign='center'>Choose the type of property set
+
                     </DialogTitle>
                     <Box textAlign='center' component="form"
                          sx={{
@@ -317,16 +321,25 @@ const AddNewPropertySet = () => {
                          noValidate
                          autoComplete="off"
                     >
-                        <AddNewPropertySetDiffPreAns/>
-                        <Typography justifyContent="centre" margin="auto" variant="h6" component="h6">
-                            or
-                        </Typography>
-                        <Button onClick={handleClickOpen} margin="auto" size="large" variant="contained" sx={{bgcolor: "#093CA9"}}>same answers to
-                            all</Button>
+                        <Grid justifyContent="center" alignItems="center" direction="row"
+                              container>
+                            <Grid>
+                                <AddNewPropertySetDiffPreAns/>
+                            </Grid>
+                            <Grid>
+                                <Typography  sx={{m:1, color: 'black'}} variant="h6">or</Typography>
+                            </Grid>
+                            <Grid>
+                                <Button onClick={handleClickOpen} justifyContent="centre" margin="auto" size="large"
+                                        variant="contained" sx={{bgcolor: "#093CA9"}}>same answers to
+                                    all</Button>
+                            </Grid>
+                        </Grid>
                     </Box>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleCloseWinChoseAdd} variant="contained" color="primary">Cancel</Button>
+                    <Button onClick={handleCloseWinChoseAdd} variant="contained"
+                            sx={{bgcolor: "#093CA9", mt:2}}>Cancel</Button>
 
                 </DialogActions>
             </Dialog>

@@ -4,7 +4,7 @@ import {
     createTheme,
     Dialog,
     DialogActions,
-    DialogContent,
+    DialogContent, DialogTitle,
     Grid,
     ThemeProvider,
     Typography
@@ -103,14 +103,12 @@ const SignUp = () => {
                                         sx={{mx: 2, my: 2, display: 'block'}} onClick={handleClickOpen2}>Sign up</Button>
                 <Dialog PaperProps={{
                     style: {
-                        backgroundColor: '#36342C',
+                        backgroundColor: '#E2CEB5',
                     },
                 }} open={open2} onClose={handleClose2} arial-labelledby="pop">
+                    <DialogTitle sx={{bgcolor:"#093CA9", color:"white", borderRadius:'9px', m:2}} textAlign='center'>Sign up </DialogTitle>
                     <DialogContent>
-                        <Typography sx={{color: "white"}} justifyContent="centre" margin="auto" variant="h2"
-                                    component="h2">
-                            Sign up
-                        </Typography>
+
                         <TextField sx={{bgcolor: "white"}} onChange={e => first_name.onChange(e)}
                                    onBlur={e => first_name.onBlur(e)} autoFocus
                                    margin="dense"

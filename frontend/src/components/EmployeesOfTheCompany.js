@@ -63,7 +63,7 @@ const EmployeesOfTheCompany = () => {
                 {
                     filteredEmployees?.map((item, index) =>
                         <Emp id={item?.id} key={item?.id} first_name={item?.first_name} last_name={item?.last_name}
-                             role={item?.role}/>
+                             role={item?.role} is_owner={item?.is_owner}/>
                     )
                 }
             </Grid>
@@ -72,7 +72,11 @@ const EmployeesOfTheCompany = () => {
     );
 };
 
-const Emp = ({first_name, last_name, id, role}) => {
+const Emp = ({first_name, last_name, id, role, is_owner}) => {
+    let isOwner = is_owner ? "owner" : 0;
+
+    let isManager = role == "false" ? "manager" : 0;
+    let isEmp = "employee"
     return (
         <Link to="/feedbackhistory" state={{id: {id}}} style={{textDecoration: 'none'}}>
             <Card sx={{
@@ -95,8 +99,12 @@ const Emp = ({first_name, last_name, id, role}) => {
                         <Grid>
                             {last_name}
                         </Grid>
+                        <Card variant="filled" sx={{
+                        bgcolor: '#E2CEB5',
+                        height: 250,
+                    }}></Card>
                     </Typography>
-                    <h5>{role}</h5>
+                    <Typography sx={{minWidth: 195, color: "black", ml: 12, my: -17}} variant="h4">{isOwner || isManager || isEmp}</Typography>
                 </CardMedia>
 
             </Card>

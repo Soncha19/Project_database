@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
-import {createTheme, Dialog, DialogActions, DialogContent, ThemeProvider, Typography} from "@mui/material";
+import {createTheme, Dialog, DialogActions, DialogContent, DialogTitle, ThemeProvider, Typography} from "@mui/material";
 import {getToken, removeToken, setToken, setUser, UserLog} from "./UserLog";
 import {Link, useNavigate} from "react-router-dom";
 
@@ -95,15 +95,14 @@ const SignIn = () => {
                                         sx={{my: 2, color: 'white', display: 'block'}} onClick={handleClickOpen}>Log in</Button>
                 <Dialog PaperProps={{
                     style: {
-                        backgroundColor: '#36342C',
+                        backgroundColor:  '#E2CEB5',
                     },
                 }} open={open} onClose={handleClose} arial-labelledby="form-dialog-title">
+                     <DialogTitle sx={{bgcolor:"#093CA9", color:"white", borderRadius:'9px', m:2}} textAlign='center'>Log in</DialogTitle>
+
                     <DialogContent>
 
-                        <Typography sx={{color: "white"}} justifyContent="centre" margin="auto" variant="h2"
-                                    component="h2">
-                            Log in
-                        </Typography>
+
                         <TextField sx={{bgcolor: "white"}} onChange={e => email.onChange(e)}
                                    onBlur={e => email.onBlur(e)} autoFocus margin="dense"
                                    id="email" label="Email" type="email" fullWidth variant="filled"/>

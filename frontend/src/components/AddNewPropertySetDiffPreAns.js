@@ -2,7 +2,8 @@ import React, {useState} from 'react';
 import {Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid} from "@mui/material";
 import TextField from "@mui/material/TextField";
 import {getToken} from "./UserLog";
-
+import CloseIcon from "@mui/icons-material/Close";
+import AddIcon from '@mui/icons-material/Add';
 const AddNewPropertySetDiffPreAns = () => {
 
     const [nameOfProp, setPropName] = useState();
@@ -185,14 +186,14 @@ console.log(preAns)
     }
     return (
         <div >
-            <Button justifyContent="centre"  size="large" sx={{bgcolor: "#093CA9"}} variant="contained" onClick={handleClickOpen}>unique answers</Button>
+            <Button  size="large" sx={{ bgcolor: "#093CA9"}} variant="contained" onClick={handleClickOpen}>unique answers</Button>
             <Dialog PaperProps={{
                 style: {
-                    backgroundColor: '#36342C',
+                    backgroundColor: '#E2CEB5',
 
                 },
             }} fullWidth maxWidth="sm" open={open} onClose={handleClose}>
-                <DialogTitle bgcolor='#093CA9' color="white" textAlign='center'>Create new property set </DialogTitle>
+                <DialogTitle sx={{bgcolor:"#093CA9", color:"white", borderRadius:'9px', m:2}} textAlign='center'>Create new property set </DialogTitle>
                 <Box textAlign='center' component="form"
                      sx={{
                          '& > :not(style)': {m: 1, width: '50ch'}, marginTop: 3,
@@ -224,7 +225,7 @@ console.log(preAns)
                                                    variant="outlined"></TextField>
 
                                         <Button sx={{bgcolor: "#093CA9", my: 1, ml: 2}} variant="contained"
-                                                onClick={() => removeFields(index)}>Remove</Button>
+                                                onClick={() => removeFields(index)}><CloseIcon/></Button>
                                         <Button sx={{bgcolor: "#093CA9", my: 1, ml: 2}} variant="contained"
                                                 onClick={() => handleClickWinAddPreAns(index)}>Add Pre Answers</Button>
                                     </div>
@@ -232,7 +233,7 @@ console.log(preAns)
                                 )
                             })}
                             <Button sx={{bgcolor: "#093CA9", my: 2, ml: 9}} variant="contained"
-                                    onClick={addFields}>Add</Button>
+                                    onClick={addFields}><AddIcon/></Button>
 
 
                         </DialogContent>
@@ -278,7 +279,7 @@ console.log(preAns)
                                                variant="outlined"></TextField>
 
                                     <Button sx={{bgcolor: "#093CA9", my: 1, ml: 2}} variant="contained"
-                                            onClick={() => removeFieldsAnswer(index)}>Remove</Button>
+                                            onClick={() => removeFieldsAnswer(index)}><CloseIcon/></Button>
                                 </Grid>
 
                             </div>
@@ -287,7 +288,7 @@ console.log(preAns)
                     })}
 
                     <Button sx={{bgcolor: "#093CA9", my: 2, ml: 9}} variant="contained"
-                            onClick={addFieldsAnswer}>Add</Button>
+                            onClick={addFieldsAnswer}><AddIcon/></Button>
 
                 </DialogContent>
 

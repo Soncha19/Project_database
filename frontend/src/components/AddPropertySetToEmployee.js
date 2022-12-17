@@ -38,13 +38,15 @@ const AddPropertySetToEmployee = () => {
     const [propertyForShow, setPropertyForShow] = useState([]);
     const [preAnswer, setPreAnswer] = useState([]);
     const [question, setQuestion] = useState([]);
+    const [allForPropertySet, setAllForPropertySet] = useState();
+    const [idQue, setIdQue] = useState();
 
     function handleClickLookClose() {
         setIsOpen(false)
     }
 
-    console.log(question)
-    console.log(preAnswer)
+    console.log(allForPropertySet)
+
 
     const handleChange = (event) => {
         setIdEmployee(event.target.value);
@@ -78,7 +80,6 @@ const AddPropertySetToEmployee = () => {
 
     function GetAllAboutPropertySet() {
 
-
         fetch("http://localhost:8080/propertySet/?property_set_id=" + idProperties.toString(), {
             'methods': 'GET',
             headers: {
@@ -89,9 +90,7 @@ const AddPropertySetToEmployee = () => {
             .then(response => response.json())
             .then(response => setPropertyForShow(response))
             .catch(error => console.log(error))
-
-
-        fetch("http://localhost:8080/question/?property_set_id=" + idProperties.toString(), {
+        fetch("http://localhost:8080/allForPropertySet/?property_set_id=" + idProperties.toString(), {
             'methods': 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -99,22 +98,9 @@ const AddPropertySetToEmployee = () => {
             }
         })
             .then(response => response.json())
-            .then(response => setQuestion(response))
+            .then(response => setAllForPropertySet(response))
             .catch(error => console.log(error))
 
-        for (let i = 0; i < question.length; i++) {
-            console.log(question[i].id)
-            fetch("http://localhost:8080/preAnswer/?question_id=" + question[i].id.toString(), {
-                'methods': 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${getToken()}`
-                }
-            })
-                .then(response => response.json())
-                .then(response => setPreAnswer([...preAnswer, [response]]))
-                .catch(error => console.log(error))
-        }
 
     };
 
@@ -260,32 +246,35 @@ const AddPropertySetToEmployee = () => {
             </Box>
             <Dialog PaperProps={{
                 style: {
-                    backgroundColor: '#36342C',
+                    backgroundColor: '#E2CEB5',
                 },
             }} open={isOpen} onClose={handleClickLookClose}
             >
                 <DialogContent>
-                    <DialogTitle color="white" textAlign='center'>Property set - {propertyForShow?.name}
+                    <DialogTitle sx={{bgcolor:"#093CA9", color:"white", borderRadius:'9px', mb:'12%'}} textAlign='center'>Property set - {propertyForShow?.name}
                     </DialogTitle>
                     <Box textAlign='center' component="form"
                          noValidate
                          autoComplete="off"
                     >
                         {
-                            question?.map((item) =>
+                            allForPropertySet?.questions?.map((item) =>
+
                                 <Item sx={{m: 1}}>
                                     <Typography sx={{color: "black"}} variant="h7"
                                     >
                                         {item?.text}
                                     </Typography>
-
                                 </Item>
                             )
+
+
                         }
+
                     </Box>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClickLookClose} variant="contained" color="primary">Close</Button>
+                    <Button onClick={handleClickLookClose} variant="contained" sx={{bgcolor: "#093CA9"}}>Close</Button>
 
                 </DialogActions>
             </Dialog>

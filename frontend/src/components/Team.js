@@ -9,7 +9,7 @@ import {
     CardHeader,
     createTheme,
     Grid,
-    ThemeProvider, CardMedia,
+    ThemeProvider, CardMedia, Divider,
 } from "@mui/material";
 import Header from "./Header";
 import {Link} from "react-router-dom";
@@ -155,9 +155,11 @@ const Teamsd = ({name, tag, key, id, companyId}) => {
                     isOwner && (<PropsButton props={{id: {id}, companyId: {companyId}}}/>)
                 }/>
 
+            <Divider sx={{bgcolor: "white", ml:2, mr:2}}/>
             <Link to="/employees" color="black" state={{id: {id}}} style={{textDecoration: 'none'}}>
 
                 <CardMedia>
+
                     <Typography sx={{color: "black", ml: 4}} variant="h4">
                         {name}
                     </Typography>

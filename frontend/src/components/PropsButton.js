@@ -101,10 +101,10 @@ const PropsButton = (props) => {
 
                 <Dialog PaperProps={{
                     style: {
-                        backgroundColor: '#36342C',
+                        backgroundColor:  '#E2CEB5',
                     },
                 }} open={open} onClose={handleClose}>
-                    <DialogTitle sx={{color:"white"}}>Update team name </DialogTitle>
+                    <DialogTitle  sx={{bgcolor:"#093CA9", color:"white", borderRadius:'9px', m:2}}>Update team name </DialogTitle>
                     <DialogContent>
                         <TextField sx={{bgcolor:"white"}}
                             autoFocus
@@ -117,9 +117,9 @@ const PropsButton = (props) => {
                             variant="filled"
                         />
                     </DialogContent>
-                    <DialogTitle sx={{color:"white"}} >Update Tag</DialogTitle>
+                    <DialogTitle  sx={{bgcolor:"#093CA9", color:"white", borderRadius:'9px', m:2}}>Update Tag</DialogTitle>
                     <DialogContent>
-                        <TextField sx={{bgcolor:"white"}}
+                        <TextField sx={{bgcolor:"white", color:"black"}}
                             autoFocus
                             onChange={handleChangeTeamTag}
                             margin="dense"
@@ -131,19 +131,19 @@ const PropsButton = (props) => {
                         />
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleClose}>Cancel</Button>
-                        <Button onClick={handleUpdate}>Submit</Button>
+                        <Button size="small" sx={{color:"black", size:"small", bgcolor: "white",}} variant="contained" onClick={handleClose}>Cancel</Button>
+                        <Button  sx={{bgcolor: "#093CA9",}} variant="contained" onClick={handleUpdate}>Submit</Button>
                     </DialogActions>
                 </Dialog>
                 <Dialog PaperProps={{
                     style: {
-                        backgroundColor: '#36342C',
+                        backgroundColor:  '#E2CEB5',
                     },
                 }} open={openDialogDel} onClose={handleClose}>
-                    <DialogTitle sx={{color:"white"}}>Delete this team? </DialogTitle>
+                    <DialogTitle sx={{bgcolor:"#093CA9", color:"white", borderRadius:'9px', m:2}} >Delete this team? </DialogTitle>
                     <DialogActions>
-                        <Button onClick={handleClose}>Cancel</Button>
-                        <Button onClick={handleDeleteTeam}>Delete</Button>
+                        <Button size="small" sx={{color:"black", size:"small", bgcolor: "white",}} variant="contained" onClick={handleClose}>Cancel</Button>
+                        <Button sx={{bgcolor: "#093CA9",}} variant="contained" onClick={handleDeleteTeam}>Delete</Button>
                     </DialogActions>
                 </Dialog>
             </div>

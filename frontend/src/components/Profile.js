@@ -318,13 +318,13 @@ const Profile = () => {
 
                 <Dialog PaperProps={{
                     style: {
-                        backgroundColor: '#36342C',
+                        backgroundColor: '#E2CEB5',
 
                     },
                 }} open={openNewCompany} onClose={handleCloseNewCompany}
                         arial-labelledby="form-dialog-title">
                     <DialogContent>
-                        <DialogTitle bgcolor='#093CA9' color="white" textAlign='center'>Create new company
+                        <DialogTitle sx={{bgcolor:"#093CA9", color:"white", borderRadius:'9px', m:1, mb:5}} textAlign='center'>Create new company
                         </DialogTitle>
                         <Box textAlign='center' component="form"
                              sx={{
@@ -341,20 +341,20 @@ const Profile = () => {
                         </Box>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleCloseNewCompany} variant="contained" color="primary">Cancel</Button>
-                        <Button onClick={handleCreateNewCompany} variant="contained" color="success">Create</Button>
+                        <Button onClick={handleCloseNewCompany} variant="contained" sx={{bgcolor: "white", color:"black"}}>Cancel</Button>
+                        <Button onClick={handleCreateNewCompany} variant="contained" sx={{bgcolor: "#093CA9"}}>Create</Button>
                     </DialogActions>
                 </Dialog>
 
                 <Dialog PaperProps={{
                     style: {
-                        backgroundColor: '#36342C',
+                        backgroundColor: '#E2CEB5',
 
                     },
                 }} open={joinToCompany} onClose={handleCloseJoinToCompany}
                         arial-labelledby="form-dialog-title">
                     <DialogContent>
-                        <DialogTitle bgcolor='#093CA9' color="white" textAlign='center'>Join to the company
+                        <DialogTitle sx={{bgcolor:"#093CA9", color:"white", borderRadius:'9px', m:1, mb:5}} textAlign='center'>Join to the company
                         </DialogTitle>
                         <Box textAlign='center' component="form"
                              sx={{
@@ -371,20 +371,20 @@ const Profile = () => {
                         </Box>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleCloseJoinToCompany} variant="contained" color="primary">Cancel</Button>
-                        <Button onClick={handleJoinToCompany} variant="contained" color="success">Join</Button>
+                        <Button onClick={handleCloseJoinToCompany} variant="contained" sx={{bgcolor: "white", color:"black"}}>Cancel</Button>
+                        <Button onClick={handleJoinToCompany} variant="contained" sx={{bgcolor: "#093CA9"}}>Join</Button>
                     </DialogActions>
                 </Dialog>
 
                 <Dialog PaperProps={{
                     style: {
-                        backgroundColor: '#36342C',
+                        backgroundColor: '#E2CEB5',
 
                     },
                 }} open={leaveCompany} onClose={handleCloseLeaveCompany}
                         arial-labelledby="form-dialog-title">
                     <DialogContent>
-                        <DialogTitle bgcolor='#093CA9' color="white" textAlign='center'>Leave company
+                        <DialogTitle sx={{bgcolor:"#093CA9", color:"white", borderRadius:'9px', m:1, mb:5}} textAlign='center'>Leave company
                         </DialogTitle>
                         <Box textAlign='center' component="form"
                              noValidate
@@ -394,19 +394,19 @@ const Profile = () => {
                         </Box>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleCloseLeaveCompany} variant="contained" color="primary">No</Button>
-                        <Button onClick={handleLeaveCompany} variant="contained" color="success">Yes</Button>
+                        <Button onClick={handleCloseLeaveCompany} variant="contained" sx={{bgcolor: "white", color:"black"}}>No</Button>
+                        <Button onClick={handleLeaveCompany} variant="contained" sx={{bgcolor: "#093CA9"}}>Yes</Button>
                     </DialogActions>
                 </Dialog>
                 <Dialog PaperProps={{
                     style: {
-                        backgroundColor: '#36342C',
+                        backgroundColor: '#E2CEB5',
 
                     },
                 }} open={deleteCompany} onClose={handleCloseDeleteCompany}
                         arial-labelledby="form-dialog-title">
                     <DialogContent>
-                        <DialogTitle color="white" textAlign='center'>Really delete company?
+                        <DialogTitle sx={{bgcolor:"#093CA9", color:"white", borderRadius:'9px', m:1, mb:5}} textAlign='center'>Really delete company?
                         </DialogTitle>
                         <Box textAlign='center' component="form"
 
@@ -417,30 +417,11 @@ const Profile = () => {
                         </Box>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleCloseDeleteCompany} variant="contained" color="primary">No</Button>
-                        <Button onClick={handleDeleteCompany} variant="contained" color="success">Yes</Button>
+                        <Button onClick={handleCloseDeleteCompany} variant="contained" sx={{bgcolor: "white", color:"black"}} >No</Button>
+                        <Button onClick={handleDeleteCompany} variant="contained" sx={{bgcolor: "#093CA9"}}>Yes</Button>
                     </DialogActions>
                 </Dialog>
-                <Dialog PaperProps={{
-                    style: {
-                        backgroundColor: '#36342C',
-                    },
-                }} open={winLogOut} onClose={handleCloseWinLogOut}
-                        >
-                    <DialogContent>
-                        <DialogTitle color="white" textAlign='center'>Really log out?
-                        </DialogTitle>
-                        <Box textAlign='center' component="form"
-                             noValidate
-                             autoComplete="off"
-                        >
-                        </Box>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleCloseWinLogOut} variant="contained" color="primary">No</Button>
-                        <Button onClick={handleLogOut} variant="contained" color="success">Yes</Button>
-                    </DialogActions>
-                </Dialog>
+
             </div>
             </>
         </ThemeProvider>

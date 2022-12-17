@@ -127,11 +127,8 @@ const Emp = ({teamId, first_name, last_name, id}) => {
                     </Typography>
 
 
-                    <Card variant="filled" sx={{
-                        bgcolor: '#E2CEB5',
-                        height: 200,
-                    }}></Card>
-                    <Typography sx={{minWidth: 195, color: "black", ml: 13, my: -13}} variant="h4">
+
+                    <Typography sx={{minWidth: 195, color: "black", mt:13, mr:1,ml:15, borderRadius:3,  }} variant="h4">
                         {propName}
                     </Typography>
                 </CardMedia>
