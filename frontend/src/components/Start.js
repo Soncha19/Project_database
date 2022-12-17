@@ -14,7 +14,8 @@ import {
 import SignIn from "./SignIn";
 import SignUp from "./SignUp";
 import RoundedAppBar from "./RoundedAppBar";
-
+import "../CSSFiles/StartStyles.css";
+import logo from "../images/mainPng.png"
 
 const Start = () => {
 
@@ -59,7 +60,19 @@ const Start = () => {
 
                 </AppBar>
             </Box>
-
+            <div className="main-content">
+                <div className="div-image">
+                    <img className="image" src={require("../images/mainPng.png")} />
+                </div>
+                <div className="div-text-main">
+                    <div className="div-name-main">
+                        <h1>Procadi</h1>
+                    </div>
+                    <div className="div-product-main">
+                        <h2>Performance evaluation system</h2>
+                    </div>
+                </div>
+            </div>
         </>
 
     );
