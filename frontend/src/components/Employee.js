@@ -1,104 +1,141 @@
 import React, {useEffect, useState} from 'react';
 import Header from "./Header";
-import {Card, CardHeader, CardMedia, Grid} from "@mui/material";
+import {Button, Card, CardHeader, CardMedia, Grid} from "@mui/material";
 import {Link, useLocation} from "react-router-dom";
-import PropsButton from "./PropsButton";
 import Typography from "@mui/material/Typography";
 import EmployeePropsButton from "./EmployeePropsButton";
 import {getToken} from "./UserLog";
 
 const Employee = () => {
+    const [teammates, setTeammates] = useState();
 
     const location = useLocation();
     let teamId = location.state.id.id;
-    let isOwner = localStorage.getItem("is_owner").toString() == "false" ? false: true;
-    const [teammates, setTeammates] = useState();
+
+    let isOwner = localStorage.getItem("is_owner").toString() == "false" ? false : true;
 
     function GetTeammates() {
         useEffect(() => {
+            // if (teammates.length == 0) {
+            // console.log(teammates)
             fetch("http://localhost:8080/employee/findByTeam?team_id=" + teamId.toString(), {
                 'methods': 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                     Authorization: `Bearer ${getToken()}`
+                    Authorization: `Bearer ${getToken()}`
                 }
             })
                 .then(response => response.json())
                 .then(response => setTeammates(response))
                 .catch(error => console.log(error))
+            // }
         }, [])
-
     }
 
     GetTeammates();
+
+    console.log(teammates);
     return (
         <>
             <Header/>
             <Grid container spacing={0}>
                 {
-                    teammates?.map((item, index) =>
-                        <Emp company_id={ item?.company_id} teamId={teamId} id={item?.id} key={item?.id} first_name={item?.first_name}
+                    teammates?.map((item) =>
+                        <Emp company_id={item?.company_id} teamId={teamId} id={item?.id} key={item?.id}
+                             first_name={item?.first_name}
                              last_name={item?.last_name}/>
                     )
                 }
-                {isOwner && (<Link to="/addpropertysettoemployee" state={{teamId: {teamId}}} style={{textDecoration: 'none'}}>
-                    <Card variant="outlined" sx={{
-                        bgcolor: '#E2CEB5',
-                        padding: 15,
-                        margin: 2,
-                        borderRadius: 9
+                {isOwner && (
+                    <Link to="/addpropertysettoemployee" state={{teamId: {teamId}}} style={{textDecoration: 'none'}}>
+                        <Button sx={{
+                            bgcolor: '#E2CEB5',
+                            borderRadius: 9,
+                            minWidth: 326,
+                            margin: 1,
+                            height: 310,
+                            marginTop: 3
 
+                        }} style={{textDecoration: 'none'}}>
 
-                    }}>
-
-                        <Grid>
-                            <Grid item xs={0}>
-                                <h5>New Employee</h5>
+                            <Grid>
+                                <Grid item xs={0}>
+                                    <Typography sx={{color: "black"}} variant="h7"
+                                    >
+                                        New employee
+                                    </Typography>
+                                </Grid>
                             </Grid>
-                        </Grid>
 
 
-                    </Card>
-                </Link>)}
+                        </Button>
+                    </Link>)}
             </Grid>
 
         </>
     );
 };
 
-const Emp = ({teamId, first_name, last_name, key, id}) => {
-    let isOwner = localStorage.getItem("is_owner").toString() == "false" ? false: true;
+const Emp = ({teamId, first_name, last_name, id}) => {
+      const [propName, setPropName] = useState();
+    // <CardHeader
+    //             action={
+    //                 isOwner && (<EmployeePropsButton props={{id: {id}, teamId: {teamId}}}/>)
+    //             }/>
+    // let isOwner = localStorage.getItem("is_owner").toString() == "false" ? false : true;
+    function GetPropName() {
+        useEffect(() => {
+            // if (teammates.length == 0) {
+            // console.log(teammates)
+            fetch("http://localhost:8080/propertySetByEmployee/?employee_id=" + id.toString(), {
+                'methods': 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${getToken()}`
+                }
+            })
+                .then(response => response.json())
+                .then(response => setPropName(response.name))
+                .catch(error => console.log(error))
+            // }
+        }, [])
+    }
+
+    GetPropName()
     return (
         <Card sx={{
             bgcolor: '#E2CEB5',
             borderRadius: 9,
-            minWidth: 400,
+            minWidth: 320,
             margin: 1,
-            height: 350,
+            height: 310,
+            marginTop: 3
 
         }}>
-            <CardHeader
-                action={
-                   isOwner && ( <EmployeePropsButton props={{id: {id}, teamId: {teamId}}}/>)
-                }/>
-
-             <Link to="/feedbackhistory" state={{id: {id}}} style={{textDecoration: 'none'}}>
-
-            <CardMedia>
-                <Typography sx={{color:"black", ml:4}} variant="h3">
-                   {first_name}
-                </Typography>
 
 
-                <Card variant="filled" sx={{
-                    bgcolor: '#E2CEB5',
-                    height: 200,
-                }}></Card>
-                <Typography sx={{color:"black", ml:25, my:-7}} variant="h3">
-                    {last_name}
-                </Typography>
-            </CardMedia>
-             </Link>
+            <Link to="/feedbackhistory" state={{id: {id}}} style={{textDecoration: 'none'}}>
+
+                <CardMedia>
+                    <Typography sx={{color: "black", ml: 4, mt:3}} variant="h3">
+                        <Grid>
+                            {first_name}
+                        </Grid>
+                        <Grid>
+                            {last_name}
+                        </Grid>
+                    </Typography>
+
+
+                    <Card variant="filled" sx={{
+                        bgcolor: '#E2CEB5',
+                        height: 200,
+                    }}></Card>
+                    <Typography sx={{minWidth: 195, color: "black", ml: 13, my: -13}} variant="h3">
+                        {propName}
+                    </Typography>
+                </CardMedia>
+            </Link>
         </Card>
 
     );

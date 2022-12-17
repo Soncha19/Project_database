@@ -6,10 +6,9 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import {Link} from 'react-router-dom';
-import {createTheme, ThemeProvider} from "@mui/material";
+import {createTheme, Grid, ThemeProvider} from "@mui/material";
 import RoundedAppBar from "./RoundedAppBar";
 
-const pages = ['teams', 'employees'];
 
 const theme = createTheme({
 
@@ -28,31 +27,35 @@ const Header = () => {
 
     return (
         <ThemeProvider theme={theme}>
-            <RoundedAppBar  borderRadius="2" color="now" position="static">
-                <Container  maxWidth="xl">
-                    <Toolbar disableGutters>
-                        <Link to="/teams" style={{textDecoration: 'none'}}>
-                            <Typography
-                                variant="h5"
+            <Box sx={{flexGrow: 1, margin: 1,}}>
+                <AppBar sx={{borderRadius: '10px'}} color="now" position="center">
+                    <Toolbar minWidth="md" disableGutters sx={{ml:-5, mr:5}} >
+                        <Grid justifyContent="space-around" alignItems="center" direction="row"
+                              container>
+                            <Link to="/teams" style={{textDecoration: 'none'}}>
+                                <Typography
+                                    variant="h5"
 
 
-                                sx={{
-                                    mr: 125,
-                                    ml: 0,
-                                    display: {xs: 'none', md: 'flex'},
-                                    fontFamily: 'monospace',
-                                    fontWeight: 700,
-                                    letterSpacing: '.2rem',
-                                    color: 'white',
-                                    textDecoration: 'none',
-                                }}
-                            >
-                                PROCADI
-                            </Typography>
-                        </Link>
-                        <Box textAlign='center' component="form" autoComplete="off"
-                             sx={{display: {xs: 'none', md: 'flex'}}}>
+                                    sx={{
+                                        mr: 2,
+                                        flexGrow: 1,
+                                        
+                                        fontFamily: 'monospace',
+                                        fontWeight: 700,
+                                        letterSpacing: '.2rem',
+                                        color: 'white',
+                                        textDecoration: 'none',
+                                    }}
+                                    component="div"
+                                >
+                                    PROCADI
+                                </Typography>
+                            </Link>
+                        </Grid>
 
+                        <Grid  justifyContent="flex-end" alignItems="center" direction="row"
+                              container>
                             <Link to={"/teams"} style={{textDecoration: 'none'}}>
                                 <Button size="large" variant="contained" color="button"
                                         key={"teams"}
@@ -62,30 +65,32 @@ const Header = () => {
                                 </Button>
                             </Link>
 
-                                <Link to={"/employeesofthecompany"} style={{textDecoration: 'none'}}>
-                                    <Button size="large" variant="contained" color="button"
-                                            key={""}
-                                            sx={{mx: 2, my: 2, display: 'block'}}
-                                    >
-                                        employees
-                                    </Button>
-                                </Link>
+                            <Link to={"/employeesofthecompany"} style={{textDecoration: 'none'}}>
+                                <Button size="large" variant="contained" color="button"
+                                        key={""}
+                                        sx={{mx: 2, my: 2, display: 'block'}}
+                                >
+                                    employees
+                                </Button>
+                            </Link>
 
-                                    <Link to="/profile" style={{textDecoration: 'none'}}>
-                                        <Button size="large" variant="contained" color="button"
-                                                key="Profile" textTransform='none'
+                            <Link to="/profile" style={{textDecoration: 'none'}}>
+                                <Button size="large"  variant="contained" color="button"
+                                        key="Profile"
 
-                                                sx={{my: 2, color: 'white',}}>
+                                        sx={{my: 2, color: 'white',}}>
 
-                                            Profile
-                                        </Button>
-                                    </Link>
-                                </Box>
+                                    Profile
+                                </Button>
+                            </Link>
+                        </Grid>
+
                     </Toolbar>
-                </Container>
-            </RoundedAppBar>
+
+                </AppBar>
+            </Box>
         </ThemeProvider>
-);
+    );
 };
 
 export default Header;

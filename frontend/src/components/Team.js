@@ -22,6 +22,7 @@ import IconButton from "@mui/material/IconButton";
 import Employee from "./Employee";
 import {GetEmp, getEmpCompanyId, GetEmployee, getToken, getUser, setUser, UserLog} from "./UserLog";
 import GetEmployeeInfo from "./GetEmployeeInfo";
+import ModeEditOutlineTwoToneIcon from "@mui/icons-material/ModeEditOutlineTwoTone";
 
 const theme = createTheme({
     status: {
@@ -43,7 +44,7 @@ const theme = createTheme({
     },
 });
 
-const Team = (props) => {
+const Team = () => {
     const [team, setTeam] = useState();
     const [isShown, setIsShown] = useState(false);
     const [emp, setEmp] = useState(false);
@@ -67,7 +68,7 @@ const Team = (props) => {
         }
     }
 
-    const handleClick = event => {
+    const handleClick = () => {
 
         setIsShown(current => !current);
     };
@@ -102,24 +103,28 @@ const Team = (props) => {
                         <Teamsd companyId={companyId} id={item?.id} key={item?.id} name={item?.name} tag={item?.tag}/>
                     )
                 }
-                {isOwner && (<Button onClick={handleClick} style={{textDecoration: 'none'}}>
-                    <Card variant="outlined" sx={{
-                        bgcolor: '#E2CEB5',
-                        padding: 15,
-                        margin: 2,
-                        borderRadius: 9
+                {!isShown && isOwner && (<Button sx={{
+                    bgcolor: '#E2CEB5',
+                    padding: 15,
+                    margin: 2,
+                    borderRadius: 9,
+                    marginTop: 3
 
 
-                    }}>
+                }} onClick={handleClick} style={{textDecoration: 'none'}}>
 
-                        <Grid>
-                            <Grid item xs={0}>
-                                <h5>New team</h5>
-                            </Grid>
+
+                    <Grid>
+                        <Grid item xs={0}>
+
+                            <Typography sx={{color: "black"}} variant="h7"
+                            >
+                                New team
+                            </Typography>
                         </Grid>
+                    </Grid>
 
 
-                    </Card>
                 </Button>)}
                 {isShown && (<AddNewTeam/>)}
             </Grid>}
@@ -139,9 +144,10 @@ const Teamsd = ({name, tag, key, id, companyId}) => {
         <Card sx={{
             bgcolor: '#E2CEB5',
             borderRadius: 9,
-            minWidth: 400,
+            minWidth: 320,
             margin: 1,
-            height: 350,
+            height: 310,
+            marginTop: 3
 
         }}>
             <CardHeader
@@ -158,9 +164,9 @@ const Teamsd = ({name, tag, key, id, companyId}) => {
 
                     <Card variant="filled" sx={{
                         bgcolor: '#E2CEB5',
-                        height: 200,
+                        height: 250,
                     }}></Card>
-                    <Typography sx={{color: "black", ml: 25, my: -7}} variant="h3">
+                    <Typography sx={{minWidth: 195, color: "black", ml: 8, my: -17}} variant="h3">
                         {tag}
                     </Typography>
                 </CardMedia>

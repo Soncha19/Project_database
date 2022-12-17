@@ -20,6 +20,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import {getToken, removeToken, UserLog} from "./UserLog";
 import Footer from "./Footer";
+import "../CSSFiles/Profile.css";
 
 const options = ['Create a new company', 'Join to the company', 'Leave company',];
 const theme = createTheme({
@@ -112,7 +113,7 @@ const Profile = () => {
             .then(response => response.json())
             .then(response => localStorage.setItem("company_id", JSON.stringify(response.company_id)));
         setLeaveCompany(false);
-        window.location.reload(false);
+
 
     }
 
@@ -131,7 +132,7 @@ const Profile = () => {
             .then(response => response.json())
             .then(response => localStorage.setItem("company_id", JSON.stringify(response.company_id)));
         setJoinToCompany(false);
-        window.location.reload(false);
+
 
     }
     // const requestOptions = {
@@ -222,121 +223,52 @@ const Profile = () => {
         <ThemeProvider theme={theme}>
             <>
                 <Header/>
+                <div className={"background-wrapper"}>
+                    <div className={"Wrapper"}><div className={"ProfileName"}> <h1 style={{textAlign: "center"}}>Profile</h1></div></div>
 
-                <Grid container justifyContent="center"
-                      alignItems="center">
+                    <div className={"FirstNameWrapper"}>
+                    <div id={"FirstNameLabel"}><h2>First name:</h2></div>
+                        <div id={"FirstNameValue"}><h2>{employee?.employee.first_name}</h2></div>
+                    </div>
 
+                    <div className={"FirstNameWrapper"}>
+                        <div id={"FirstNameLabel"}><h2>Last name:</h2></div>
+                        <div id={"FirstNameValue"}><h2>{employee?.employee.last_name}</h2></div>
+                    </div>
 
-                    <Card sx={{
-                        my: 10,
-                        margin: 10,
-                        maxWidth: 500,
-                        bgcolor: '#E2CEB5',
-                        borderRadius: 9,
+                    <div className={"FirstNameWrapper"}>
+                        <div id={"FirstNameLabel"}><h2>Email:</h2></div>
+                        <div id={"FirstNameValue"}><h2>{employee?.employee.email}</h2></div>
+                    </div>
 
-                    }}>
-                        <CardHeader
-                            sx={{my: -2, mr: 2}}
-                            action={
-                                <h4>First name</h4>
-                            }/>
-                        <CardContent sx={{my: -4}}>
-                            <h1>{employee?.employee.first_name}</h1>
-                        </CardContent>
-                    </Card>
+                    <div className={"FirstNameWrapper"}>
+                        <div id={"FirstNameLabel"}><h2>Phone number:</h2></div>
+                        <div id={"FirstNameValue"}><h2>{employee?.employee.phone}</h2></div>
+                        </div>
+                    <div className={"LineBetween"}></div>
+                    <div className={"Wrapper"}><div className={"ProfileName"}><h1 style={{textAlign: "center"}}>Company</h1></div></div>
 
+                    <div className={"FirstNameWrapper"}>
+                        <div id={"FirstNameLabel"}><h2>Company name:</h2></div>
+                        <div id={"FirstNameValue"}><h2>{employee?.company.name}</h2></div>
+                    </div>
 
-                    <Card sx={{
+                    <div className={"FirstNameWrapper"}>
+                        <div id={"FirstNameLabel"}><h2>Company id:</h2></div>
+                        <div id={"FirstNameValue"}><h2>{(companyId == 1 ? false : true) && (<h3>{companyId}</h3>)}
+                            {(companyId == 1 ? true : false) && (<h1> None</h1>)}</h2></div>
+                    </div>
+                    <Box textAlign={'center'}>
+                    {isOwner && (<Button size="large" variant="contained" color="button"
+                                         key="f4" textTransform='none' onClick={handleClickDeleteCompany}
 
-                        maxWidth: 250,
-                        margin: 10,
-                        bgcolor: '#E2CEB5',
-                        borderRadius: 9,
-                    }}>
-                        <CardHeader
-                            sx={{my: -2, mr: 2}}
-                            action={
-                                <h4>Last name</h4>
-                            }/>
-                        <CardContent sx={{my: -4}}>
-                            <h1>{employee?.employee.last_name}</h1>
-                        </CardContent>
-                    </Card>
+                                         sx={{
+                                             my: 2, color: 'white', maxWidth: 400,
+                                             // borderRadius: 9,
+                                         }}>
 
-                    {(companyId == 1 ? false : true) && (<Card sx={{
-
-                        maxWidth: 250,
-                        margin: 10,
-                        bgcolor: '#E2CEB5',
-                        borderRadius: 9,
-                    }}>
-                        <CardHeader
-                            sx={{my: -2, mr: 2}}
-                            action={
-                                <h4>Company name</h4>
-                            }/>
-                        <CardContent sx={{my: -4}}>
-                            <h1>{employee?.company.name} </h1>
-
-                        </CardContent>
-                    </Card>)}
-                    <Card sx={{
-
-                        maxWidth: 250,
-                        margin: 10,
-                        bgcolor: '#E2CEB5',
-                        borderRadius: 9,
-                    }}>
-                        <CardHeader
-                            sx={{my: -2, mr: 2}}
-                            action={
-                                <h4>Company Id</h4>
-                            }/>
-                        <CardContent sx={{my: -4}}>
-                            {(companyId == 1 ? false : true) && (<h1> {companyId}</h1>)}
-                            {(companyId == 1 ? true : false) && (<h1> None</h1>)}
-                        </CardContent>
-                    </Card>
-
-
-                </Grid>
-                <Grid container justifyContent="center"
-                      alignItems="center">
-
-                    <Card sx={{
-                        my: 10,
-                        margin: 10,
-                        maxWidth: 400,
-                        bgcolor: '#E2CEB5',
-                        borderRadius: 9,
-                    }}>
-                        <CardHeader
-                            sx={{my: -2, mr: 2}}
-                            action={
-                                <h4>Email</h4>
-                            }/>
-                        <CardContent sx={{my: -4}}>
-                            <h1>{employee?.employee.email}</h1>
-                        </CardContent>
-                    </Card>
-
-
-                    <Card sx={{
-                        maxWidth: 400,
-                        margin: 10,
-
-                        bgcolor: '#E2CEB5',
-                        borderRadius: 9,
-                    }}>
-                        <CardHeader
-                            sx={{my: -3, mr: 2}}
-                            action={
-                                <h4>Phone number</h4>
-                            }/>
-                        <CardContent sx={{my: -4}}>
-                            <h1>{employee?.employee.phone}</h1>
-                        </CardContent>
-                    </Card>
+                        Delete Company
+                    </Button>)}
 
 
                     {isntInCompany && (<Button size="large" variant="contained" color="button"
@@ -374,32 +306,15 @@ const Profile = () => {
 
                         Leave Company
                     </Button>)}
-                    {isOwner && (<Button size="large" variant="contained" color="button"
-                                         key="f4" textTransform='none' onClick={handleClickDeleteCompany}
-
-                                         sx={{
-                                             my: 2, color: 'white', maxWidth: 400,
-                                             margin: 10,
-                                             // borderRadius: 9,
-                                         }}>
-
-                        Delete Company
-                    </Button>)}
-
-                    <Button size="large" variant="contained" color="button"
-                            key="f5" textTransform='none' onClick={handleClickWinLogOut}
-
-                            sx={{
-                                my: 2, color: 'white', maxWidth: 400,
-                                margin: 10,
-                                // borderRadius: 9,
-                            }}>
-
-                        Log out
-                    </Button>
 
 
-                </Grid>
+
+                    </Box>
+                </div>
+
+            <div className={"background-wrapper"}>
+
+
 
                 <Dialog PaperProps={{
                     style: {
@@ -526,7 +441,7 @@ const Profile = () => {
                         <Button onClick={handleLogOut} variant="contained" color="success">Yes</Button>
                     </DialogActions>
                 </Dialog>
-
+            </div>
             </>
         </ThemeProvider>
     );

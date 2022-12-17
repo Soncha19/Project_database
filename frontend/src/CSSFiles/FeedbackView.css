@@ -1,0 +1,161 @@
+body
+{
+    background: #ffe7cb;
+    font-family: "Roboto", "Helvetica", "Arial", "sans-serif";
+}
+
+.AllWrapper
+{
+    background-color: #e2ceb5;
+    padding: 3% 1% 3% 1%;
+    border-radius: 10px;
+    width: 60%;
+    margin: 3% auto;
+}
+
+.WrapperFeedbackView
+{
+    width: 80%;
+    margin-right: auto;
+    margin-left: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.EmployeeInfoFeedbackView
+{
+    background-color: #093ca9;
+    color: white;
+    text-align: center;
+    display: inline-block;
+    border-radius: 10px;
+    padding-left: 1%;
+    padding-right: 1%;
+    width: 40%;
+
+}
+
+#DateInfo
+{
+    width: 40%;
+    padding-left: 1%;
+    padding-right: 1%;
+    background-color: #093ca9;
+    color: white;
+    text-align: center;
+    display: inline-block;
+    border-radius: 10px;
+}
+
+.buttonInfoDeleteWrapper
+{
+    padding-left: 1%;
+    padding-right: 1%;
+    width: 100%;
+    margin-top: 3%;
+    hyphens: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.buttonInfoDelete
+{
+    background-color: #012e95;
+    color: white;
+    overflow: hidden;
+    display: inline-block;
+    border-radius: 10px;
+    padding-left: 1%;
+    padding-right: 1%;
+    cursor: pointer;
+    transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
+}
+
+.buttonInfoDelete:hover
+{
+    box-shadow: 0px 2px 4px -1px rgba(0,0,0,0.5),0px 4px 5px 0px rgba(0,0,0,0.5),0px 1px 10px 0px rgba(0,0,0,0.5);
+}
+
+.feedbackWrapper
+{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.feedbackMark
+{
+    border-radius: 10px;
+    display: flex;
+    flex-direction: row;
+    background-color: #093ca9;
+    padding: 1% 1% 1% 1%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1%;
+    color: white;
+    width: 80%;
+}
+
+.feedbackMarkComponentQuestion, .feedbackMarkComponentAnswer
+{
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.feedbackMarkComponentQuestion
+{
+    border-right: solid white 1px;
+}
+
+.QuestionAndMarkText
+{
+    text-align: center;
+    font-weight: bold;
+}
+
+#Note{
+    margin-top: 3%;
+    margin-right: auto;
+    margin-left: auto;
+    color: white;
+    background-color: #093ca9;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    hyphens: auto;
+    box-shadow: 5px 5px 7px rgba(33,33,33,.7);
+}
+
+.NameBackground
+{
+    margin: 0;
+    padding-top: 0.5%;
+    padding-bottom: 0.5%;
+    width: 100%;
+    height: 20%;
+}
+
+.NoteName
+{
+text-align: center;
+}
+
+.DivText
+{
+    height: 80%;
+    width: 100%;
+    word-wrap: break-word;
+
+}
+.NoteText
+{
+    margin: 5% 5% 5% 5%;
+    font-weight: bold;
+}

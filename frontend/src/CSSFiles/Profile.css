@@ -1,0 +1,64 @@
+body
+{
+    font-family: "Roboto", "Helvetica", "Arial", "sans-serif";
+}
+
+.background-wrapper
+{
+    background-color: #E2CEB5;
+    width: 40%;
+    margin: 2% auto 0 auto;
+    border-radius: 10px;
+}
+
+.Wrapper
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ProfileName
+{
+    margin-top: 2%;
+    font-size: 10px;
+    background-color: #093ca9;
+    color: white;
+    text-align: center;
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    padding-right: 5%;
+    padding-left: 5%;
+    border-radius: 10px;
+    font-family: "Roboto", "Helvetica", "Arial", "sans-serif";
+}
+
+.LineBetween
+{
+    margin-top: 3%;
+    margin-bottom: 3%;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+    height: 2px;
+    background-color: black;
+}
+
+.fullName
+{
+    display: flex;
+    justify-content: space-between;
+}
+
+.FirstNameWrapper
+{
+    font-family: "Roboto", "Helvetica", "Arial", "sans-serif";
+    width: 70%;
+    margin-right: auto;
+    margin-left: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 80%;
+}

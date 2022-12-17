@@ -61,8 +61,6 @@ const PropsButton = (props) => {
         };
         const handleDeleteTeam = () => {
 
-
-
                 // DELETE request using fetch with set headers
                 const requestOptions = {
                     method: 'DELETE',
@@ -74,6 +72,7 @@ const PropsButton = (props) => {
                 fetch('http://localhost:8080/team/?team_id=' + props.props.id.id.toString(), requestOptions)
                     .then();
                 setDialogDel(null);
+                window.location.reload(false);
 
         };
 

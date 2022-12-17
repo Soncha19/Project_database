@@ -21,38 +21,45 @@ const Start = () => {
 
     return (
         <>
-            <RoundedAppBar   sx={{bgcolor:"#093CA9"}} position="static">
-                <Container maxWidth="xl">
-                    <Toolbar disableGutters>
-                        <Typography
-                            variant="h6"
-                            noWrap
-                            component="a"
-                            href="/"
-                            sx={{
-                                mr: 2,
-                                display: {xs: 'none', md: 'flex'},
-                                fontFamily: 'monospace',
-                                fontWeight: 700,
-                                letterSpacing: '.3rem',
-                                color: 'inherit',
-                                textDecoration: 'none',
-                            }}
-                        >
-                            PROCADI
-                        </Typography>
-                    </Toolbar>
-                </Container>
-            </RoundedAppBar>
+            <Box sx={{flexGrow: 1, margin: 1,}}>
+                <AppBar sx={{borderRadius: '10px', bgcolor: "#093CA9"}} position="center">
 
-            <Grid m={35} pl={80} container rowSpacing={5} columnSpacing={{xs: 2, sm: 2, md: 0}}>
-                <Grid item xs={4}>
-                    < SignIn/>
-                </Grid>
-                <Grid item xs={4}>
-                    <SignUp/>
-                </Grid>
-            </Grid>
+                    <Toolbar minWidth="md" disableGutters sx={{ml: 20, mr: 10}}>
+                        <Grid justifyContent="space-evenly" alignItems="center" direction="row"
+                              container>
+                            <Typography
+                                variant="h5"
+
+
+                                sx={{
+                                    mr: -2,
+                                    flexGrow: 1,
+
+                                    fontFamily: 'monospace',
+                                    fontWeight: 700,
+                                    letterSpacing: '.2rem',
+                                    color: 'white',
+                                    textDecoration: 'none',
+                                }}
+                                component="div"
+                            >
+                                PROCADI
+                            </Typography>
+                        </Grid>
+                        <Grid justifyContent="flex-end" alignItems="center" direction="row"
+                              container>
+
+                            < SignIn/>
+
+
+                            <SignUp/>
+
+                        </Grid>
+                    </Toolbar>
+
+                </AppBar>
+            </Box>
+
         </>
 
     );

@@ -1,29 +1,49 @@
 import React, {useEffect, useState} from 'react';
 import Header from "./Header";
 import {Link, Navigate, redirect, Route, Routes, useLocation, useNavigate} from "react-router-dom";
-import {Box, Button, Card, Grid, MenuItem} from "@mui/material";
+import {
+    Accordion,
+    AccordionSummary,
+    Box,
+    Button,
+    Card,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    Grid,
+    MenuItem, Paper, styled
+} from "@mui/material";
 import TextField from "@mui/material/TextField";
 import AddNewPropertySet from "./AddNewPropertySet";
 import Team from "./Team";
 import DeleteTwoToneIcon from "@mui/icons-material/DeleteTwoTone";
 import {getToken} from "./UserLog";
+
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import AddNewPropertySetDiffPreAns from "./AddNewPropertySetDiffPreAns";
+import Typography from "@mui/material/Typography";
 
 const AddPropertySetToEmployee = () => {
-    let companyId = localStorage.getItem("company_id");;
-
+    let companyId = localStorage.getItem("company_id");
     const location = useLocation();
     let teamId = location.state.teamId.teamId;
-    console.log(teamId)
-
     const [employees, setEmployees] = useState();
     const [propertySets, setPropertySets] = useState();
     const [properties, setProperties] = useState();
     const [idProperties, setIdProperties] = useState();
     const [idEmployee, setIdEmployee] = useState();
-
+    const [isOpen, setIsOpen] = useState(false);
     const [isShown, setIsShown] = useState(false);
-    console.log(idEmployee)
+    const [propertyForShow, setPropertyForShow] = useState([]);
+    const [preAnswer, setPreAnswer] = useState([]);
+    const [question, setQuestion] = useState([]);
+
+    function handleClickLookClose() {
+        setIsOpen(false)
+    }
+
+    console.log(question)
 
     const handleChange = (event) => {
         setIdEmployee(event.target.value);
@@ -33,7 +53,6 @@ const AddPropertySetToEmployee = () => {
     const handleChangeProperties = (event) => {
         setIdProperties(event.target.value);
         setIsShown(true);
-
 
 
     };
@@ -48,12 +67,54 @@ const AddPropertySetToEmployee = () => {
 
     };
 
-    const handleClickDelete = (e) => {
-
+    const handleClickLook = (e) => {
+        GetAllAboutPropertySet();
+        setIsOpen(true)
 
 
     };
     const navigate = useNavigate();
+
+    function GetAllAboutPropertySet() {
+
+
+        fetch("http://localhost:8080/propertySet/?property_set_id=" + idProperties.toString(), {
+            'methods': 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${getToken()}`
+            }
+        })
+            .then(response => response.json())
+            .then(response => setPropertyForShow(response))
+            .catch(error => console.log(error))
+
+
+        fetch("http://localhost:8080/question/?property_set_id=" + idProperties.toString(), {
+            'methods': 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${getToken()}`
+            }
+        })
+            .then(response => response.json())
+            .then(response => setQuestion(response))
+            .catch(error => console.log(error))
+
+        for (var i = 0; i < question.length; i++) {
+            fetch("http://localhost:8080/preAnswer/?property_set_id=" + question[i].id.toString(), {
+                'methods': 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${getToken()}`
+                }
+            })
+                .then(response => response.json())
+                .then(response => setPreAnswer(response))
+                .catch(error => console.log(error))
+        }
+    };
+
 
     const submit = (e) => {
 
@@ -92,6 +153,7 @@ const AddPropertySetToEmployee = () => {
             });
 
         navigate(-1);
+
     };
 
 
@@ -130,6 +192,13 @@ const AddPropertySetToEmployee = () => {
     const filteredPropertySets = propertySets?.filter(propertySet => {
         return propertySet?.is_used == 1
     });
+const Item = styled(Paper)(({ theme }) => ({
+  ...theme.typography.body2,
+  textAlign: 'center',
+  color: theme.palette.text.secondary,
+  height: 60,
+  lineHeight: '60px',
+}));
 
     return (
         <>
@@ -161,7 +230,7 @@ const AddPropertySetToEmployee = () => {
                         color: "#093CA9",
                         mr: 2,
 
-                        ml: isShown? 20 : 10,
+                        ml: isShown ? 20 : 10,
                         width: '70ch',
                         bgcolor: 'white',
                         borderColor: '#E2CEB5',
@@ -175,8 +244,9 @@ const AddPropertySetToEmployee = () => {
                         ))}
 
                     </TextField>
-                    {isShown && <Button size="large" sx={{mr:2,bgcolor: "#093CA9"}} variant="contained" onClick={handleClickDelete}>
-                        <DeleteTwoToneIcon/>
+                    {isShown && <Button size="large" sx={{mr: 2, bgcolor: "#093CA9"}} variant="contained"
+                                        onClick={handleClickLook}>
+                        <LightbulbIcon/>
                     </Button>}
                     <AddNewPropertySet/>
 
@@ -185,8 +255,43 @@ const AddPropertySetToEmployee = () => {
             <Box sx={{my: 10}} x textAlign='center'>
                 <Button size="large" sx={{bgcolor: "#093CA9"}} variant="contained" onClick={submit}>Save</Button>
             </Box>
+            <Dialog PaperProps={{
+                style: {
+                    backgroundColor: '#36342C',
+                },
+            }} open={isOpen} onClose={handleClickLookClose}
+            >
+                <DialogContent>
+                    <DialogTitle color="white" textAlign='center'>Property set - {propertyForShow?.name}
+                    </DialogTitle>
+                    <Box textAlign='center' component="form"
+                         noValidate
+                         autoComplete="off"
+                    >
+
+
+                                {
+                                    question?.map((item) =>
+                                        <Item sx={{m:1}} >
+                                        <Typography sx={{color: "black"}} variant="h7"
+                                        >
+                                            {item?.text}
+                                        </Typography>
+
+                                            </Item>
+                                    )
+                                }
+
+
+                    </Box>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClickLookClose} variant="contained" color="primary">Close</Button>
+
+                </DialogActions>
+            </Dialog>
         </>
-    );
+);
 };
 
 

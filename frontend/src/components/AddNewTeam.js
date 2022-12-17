@@ -1,7 +1,10 @@
-import React, {useState} from 'react';
-import {Button, Card, createTheme, Grid, ThemeProvider} from "@mui/material";
+import React, {useEffect, useState} from 'react';
+import {Button, Card, CardHeader, createTheme, Grid, ThemeProvider} from "@mui/material";
 import TextField from "@mui/material/TextField";
 import {getToken} from "./UserLog";
+import IconButton from "@mui/material/IconButton";
+import ModeEditOutlineTwoToneIcon from "@mui/icons-material/ModeEditOutlineTwoTone";
+import Team from "./Team";
 
 const theme = createTheme({
 
@@ -20,7 +23,8 @@ const theme = createTheme({
 
 const AddNewTeam = () => {
     const [teamName, setTeamName] = useState(false);
-    let companyId = localStorage.getItem("company_id");;
+    let companyId = localStorage.getItem("company_id");
+
     const handleChangeTeamName = (event) => {
         setTeamName(event.target.value);
     };
@@ -29,28 +33,27 @@ const AddNewTeam = () => {
         setTag(event.target.value);
     };
 
-    const handleSubmit = (e) => {
+    function handleSubmit(e) {
 
-
-        fetch('http://localhost:8080/team', {
-            method: 'POST',
-            body: JSON.stringify({
-                name: teamName,
-                tag: tag,
-                company_id: companyId,
-            }),
-            headers: {
-                'Content-type': 'application/json; charset=UTF-8',
-                Authorization: `Bearer ${getToken()}`
-            },
-        })
-            .then((response) => response.json())
-            .then((post) => {
+            fetch('http://localhost:8080/team', {
+                method: 'POST',
+                body: JSON.stringify({
+                    name: teamName,
+                    tag: tag,
+                    company_id: companyId,
+                }),
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                    Authorization: `Bearer ${getToken()}`
+                },
             })
-            .catch((err) => {
-                console.log(err.message);
-            });
-    window.location.reload(false);
+                .then((response) => response.json())
+                .then((response) => {})
+                .catch((err) => {
+                    console.log(err.message);
+                });
+
+        window.location.reload(false);
     };
 
     return (
@@ -63,6 +66,7 @@ const AddNewTeam = () => {
                 borderRadius: 9
 
             }}>
+
                 <Grid container direction="column" justifyContent="center" alignItems="center" spacing={2}>
                     <Grid item xs={0}>
                         <TextField color="button" sx={{
