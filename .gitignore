@@ -5,3 +5,7 @@
 /backend/.idea/inspectionProfiles/profiles_settings.xml
 /backend/.idea/inspectionProfiles/Project_Default.xml
 /backend/.idea/vcs.xml
+/.idea
+/Pipfile
+/Pipfile.lock
+/img_3.png

@@ -36,7 +36,7 @@ paths:
             application/xml:
               schema:
                 $ref: '#/components/schemas/PropertySet'
-  /propertySet/{id}:
+  /propertySet/:
     get:
       tags:
         - property set
@@ -44,7 +44,7 @@ paths:
       operationId: getPropertySetById
       parameters:
         - name: id
-          in: path
+          in: query
           required: true
           schema:
             type: string
@@ -62,10 +62,10 @@ paths:
       tags:
         - property set
       summary: Delete property set by id
-      operationId: вудуеуPropertySetById
+      operationId: deletePropertySetById
       parameters:
         - name: id
-          in: path
+          in: query
           required: true
           schema:
             type: string
@@ -79,7 +79,7 @@ paths:
             application/xml:
               schema:
                 $ref: '#/components/schemas/PropertySet'
-  /propertySet/all:
+  /propertySets/:
     get:
       tags:
         - property set
@@ -170,7 +170,7 @@ paths:
             application/xml:
               schema:
                 $ref: '#/components/schemas/PropertySet'
-  /feedbacks/{employee_id}:
+  /feedbacks/:
     get:
       tags:
         - feedback
@@ -178,7 +178,7 @@ paths:
       operationId: getFeedbackByEmployee_id
       parameters:
         - name: employee_id
-          in: path
+          in: query
           required: true
           schema:
             type: string
@@ -895,14 +895,43 @@ paths:
         '400':
           description: Empty fields
         '401':
-          description: Username or email already taken   
-    delete:
+          description: Username or email already taken
+  /preAnswer:
+    post:
       tags:
-        - answer
-      summary: Delete answer
-      operationId: deleteQuestionByFeedback_id
+        - preAnswer
+      summary: Create preAnswer
+      operationId: createЗreAnswer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewAnswer'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/NewAnswer'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewAnswer'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/NewAnswer'
+        '400':
+          description: Empty fields
+        '401':
+          description: Username or email already taken
+  /preAnswer/:
+    get:
+      tags:
+        - preAnswer
+      summary: Get preAnswers
+      operationId: getPreAnswerByPropertySet_id
       parameters:
-        - name: feedback_id
+        - name: property_set_id
           in: query
           required: true
           schema:
@@ -913,15 +942,18 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Answer'
+                type: array
+                items:
+                  $ref: '#/components/schemas/NewPreAnswer'
             application/xml:
               schema:
-                $ref: '#/components/schemas/Answer'
+                type: array
+                items:
+                  $ref: '#/components/schemas/NewPreAnswer'
         '400':
           description: Empty fields
         '401':
-          description: Username or email already taken      
-        
+          description: Username or email already taken
 components:
   schemas:
     Company:
@@ -1167,6 +1199,38 @@ components:
           example: John
         feedback_id:
             $ref: '#/components/schemas/Feedback'
+      xml:
+        name: question
+    NewPreAnswer:
+      type: object
+      properties:
+        text:
+          type: string
+          example: John
+        numeric_value:
+          type: integer
+          format: int64
+          example: 1
+        property_set_id:
+          $ref: '#/components/schemas/PropertySet'
+      xml:
+        name: question
+    PreAnswer:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        text:
+          type: string
+          example: John
+        numeric_value:
+          type: integer
+          format: int64
+          example: 1
+        property_set_id:
+          $ref: '#/components/schemas/PropertySet'
       xml:
         name: question
   securitySchemes:
